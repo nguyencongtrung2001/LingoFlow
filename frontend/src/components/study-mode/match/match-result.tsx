@@ -36,7 +36,7 @@ export function MatchResult({
             <Zap className="text-[#825100] w-10 h-10 fill-current" />
           </div>
           <h1 className="text-[24px] md:text-[32px] text-[#4648d4] font-extrabold tracking-tight mb-1">
-            Ghép Thẻ Hoàn Thành! ⚡
+            Ghép Thẻ Hoàn Thành! 
           </h1>
           <p className="text-[14px] md:text-[18px] text-[#464554]">
             Bạn đã xuất sắc dọn sạch toàn bộ các cặp thẻ từ vựng

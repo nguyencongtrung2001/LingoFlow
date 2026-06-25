@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FolderDetail, Word } from "@/types/folder";
-import { X, Flame, Volume2, AlertCircle, Lightbulb, Languages, CheckCircle, ArrowRight } from "lucide-react";
+import { X, Flame, Volume2, ArrowRight } from "lucide-react";
 import { WriteResult, WriteHistoryItem } from "./write-result";
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -21,7 +21,8 @@ export interface WriteGameProps {
 }
 
 export function WriteGame({ folder, onBack }: WriteGameProps) {
-  const [words, setWords] = useState<Word[]>([]);
+  const [words, setWords] = useState<Word[]>(() => shuffleArray(folder.words));
+  const [prevWordsProp, setPrevWordsProp] = useState(folder.words);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [streak, setStreak] = useState(0);
   const [maxStreak, setMaxStreak] = useState(0);
@@ -29,16 +30,19 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
   const [history, setHistory] = useState<WriteHistoryItem[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [showTranslation, setShowTranslation] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
   const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
+  if (folder.words !== prevWordsProp) {
+    setPrevWordsProp(folder.words);
     setWords(shuffleArray(folder.words));
-    setIsMounted(true);
-  }, [folder.words]);
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   if (!isMounted || words.length === 0) {
     return null;
@@ -53,9 +57,7 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
     if (!inputValue.trim()) return;
     
     const isAnsCorrect = inputValue.trim().toLowerCase() === currentWord.word.toLowerCase();
-    setIsCorrect(isAnsCorrect);
     setShowFeedback(true);
-    setShowTranslation(false);
 
     if (isAnsCorrect) {
       const newStreak = streak + 1;
@@ -89,7 +91,6 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
 
   const handleSkip = () => {
     setStreak(0);
-    setIsCorrect(false);
     setShowFeedback(true);
     setInputValue("");
 

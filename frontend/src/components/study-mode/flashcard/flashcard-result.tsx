@@ -1,7 +1,8 @@
 "use client";
 
 import { Folder, RotateCcw, Timer, XCircle, CheckCircle, Target } from "lucide-react";
-
+import Image from "next/image";
+import tropy from "@/public/tropy 1.png"
 export interface FlashcardResultProps {
   folderName: string;
   timeSeconds: number;
@@ -33,10 +34,10 @@ export function FlashcardResult({
         {/* Header */}
         <div className="text-center mb-8 flex flex-col items-center">
           <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-[#e0e7ff] mb-5 animate-bounce shadow-sm text-[48px]">
-            🏆
+           <Image src={tropy} alt="Trophy" width={24} height={24} />
           </div>
           <h1 className="text-[32px] md:text-[48px] font-bold text-[#4f46e5] mb-3">
-            Xuất Sắc! 🎉
+            Xuất Sắc!
           </h1>
           <p className="text-[#475569] text-[18px]">
             Bạn đã hoàn thành xuất sắc thẻ ghi nhớ &quot;{folderName}&quot;

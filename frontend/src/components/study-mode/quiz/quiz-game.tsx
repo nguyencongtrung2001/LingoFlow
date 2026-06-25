@@ -141,7 +141,7 @@ export function QuizGame({ folder, onBack }: QuizGameProps) {
           </div>
           <div className="bg-[#fef3c7] text-[#b45309] font-semibold text-[14px] px-4 py-2 rounded-full flex items-center gap-2 shadow-sm border border-[#fde68a]">
             <span>Streak: {streak}</span>
-            <span className="text-lg leading-none animate-bounce">🔥</span>
+            <span className="text-lg leading-none animate-bounce"></span>
           </div>
         </header>
 

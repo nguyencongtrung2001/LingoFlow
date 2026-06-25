@@ -38,7 +38,7 @@ export function QuizResult({
             <Trophy className="text-[#4648d4] w-10 h-10" />
           </div>
           <h1 className="text-[24px] md:text-[32px] text-[#4648d4] font-extrabold tracking-tight mb-1">
-            Hoàn Thành Bài Quiz! 🎯
+            Hoàn Thành Bài Quiz! 
           </h1>
           <p className="text-[14px] md:text-[18px] text-[#464554]">
             Bạn đã vượt qua bài trắc nghiệm lựa chọn đáp án
