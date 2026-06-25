@@ -50,7 +50,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://images.unsplash.com https://*.googleusercontent.com",
               "font-src 'self' data:",
-              "connect-src 'self' ws://localhost:* wss://localhost:* ws://*.lingoflow.app wss://*.lingoflow.app",
+              "connect-src 'self'",
               "frame-src 'self' https://accounts.google.com",
               "object-src 'none'",
               "base-uri 'self'",

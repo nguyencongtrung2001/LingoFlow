@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/layout/Navbar";
+import QueryProvider from "@/providers/query-provider";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -40,9 +41,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="bg-[#f8f9ff] text-[#0b1c30] text-[16px] leading-[24px] font-normal min-h-full flex flex-col font-sans pb-16 md:pb-0">
-        <Navbar />
-        {children}
-        <Toaster position="top-right" richColors />
+        <QueryProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Toaster position="top-right" richColors />
+        </QueryProvider>
       </body>
     </html>
   );
