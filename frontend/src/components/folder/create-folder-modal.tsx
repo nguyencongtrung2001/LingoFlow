@@ -12,11 +12,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { LanguageCode } from "@/types/folder";
 
 export interface CreateFolderModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { name: string; description: string }) => void;
+  onSubmit: (data: { name: string; description: string; language: LanguageCode }) => void;
 }
 
 export function CreateFolderModal({
@@ -26,6 +34,17 @@ export function CreateFolderModal({
 }: CreateFolderModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [language, setLanguage] = useState<LanguageCode>("en");
+
+  const LANGUAGES: { code: LanguageCode; label: string; flag: string }[] = [
+    { code: "en", label: "Tiếng Anh", flag: "🇬🇧" },
+    { code: "zh", label: "Tiếng Trung", flag: "🇨🇳" },
+    { code: "ja", label: "Tiếng Nhật", flag: "🇯🇵" },
+    { code: "ko", label: "Tiếng Hàn", flag: "🇰🇷" },
+    { code: "fr", label: "Tiếng Pháp", flag: "🇫🇷" },
+    { code: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
+    { code: "other", label: "Khác", flag: "🌍" },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,11 +53,13 @@ export function CreateFolderModal({
     onSubmit({
       name: name.trim(),
       description: description.trim(),
+      language,
     });
 
     // Reset and close
     setName("");
     setDescription("");
+    setLanguage("en");
     onClose();
   };
 
@@ -69,6 +90,30 @@ export function CreateFolderModal({
                 className="w-full rounded-xl border-[#c7c4d7] bg-[#f8f9ff] focus-visible:ring-[#4648d4]/20 focus-visible:border-[#4648d4] text-[16px]"
                 required
               />
+            </div>
+
+            <div>
+              <label
+                htmlFor="folder-lang"
+                className="block font-semibold text-[14px] text-[#464554] mb-1"
+              >
+                Ngôn ngữ
+              </label>
+              <Select value={language} onValueChange={(v) => setLanguage(v as LanguageCode)}>
+                <SelectTrigger id="folder-lang" className="w-full rounded-xl border-[#c7c4d7] bg-[#f8f9ff] focus:ring-[#4648d4]/20 focus:border-[#4648d4] text-[16px] h-10">
+                  <SelectValue placeholder="Chọn ngôn ngữ" />
+                </SelectTrigger>
+                <SelectContent>
+                  {LANGUAGES.map((lang) => (
+                    <SelectItem key={lang.code} value={lang.code}>
+                      <span className="flex items-center gap-2">
+                        <span>{lang.flag}</span>
+                        <span>{lang.label}</span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
