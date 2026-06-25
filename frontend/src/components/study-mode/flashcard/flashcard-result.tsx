@@ -2,7 +2,6 @@
 
 import { Folder, RotateCcw, Timer, XCircle, CheckCircle, Target } from "lucide-react";
 import Image from "next/image";
-import tropy from "@/public/tropy1.png"
 export interface FlashcardResultProps {
   folderName: string;
   timeSeconds: number;
@@ -33,8 +32,8 @@ export function FlashcardResult({
       <main className="w-full max-w-5xl flex flex-col items-center justify-center">
         {/* Header */}
         <div className="text-center mb-8 flex flex-col items-center">
-          <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-[#e0e7ff] mb-5 animate-bounce shadow-sm text-[48px]">
-           <Image src={tropy} alt="Trophy" width={24} height={24} />
+          <div className="inline-flex items-center justify-center">
+           <Image src="/image.png" alt="Trophy" width={200} height={200} />
           </div>
           <h1 className="text-[32px] md:text-[48px] font-bold text-[#4f46e5] mb-3">
             Xuất Sắc!

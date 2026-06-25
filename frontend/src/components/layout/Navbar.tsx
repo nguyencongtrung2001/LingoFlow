@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Settings, Folder, Home } from "lucide-react";
+import { Folder, Home, LogOut } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -49,16 +49,10 @@ export function Navbar() {
           </div>
           <div className="flex items-center gap-[16px]">
             <button
-              aria-label="Notifications"
-              className="text-[#464554] hover:text-[#4648d4] transition-colors duration-200"
+              aria-label="Exit"
+              className="text-[#464554] hover:text-red-500 transition-colors duration-200"
             >
-              <Bell className="w-6 h-6" />
-            </button>
-            <button
-              aria-label="Settings"
-              className="text-[#464554] hover:text-[#4648d4] transition-colors duration-200"
-            >
-              <Settings className="w-6 h-6" />
+              <LogOut className="w-6 h-6" />
             </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

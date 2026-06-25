@@ -5,12 +5,19 @@ import { FolderStats } from "@/components/folder/folder-stats";
 import { FolderGrid } from "@/components/folder/folder-grid";
 import { CreateFolderModal } from "@/components/folder/create-folder-modal";
 import { Plus, Search } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function FoldersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Mock data representing folders
-  const [folders, setFolders] = useState([
+  const [folders, setFolders] = useState(() => [
     {
       id: "tech",
       title: "Công nghệ",
@@ -122,16 +129,17 @@ export default function FoldersPage() {
             </div>
             
             <div className="flex items-center gap-3 w-full sm:w-auto">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full sm:w-auto px-4 py-2 bg-white border border-[#c7c4d7] rounded-full text-[14px] text-[#0b1c30] focus:outline-none focus:border-[#4648d4] focus:ring-1 focus:ring-[#4648d4] transition-all cursor-pointer"
-              >
-                <option value="date_desc">Mới nhất</option>
-                <option value="date_asc">Cũ nhất</option>
-                <option value="az">Tên A-Z</option>
-                <option value="za">Tên Z-A</option>
-              </select>
+              <Select value={sortBy} onValueChange={(value) => value && setSortBy(value as "date_desc" | "date_asc" | "az" | "za")}>
+                <SelectTrigger className="w-full sm:w-[140px] px-4 py-2 bg-white border border-[#c7c4d7] rounded-full text-[14px] text-[#0b1c30] focus:outline-none focus:border-[#4648d4] focus:ring-1 focus:ring-[#4648d4] transition-all cursor-pointer h-auto">
+                  <SelectValue placeholder="Sắp xếp" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date_desc">Mới nhất</SelectItem>
+                  <SelectItem value="date_asc">Cũ nhất</SelectItem>
+                  <SelectItem value="az">Tên A-Z</SelectItem>
+                  <SelectItem value="za">Tên Z-A</SelectItem>
+                </SelectContent>
+              </Select>
 
               <button
                 onClick={() => setIsModalOpen(true)}

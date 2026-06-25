@@ -3,7 +3,7 @@
 import { useState} from "react";
 import Image from "next/image";
 import { FolderDetail, Word } from "@/types/folder";
-import { ArrowLeft, ArrowRight, CheckCircle, Volume2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle, Volume2, Heart } from "lucide-react";
 import { FlashcardResult } from "./flashcard-result";
 
 export interface FlashcardGameProps {
@@ -127,10 +127,24 @@ export function FlashcardGame({ folder, onBack }: FlashcardGameProps) {
             <div className="absolute inset-0 w-full h-full bg-[#ffffff] rounded-2xl p-6 flex flex-col items-center justify-center shadow-[0_8px_16px_-4px_rgba(70,72,212,0.08)] backface-hidden group-hover:-translate-y-1 transition-all duration-200 border border-[#e5eeff]">
               <button
                 onClick={(e) => handlePronounce(e, currentWord.word)}
-                className="absolute top-4 right-4 p-2 text-[#464554]/60 hover:text-[#4648d4] hover:bg-[#eff4ff] rounded-full transition-colors"
+                className="absolute top-4 left-4 p-2 text-[#464554]/60 hover:text-[#4648d4] hover:bg-[#eff4ff] rounded-full transition-colors z-10"
                 title="Nghe phát âm"
               >
                 <Volume2 className="w-[22px] h-[22px]" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggleLearned();
+                }}
+                className={`absolute top-4 right-4 p-2 rounded-full transition-colors z-10 ${
+                  currentWord.learned
+                    ? "text-red-500 hover:bg-red-100"
+                    : "text-[#464554]/60 hover:text-red-500 hover:bg-red-50"
+                }`}
+                title="Đánh dấu đã thuộc"
+              >
+                <Heart className={`w-[22px] h-[22px] ${currentWord.learned ? "fill-current text-red-500" : ""}`} />
               </button>
 
               <span className="px-3 py-1 bg-[#dce9ff] text-[#4648d4] text-[12px] rounded-full mb-8 font-bold uppercase">
@@ -149,6 +163,28 @@ export function FlashcardGame({ folder, onBack }: FlashcardGameProps) {
 
             {/* Back of Card */}
             <div className="absolute inset-0 w-full h-full bg-[#ffffff] rounded-2xl p-6 flex flex-col items-center justify-center shadow-[0_8px_16px_-4px_rgba(70,72,212,0.08)] backface-hidden rotate-y-180 border-2 border-[#006c49]/40">
+              <button
+                onClick={(e) => handlePronounce(e, currentWord.word)}
+                className="absolute top-4 left-4 p-2 text-[#464554]/60 hover:text-[#006c49] hover:bg-[#eff4ff] rounded-full transition-colors z-10"
+                title="Nghe phát âm"
+              >
+                <Volume2 className="w-[22px] h-[22px]" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggleLearned();
+                }}
+                className={`absolute top-4 right-4 p-2 rounded-full transition-colors z-10 ${
+                  currentWord.learned
+                    ? "text-red-500 hover:bg-red-100"
+                    : "text-[#464554]/60 hover:text-red-500 hover:bg-red-50"
+                }`}
+                title="Đánh dấu đã thuộc"
+              >
+                <Heart className={`w-[22px] h-[22px] ${currentWord.learned ? "fill-current text-red-500" : ""}`} />
+              </button>
+
               <h2 className="text-[32px] text-[#006c49] mb-8 text-center font-bold">
                 {currentWord.meaning}
               </h2>
