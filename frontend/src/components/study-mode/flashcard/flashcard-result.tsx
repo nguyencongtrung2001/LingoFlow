@@ -2,7 +2,7 @@
 
 import { Folder, RotateCcw, Timer, XCircle, CheckCircle, Target } from "lucide-react";
 import Image from "next/image";
-import tropy from "@/public/tropy 1.png"
+import tropy from "@/public/tropy1.png"
 export interface FlashcardResultProps {
   folderName: string;
   timeSeconds: number;
