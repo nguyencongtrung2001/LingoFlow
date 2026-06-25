@@ -56,7 +56,7 @@ export function AddWordPanel({
       const data = await file.arrayBuffer();
       const workbook = XLSX.read(data);
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet) as any[];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet) as Record<string, unknown>[];
 
       const newWords: Omit<Word, "id" | "learned">[] = [];
       let addedCount = 0;

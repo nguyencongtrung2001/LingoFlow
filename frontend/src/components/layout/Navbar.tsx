@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Folder, Home, LogOut } from "lucide-react";
 
@@ -54,11 +55,12 @@ export function Navbar() {
             >
               <LogOut className="w-6 h-6" />
             </button>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               alt="User Avatar"
               className="w-8 h-8 rounded-full ml-[8px] object-cover"
               src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=60"
+              width={32}
+              height={32}
             />
           </div>
         </div>

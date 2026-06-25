@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { IconPhoto, IconPhotoPlus, IconX, IconUpload, IconLink } from "@tabler/icons-react";
 
 const STORAGE_KEY = "lingoflow_media_src";
@@ -133,11 +134,13 @@ export function MediaCard() {
           </div>
         ) : (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={mediaSrc}
               alt="Preview"
               className="w-full h-full object-cover block rounded-[10px]"
+              fill
+              sizes="(max-width: 768px) 100vw, 400px"
+              unoptimized
             />
             {isGif && (
               <div className="absolute top-2 left-2 bg-[rgba(70,72,212,0.85)] text-white text-[10px] font-bold tracking-[0.08em] py-[2px] px-[7px] rounded-[5px] pointer-events-none">

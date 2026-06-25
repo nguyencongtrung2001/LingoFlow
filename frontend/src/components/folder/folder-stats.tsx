@@ -1,4 +1,3 @@
-"use client";
 
 import { FolderOpen, BookOpen, Award, CheckSquare } from "lucide-react";
 

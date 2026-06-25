@@ -1,11 +1,31 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/layout/Navbar";
 
+const inter = Inter({
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-inter",
+});
+
 export const metadata: Metadata = {
-  title: "LingoFlow - Làm chủ ngôn ngữ",
-  description: "Làm chủ ngôn ngữ, khơi nguồn dòng chảy tư duy",
+  title: {
+    default: "LingoFlow - Làm chủ ngôn ngữ",
+    template: "%s | LingoFlow",
+  },
+  description:
+    "Làm chủ ngôn ngữ, khơi nguồn dòng chảy tư duy. Nền tảng học từ vựng thông minh giúp bạn ghi nhớ nhanh hơn, hiệu quả hơn.",
+  metadataBase: new URL("https://lingoflow.app"),
+  openGraph: {
+    title: "LingoFlow - Làm chủ ngôn ngữ",
+    description:
+      "Nền tảng học từ vựng thông minh giúp bạn ghi nhớ nhanh hơn, hiệu quả hơn.",
+    type: "website",
+    locale: "vi_VN",
+  },
 };
 
 export default function RootLayout({
@@ -16,15 +36,9 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className="h-full antialiased"
+      className={`h-full antialiased ${inter.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-      </head>
       <body className="bg-[#f8f9ff] text-[#0b1c30] text-[16px] leading-[24px] font-normal min-h-full flex flex-col font-sans pb-16 md:pb-0">
         <Navbar />
         {children}

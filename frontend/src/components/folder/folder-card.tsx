@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Edit, Trash2, ArrowRight, Check, X } from "lucide-react";
 import Link from "next/link";
 import {
@@ -49,6 +50,7 @@ export function FolderCard({
   };
 
   const theme = themeClasses[colorTheme];
+  const router = useRouter();
 
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
@@ -115,7 +117,7 @@ export function FolderCard({
       className="bg-[#f8f9ff] rounded-xl p-6 shadow-[0_8px_16px_-4px_rgba(70,72,212,0.04)] hover:shadow-[0_16px_32px_-8px_rgba(70,72,212,0.08)] hover:-translate-y-1 transition-all duration-200 border border-[#e5eeff] relative group cursor-pointer flex flex-col"
       onClick={() => {
         // Handle navigation to folder detail (would normally use router)
-        window.location.href = `/folders/${id}`;
+        router.push(`/folders/${id}`);
       }}
     >
       <div className="absolute top-4 right-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
