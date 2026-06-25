@@ -130,7 +130,7 @@ export default function FoldersPage() {
             
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <Select value={sortBy} onValueChange={(value) => value && setSortBy(value as "date_desc" | "date_asc" | "az" | "za")}>
-                <SelectTrigger className="w-full sm:w-[140px] px-4 py-2 bg-white border border-[#c7c4d7] rounded-full text-[14px] text-[#0b1c30] focus:outline-none focus:border-[#4648d4] focus:ring-1 focus:ring-[#4648d4] transition-all cursor-pointer h-auto">
+                <SelectTrigger className="flex-1 sm:w-[140px] px-4 py-2 bg-white border border-[#c7c4d7] rounded-full text-[14px] text-[#0b1c30] focus:outline-none focus:border-[#4648d4] focus:ring-1 focus:ring-[#4648d4] transition-all cursor-pointer h-auto">
                   <SelectValue placeholder="Sắp xếp" />
                 </SelectTrigger>
                 <SelectContent>
@@ -143,7 +143,7 @@ export default function FoldersPage() {
 
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-[#4648d4] text-white font-semibold text-[14px] px-6 py-2 rounded-full shadow-[0_8px_16px_-4px_rgba(70,72,212,0.04)] hover:shadow-[0_16px_32px_-8px_rgba(70,72,212,0.08)] hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2 shrink-0 w-full sm:w-auto"
+                className="bg-[#4648d4] text-white font-semibold text-[14px] px-6 py-2 rounded-full shadow-[0_8px_16px_-4px_rgba(70,72,212,0.04)] hover:shadow-[0_16px_32px_-8px_rgba(70,72,212,0.08)] hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2 shrink-0 flex-1 sm:flex-none sm:w-auto"
               >
                 <Plus className="w-[18px] h-[18px]" />
                 <span className="whitespace-nowrap">Thêm mới</span>
