@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { FilePlus, X } from "lucide-react";
+import { useState, useRef } from "react";
+import { FilePlus, X, Upload, Loader2 } from "lucide-react";
+import * as XLSX from "xlsx";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -12,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PartOfSpeech } from "@/types/folder";
+import { PartOfSpeech, Word } from "@/types/folder";
 
 export interface AddWordPanelProps {
   isVisible: boolean;
@@ -25,12 +27,14 @@ export interface AddWordPanelProps {
     example: string;
     image: string;
   }) => void;
+  onAddMultipleWords?: (words: Omit<Word, "id" | "learned">[]) => void;
 }
 
 export function AddWordPanel({
   isVisible,
   onClose,
   onAddWord,
+  onAddMultipleWords,
 }: AddWordPanelProps) {
   const [word, setWord] = useState("");
   const [meaning, setMeaning] = useState("");
@@ -38,13 +42,74 @@ export function AddWordPanel({
   const [pos, setPos] = useState<PartOfSpeech>("Noun");
   const [example, setExample] = useState("");
   const [image, setImage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isVisible) return null;
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet) as any[];
+
+      const newWords: Omit<Word, "id" | "learned">[] = [];
+      let addedCount = 0;
+
+      for (const row of jsonData) {
+        // Try to map based on the user's requested columns or common variations
+        const w = row["word"] || row["Word"] || row["Từ vựng"] || "";
+        const t = row["type"] || row["Type"] || row["Từ loại"] || "Noun";
+        const m = row["meaning"] || row["Meaning"] || row["meaing"] || row["Nghĩa"] || "";
+        const ex = row["example"] || row["Example"] || row["Ví dụ"] || "";
+        const ph = row["phonetic"] || row["Phonetic"] || row["Phiên âm"] || "";
+
+        if (w && m) {
+          // Normalize POS
+          const posStr = String(t).toLowerCase();
+          let pos: PartOfSpeech = "Noun";
+          if (posStr.includes("verb") || posStr === "v") pos = "Verb";
+          else if (posStr.includes("adj")) pos = "Adjective";
+          else if (posStr.includes("adv")) pos = "Adverb";
+          else if (posStr.includes("phrase") || posStr === "phr") pos = "Phrase";
+
+          newWords.push({
+            word: String(w).trim(),
+            meaning: String(m).trim(),
+            pos,
+            phonetic: ph ? String(ph).trim() : "",
+            example: ex ? String(ex).trim() : "",
+            image: "",
+          });
+          addedCount++;
+        }
+      }
+
+      if (addedCount > 0 && onAddMultipleWords) {
+        onAddMultipleWords(newWords);
+        toast.success(`Thành công! Đã thêm ${addedCount} từ vựng từ tệp Excel.`);
+        onClose();
+      } else {
+        toast.error("Không tìm thấy từ vựng hợp lệ. Vui lòng đảm bảo các cột: word, type, meaning, example.");
+      }
+    } catch (error) {
+      console.error("Error parsing Excel:", error);
+      toast.error("Đã xảy ra lỗi khi đọc tệp Excel. Vui lòng thử lại.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!word.trim() || !meaning.trim()) {
-      alert("Vui lòng điền Từ vựng và Nghĩa tiếng Việt!");
+      toast.error("Vui lòng điền Từ vựng và Nghĩa tiếng Việt!");
       return;
     }
 
@@ -70,16 +135,39 @@ export function AddWordPanel({
   return (
     <section className="bg-[#e5eeff] rounded-xl p-6 shadow-[0_2px_8px_-2px_rgba(70,72,212,0.04)] border border-[#c7c4d7]/30 relative overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
       <div className="relative z-10">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-6">
           <h3 className="text-[24px] text-[#0b1c30] font-bold flex items-center gap-2">
             <FilePlus className="text-[#4648d4] w-6 h-6" /> Thêm từ vựng mới
           </h3>
-          <button
-            onClick={onClose}
-            className="text-[#464554] hover:text-[#ba1a1a] transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          <div className="flex items-center gap-3">
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept=".xlsx, .xls, .csv"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isUploading}
+              onClick={() => fileInputRef.current?.click()}
+              className="px-4 py-2 rounded-lg font-medium text-[#006c49] border-[#006c49] hover:bg-[#006c49]/5 hover:text-[#006c49] transition-colors flex items-center gap-2"
+            >
+              {isUploading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Upload className="w-4 h-4" />
+              )}
+              Nhập từ Excel
+            </Button>
+            <button
+              onClick={onClose}
+              className="text-[#464554] hover:text-[#ba1a1a] transition-colors p-1"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">

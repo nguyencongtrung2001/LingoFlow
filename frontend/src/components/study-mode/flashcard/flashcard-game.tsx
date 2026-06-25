@@ -3,7 +3,7 @@
 import { useState} from "react";
 import Image from "next/image";
 import { FolderDetail, Word } from "@/types/folder";
-import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle, Volume2 } from "lucide-react";
 import { FlashcardResult } from "./flashcard-result";
 
 export interface FlashcardGameProps {
@@ -55,6 +55,15 @@ export function FlashcardGame({ folder, onBack }: FlashcardGameProps) {
     setIsCompleted(false);
     setStartTime(Date.now());
     setEndTime(null);
+  };
+
+  const handlePronounce = (e: React.MouseEvent, text: string) => {
+    e.stopPropagation();
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US"; // Defaulting to English since LingoFlow is an English learning app
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   if (isCompleted) {
@@ -116,13 +125,21 @@ export function FlashcardGame({ folder, onBack }: FlashcardGameProps) {
           >
             {/* Front of Card */}
             <div className="absolute inset-0 w-full h-full bg-[#ffffff] rounded-2xl p-6 flex flex-col items-center justify-center shadow-[0_8px_16px_-4px_rgba(70,72,212,0.08)] backface-hidden group-hover:-translate-y-1 transition-all duration-200 border border-[#e5eeff]">
-              <span className="px-3 py-1 bg-[#dce9ff] text-[#4648d4] text-[12px] rounded-full mb-6 font-bold uppercase">
+              <button
+                onClick={(e) => handlePronounce(e, currentWord.word)}
+                className="absolute top-4 right-4 p-2 text-[#464554]/60 hover:text-[#4648d4] hover:bg-[#eff4ff] rounded-full transition-colors"
+                title="Nghe phát âm"
+              >
+                <Volume2 className="w-[22px] h-[22px]" />
+              </button>
+
+              <span className="px-3 py-1 bg-[#dce9ff] text-[#4648d4] text-[12px] rounded-full mb-8 font-bold uppercase">
                 {currentWord.pos || "Word"}
               </span>
-              <h2 className="text-[32px] md:text-[48px] text-[#0b1c30] mb-2 text-center font-extrabold tracking-tight">
+              <h2 className="text-[32px] md:text-[48px] text-[#0b1c30] mb-6 text-center font-extrabold tracking-tight leading-none">
                 {currentWord.word}
               </h2>
-              <p className="text-[18px] text-[#464554] mb-8 italic">
+              <p className="text-[18px] text-[#464554] mb-10 italic">
                 {currentWord.phonetic || "..."}
               </p>
               <p className="text-[12px] text-[#767586] absolute bottom-6 flex items-center gap-1 animate-pulse">

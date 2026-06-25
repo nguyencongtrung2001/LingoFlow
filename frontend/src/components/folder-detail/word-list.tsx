@@ -8,7 +8,7 @@ export interface WordListProps {
   words: Word[];
   viewMode: ViewMode;
   heartFilterOn: boolean;
-  onEditWord: (id: number) => void;
+  onEditWord: (id: number, updates: Partial<Word>) => void;
   onDeleteWord: (id: number) => void;
   onToggleLearned: (id: number) => void;
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { Edit, Trash2, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { Edit, Trash2, ArrowRight, Check, X } from "lucide-react";
 import Link from "next/link";
 import {
   AlertDialog,
@@ -20,7 +21,7 @@ export interface FolderCardProps {
   description: string;
   wordCount: number;
   colorTheme?: "primary" | "secondary";
-  onEdit?: (id: string) => void;
+  onEdit?: (id: string, title: string, description: string) => void;
   onDelete?: (id: string) => void;
 }
 
@@ -49,6 +50,66 @@ export function FolderCard({
 
   const theme = themeClasses[colorTheme];
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(title);
+  const [editDesc, setEditDesc] = useState(description);
+
+  const handleSave = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (editTitle.trim()) {
+      onEdit?.(id, editTitle.trim(), editDesc.trim());
+      setIsEditing(false);
+    }
+  };
+
+  const handleCancel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditTitle(title);
+    setEditDesc(description);
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div
+        className="bg-[#f8f9ff] rounded-xl p-6 shadow-[0_8px_16px_-4px_rgba(70,72,212,0.04)] hover:shadow-[0_16px_32px_-8px_rgba(70,72,212,0.08)] transition-all duration-200 border border-[#e5eeff] relative flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-end gap-2 mb-3">
+          <button
+            onClick={handleCancel}
+            className="w-8 h-8 rounded-full bg-[#ffdad6] text-[#ba1a1a] flex items-center justify-center hover:bg-[#ffb4ab] transition-colors"
+            title="Hủy"
+          >
+            <X className="w-[18px] h-[18px]" />
+          </button>
+          <button
+            onClick={handleSave}
+            className="w-8 h-8 rounded-full bg-[#d0f4e7] text-[#00714d] flex items-center justify-center hover:bg-[#6cf8bb] transition-colors"
+            title="Lưu"
+          >
+            <Check className="w-[18px] h-[18px]" />
+          </button>
+        </div>
+        
+        <input
+          type="text"
+          value={editTitle}
+          onChange={(e) => setEditTitle(e.target.value)}
+          className="font-semibold text-[20px] mb-2 text-[#0b1c30] bg-white border border-[#c7c4d7] rounded px-3 py-1 outline-none focus:border-[#4648d4] w-full"
+          placeholder="Tên thư mục"
+          autoFocus
+        />
+        <textarea
+          value={editDesc}
+          onChange={(e) => setEditDesc(e.target.value)}
+          className="text-[14px] text-[#464554] bg-white border border-[#c7c4d7] rounded px-3 py-2 outline-none focus:border-[#4648d4] w-full resize-none h-20"
+          placeholder="Mô tả"
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       className="bg-[#f8f9ff] rounded-xl p-6 shadow-[0_8px_16px_-4px_rgba(70,72,212,0.04)] hover:shadow-[0_16px_32px_-8px_rgba(70,72,212,0.08)] hover:-translate-y-1 transition-all duration-200 border border-[#e5eeff] relative group cursor-pointer flex flex-col"
@@ -63,7 +124,7 @@ export function FolderCard({
           className={`text-[#464554] ${theme.hoverText} ${theme.hoverBg} bg-[#dce9ff] rounded-full w-8 h-8 flex items-center justify-center transition-colors`}
           onClick={(e) => {
             e.stopPropagation();
-            onEdit?.(id);
+            setIsEditing(true);
           }}
         >
           <Edit className="w-[18px] h-[18px]" />

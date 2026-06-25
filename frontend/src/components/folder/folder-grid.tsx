@@ -4,7 +4,7 @@ import { FolderCard, FolderCardProps } from "./folder-card";
 
 export interface FolderGridProps {
   folders: Omit<FolderCardProps, "onEdit" | "onDelete">[];
-  onEditFolder?: (id: string) => void;
+  onEditFolder?: (id: string, title: string, description: string) => void;
   onDeleteFolder?: (id: string) => void;
 }
 

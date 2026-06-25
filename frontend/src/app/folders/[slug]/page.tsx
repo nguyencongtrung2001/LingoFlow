@@ -61,18 +61,32 @@ export default function FolderDetailPage() {
     }));
   };
 
-  const handleEditWord = (id: number) => {
-    console.log("Edit word:", id);
-    alert(`Chức năng chỉnh sửa từ #${id}`);
+  const handleEditWord = (id: number, updates: Partial<Word>) => {
+    setFolder((prev) => ({
+      ...prev,
+      words: prev.words.map((w) => (w.id === id ? { ...w, ...updates } : w)),
+    }));
   };
 
   const handleDeleteWord = (id: number) => {
-    if (confirm("Xóa từ vựng này khỏi thư mục?")) {
-      setFolder((prev) => ({
-        ...prev,
-        words: prev.words.filter((w) => w.id !== id),
-      }));
-    }
+    setFolder((prev) => ({
+      ...prev,
+      words: prev.words.filter((w) => w.id !== id),
+    }));
+  };
+
+  const handleAddMultipleWords = (newWords: Omit<Word, "id" | "learned">[]) => {
+    const timestamp = Date.now();
+    const formattedWords: Word[] = newWords.map((w, index) => ({
+      id: timestamp + index,
+      ...w,
+      image: w.image || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=200",
+      learned: false,
+    }));
+    setFolder((prev) => ({
+      ...prev,
+      words: [...formattedWords, ...prev.words],
+    }));
   };
 
   const handleToggleLearned = (id: number) => {
@@ -109,6 +123,7 @@ export default function FolderDetailPage() {
         isVisible={showAddPanel}
         onClose={() => setShowAddPanel(false)}
         onAddWord={handleAddWord}
+        onAddMultipleWords={handleAddMultipleWords}
       />
 
       <section>

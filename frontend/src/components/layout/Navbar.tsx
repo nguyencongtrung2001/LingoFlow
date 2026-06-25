@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Settings, School, Folder, ChartBar, User as UserIcon } from "lucide-react";
+import { Bell, Settings, Folder, Home } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -73,34 +73,18 @@ export function Navbar() {
       {/* Mobile Bottom Navbar */}
       <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 md:hidden bg-[#f8f9ff] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] rounded-t-xl border-t border-[#e5eeff]">
         <Link
-          href="/learn"
+          href="/"
           className="flex flex-col items-center justify-center text-[#464554] p-2 rounded-lg hover:text-[#4648d4]"
         >
-          <School className="w-6 h-6 mb-1" />
-          <span className="text-[12px] font-medium">Học tập</span>
+          <Home className="w-6 h-6 mb-1" />
+          <span className="text-[12px] font-medium">Dashboard</span>
         </Link>
         <Link
           href="/folders"
           className="flex flex-col items-center justify-center text-[#464554] p-2 rounded-lg hover:text-[#4648d4]"
         >
           <Folder className="w-6 h-6 mb-1" />
-          <span className="text-[12px] font-medium">Thư viện</span>
-        </Link>
-        <Link
-          href="/"
-          className={`flex flex-col items-center justify-center p-2 rounded-lg ${
-            pathname === "/" ? "text-[#4648d4]" : "text-[#464554] hover:text-[#4648d4]"
-          }`}
-        >
-          <ChartBar className="w-6 h-6 mb-1" />
-          <span className="text-[12px] font-medium">Thống kê</span>
-        </Link>
-        <Link
-          href="/profile"
-          className="flex flex-col items-center justify-center text-[#464554] p-2 rounded-lg hover:text-[#4648d4]"
-        >
-          <UserIcon className="w-6 h-6 mb-1" />
-          <span className="text-[12px] font-medium">Cá nhân</span>
+          <span className="text-[12px] font-medium">Thư mục</span>
         </Link>
       </nav>
     </>

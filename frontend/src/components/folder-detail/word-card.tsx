@@ -1,14 +1,27 @@
 "use client";
 
-import { Edit, Trash2, Heart } from "lucide-react";
+import { useState } from "react";
+
+import { Edit, Trash2, Heart, Check, X, Volume2 } from "lucide-react";
 import { Word, PartOfSpeech } from "@/types/folder";
 import { ViewMode } from "./toolbar";
 import Image from "next/image";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export interface WordCardProps {
   word: Word;
   viewMode: ViewMode;
-  onEdit: (id: number) => void;
+  onEdit: (id: number, updates: Partial<Word>) => void;
   onDelete: (id: number) => void;
   onToggleLearned: (id: number) => void;
 }
@@ -44,6 +57,116 @@ export function WordCard({
 }: WordCardProps) {
   const isLoved = word.learned;
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editWord, setEditWord] = useState(word.word);
+  const [editMeaning, setEditMeaning] = useState(word.meaning);
+  const [editPos, setEditPos] = useState<PartOfSpeech>(word.pos);
+  const [editPhonetic, setEditPhonetic] = useState(word.phonetic || "");
+  const [editExample, setEditExample] = useState(word.example || "");
+
+  const handleSave = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (editWord.trim() && editMeaning.trim()) {
+      onEdit(word.id, {
+        word: editWord.trim(),
+        meaning: editMeaning.trim(),
+        pos: editPos,
+        phonetic: editPhonetic.trim(),
+        example: editExample.trim(),
+      });
+      setIsEditing(false);
+    }
+  };
+
+  const handleCancel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditWord(word.word);
+    setEditMeaning(word.meaning);
+    setEditPos(word.pos);
+    setEditPhonetic(word.phonetic || "");
+    setEditExample(word.example || "");
+    setIsEditing(false);
+  };
+
+  const handlePronounce = (e: React.MouseEvent, text: string) => {
+    e.stopPropagation();
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <article
+        className={`bg-[#f8f9ff] rounded-xl shadow-[0_2px_8px_-2px_rgba(70,72,212,0.04)] border border-[#4648d4] p-4 flex flex-col gap-3 ${
+          viewMode === "list" ? "col-span-full mx-4 my-2" : ""
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center mb-1">
+          <h4 className="font-semibold text-[14px] text-[#4648d4]">Sửa từ vựng</h4>
+          <div className="flex gap-2">
+            <button
+              onClick={handleCancel}
+              className="w-7 h-7 rounded-full bg-[#ffdad6] text-[#ba1a1a] flex items-center justify-center hover:bg-[#ffb4ab] transition-colors"
+              title="Hủy"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <button
+              onClick={handleSave}
+              className="w-7 h-7 rounded-full bg-[#d0f4e7] text-[#00714d] flex items-center justify-center hover:bg-[#6cf8bb] transition-colors"
+              title="Lưu"
+            >
+              <Check className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2">
+          <input
+            className="col-span-2 px-3 py-1.5 border border-[#c7c4d7] rounded-lg text-[14px] outline-none focus:border-[#4648d4] bg-white"
+            placeholder="Từ vựng"
+            value={editWord}
+            onChange={(e) => setEditWord(e.target.value)}
+            autoFocus
+          />
+          <select
+            className="col-span-1 px-2 py-1.5 border border-[#c7c4d7] rounded-lg text-[14px] outline-none focus:border-[#4648d4] bg-white"
+            value={editPos}
+            onChange={(e) => setEditPos(e.target.value as PartOfSpeech)}
+          >
+            <option value="Noun">Noun</option>
+            <option value="Verb">Verb</option>
+            <option value="Adjective">Adjective</option>
+            <option value="Adverb">Adverb</option>
+            <option value="Phrase">Phrase</option>
+          </select>
+        </div>
+        <input
+          className="px-3 py-1.5 border border-[#c7c4d7] rounded-lg text-[14px] outline-none focus:border-[#4648d4] bg-white"
+          placeholder="Nghĩa tiếng Việt"
+          value={editMeaning}
+          onChange={(e) => setEditMeaning(e.target.value)}
+        />
+        <input
+          className="px-3 py-1.5 border border-[#c7c4d7] rounded-lg text-[14px] outline-none focus:border-[#4648d4] bg-white"
+          placeholder="Phiên âm (vd: /wɜːd/)"
+          value={editPhonetic}
+          onChange={(e) => setEditPhonetic(e.target.value)}
+        />
+        <textarea
+          className="px-3 py-2 border border-[#c7c4d7] rounded-lg text-[14px] outline-none focus:border-[#4648d4] bg-white resize-none h-16"
+          placeholder="Ví dụ"
+          value={editExample}
+          onChange={(e) => setEditExample(e.target.value)}
+        />
+      </article>
+    );
+  }
+
   if (viewMode === "list") {
     return (
       <div className="group relative flex flex-row items-center p-[10px_16px] gap-3 bg-[#f8f9ff] border-b border-[#e5eeff] last:border-b-0 hover:bg-[#eff4ff] transition-colors">
@@ -52,6 +175,13 @@ export function WordCard({
             <h3 className="text-[14px] font-bold text-[#4648d4] truncate">
               {word.word}
             </h3>
+            <button
+              onClick={(e) => handlePronounce(e, word.word)}
+              className="text-[#4648d4] hover:bg-[#dce9ff] rounded-full p-1 transition-colors"
+              title="Nghe phát âm"
+            >
+              <Volume2 className="w-[14px] h-[14px]" />
+            </button>
             <PosBadge pos={word.pos} />
           </div>
           <p className="text-[13px] text-[#464554] font-medium ml-auto shrink-0">
@@ -61,19 +191,47 @@ export function WordCard({
 
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-3">
           <button
-            onClick={() => onEdit(word.id)}
+            onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
             className="w-7 h-7 rounded-full flex items-center justify-center text-[#464554]/60 hover:bg-[#6063ee]/20 hover:text-[#4648d4] transition-colors"
             title="Sửa"
           >
             <Edit className="w-[15px] h-[15px]" />
           </button>
-          <button
-            onClick={() => onDelete(word.id)}
-            className="w-7 h-7 rounded-full flex items-center justify-center text-[#464554]/60 hover:bg-[#ffdad6] hover:text-[#ba1a1a] transition-colors"
-            title="Xóa"
-          >
-            <Trash2 className="w-[15px] h-[15px]" />
-          </button>
+          
+          <AlertDialog>
+            <AlertDialogTrigger
+              render={
+                <button
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-[#464554]/60 hover:bg-[#ffdad6] hover:text-[#ba1a1a] transition-colors"
+                  title="Xóa"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              }
+            >
+              <Trash2 className="w-[15px] h-[15px]" />
+            </AlertDialogTrigger>
+            <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Bạn có chắc chắn muốn xóa?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Thao tác này không thể hoàn tác. Từ vựng &ldquo;{word.word}&rdquo; sẽ bị xóa vĩnh viễn.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Hủy</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-[#ba1a1a] text-white hover:bg-[#93000a] transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(word.id);
+                  }}
+                >
+                  Xóa từ vựng
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          
           <div className="w-px h-[18px] bg-[#e5eeff] mx-[2px] shrink-0" />
           <button
             onClick={() => onToggleLearned(word.id)}
@@ -102,7 +260,7 @@ export function WordCard({
       {word.image && (
         <Image
           className={`rounded-lg object-cover bg-[#d3e4fe] shrink-0 border border-[#e5eeff] ${
-            viewMode === "row" ? "w-12 h-12 mb-0" : "w-16 h-16 mb-3"
+            viewMode === "row" ? "w-12 h-12 mb-0 order-last" : "w-16 h-16 mb-3"
           }`}
           src={word.image}
           alt={word.word}
@@ -117,6 +275,13 @@ export function WordCard({
             <h3 className="text-[20px] font-bold text-[#4648d4] truncate">
               {word.word}
             </h3>
+            <button
+              onClick={(e) => handlePronounce(e, word.word)}
+              className="text-[#4648d4] hover:bg-[#dce9ff] rounded-full p-1 transition-colors"
+              title="Nghe phát âm"
+            >
+              <Volume2 className="w-[18px] h-[18px]" />
+            </button>
             <PosBadge pos={word.pos} />
           </div>
           {word.phonetic && (
@@ -142,22 +307,52 @@ export function WordCard({
       </div>
 
       <div
-        className={`absolute top-3 right-3 flex items-center bg-[#f8f9ff]/90 backdrop-blur-sm rounded-full px-1 border border-[#e5eeff]/60 h-[34px] opacity-0 group-hover:opacity-100 transition-opacity shrink-0`}
+        className={`absolute top-3 right-3 flex items-center bg-[#f8f9ff]/90 backdrop-blur-sm rounded-full px-1 border border-[#e5eeff]/60 h-[34px] opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ${
+          viewMode === "row" && word.image ? "right-[60px]" : ""
+        }`}
       >
         <button
-          onClick={() => onEdit(word.id)}
+          onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
           className="w-7 h-7 rounded-full flex items-center justify-center text-[#464554]/60 hover:bg-[#6063ee]/20 hover:text-[#4648d4] transition-colors"
           title="Sửa"
         >
           <Edit className="w-[17px] h-[17px]" />
         </button>
-        <button
-          onClick={() => onDelete(word.id)}
-          className="w-7 h-7 rounded-full flex items-center justify-center text-[#464554]/60 hover:bg-[#ffdad6] hover:text-[#ba1a1a] transition-colors"
-          title="Xóa"
-        >
-          <Trash2 className="w-[17px] h-[17px]" />
-        </button>
+
+        <AlertDialog>
+          <AlertDialogTrigger
+            render={
+              <button
+                className="w-7 h-7 rounded-full flex items-center justify-center text-[#464554]/60 hover:bg-[#ffdad6] hover:text-[#ba1a1a] transition-colors"
+                title="Xóa"
+                onClick={(e) => e.stopPropagation()}
+              />
+            }
+          >
+            <Trash2 className="w-[17px] h-[17px]" />
+          </AlertDialogTrigger>
+          <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Bạn có chắc chắn muốn xóa?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Thao tác này không thể hoàn tác. Từ vựng &ldquo;{word.word}&rdquo; sẽ bị xóa vĩnh viễn.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Hủy</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-[#ba1a1a] text-white hover:bg-[#93000a] transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(word.id);
+                }}
+              >
+                Xóa từ vựng
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         <div className="w-px h-[18px] bg-[#e5eeff] mx-[2px] shrink-0" />
         <button
           onClick={() => onToggleLearned(word.id)}

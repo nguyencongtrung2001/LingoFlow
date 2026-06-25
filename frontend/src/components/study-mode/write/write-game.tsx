@@ -115,6 +115,15 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
     setIsCompleted(false);
   };
 
+  const handlePronounce = (e: React.MouseEvent, text: string) => {
+    e.stopPropagation();
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       if (showFeedback) {
@@ -185,7 +194,15 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
         </div>
 
         {/* Word Card */}
-        <div className="w-full max-w-xl bg-[#ffffff] rounded-[24px] p-6 shadow-[0_8px_16px_-4px_rgba(70,72,212,0.08)] transition-all duration-200 text-center mb-8 border border-[#e5eeff]">
+        <div className="relative w-full max-w-xl bg-[#ffffff] rounded-[24px] p-6 shadow-[0_8px_16px_-4px_rgba(70,72,212,0.08)] transition-all duration-200 text-center mb-8 border border-[#e5eeff]">
+          <button
+            onClick={(e) => handlePronounce(e, currentWord.word)}
+            className="absolute top-4 right-4 p-2 text-[#464554]/60 hover:text-[#4648d4] hover:bg-[#eff4ff] rounded-full transition-colors"
+            title="Nghe phát âm"
+          >
+            <Volume2 className="w-[22px] h-[22px]" />
+          </button>
+          
           <div className="mb-6 flex justify-center">
             <div className="w-32 h-32 rounded-xl overflow-hidden bg-[#eff4ff] flex items-center justify-center border border-[#c7c4d7] relative">
               {currentWord.image ? (
@@ -200,19 +217,16 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
               )}
             </div>
           </div>
-          <h2 className="text-[40px] md:text-[48px] font-extrabold text-[#4648d4] mb-1">
+          <h2 className="text-[40px] md:text-[48px] font-extrabold text-[#4648d4] mb-6">
             {currentWord.word}
           </h2>
-          <div className="flex items-center justify-center gap-4 mb-6">
+          <div className="flex items-center justify-center gap-6 mb-10">
             <span className="px-3 py-1 bg-[#dce9ff] text-[#4648d4] text-[12px] font-bold rounded-full uppercase">
               {currentWord.pos || "Word"}
             </span>
             <span className="italic text-[#464554] text-[16px]">
               {currentWord.phonetic || "..."}
             </span>
-            <button className="text-[#4648d4] hover:bg-[#e1e0ff] p-1.5 rounded-full transition-colors">
-              <Volume2 className="w-5 h-5" />
-            </button>
           </div>
 
           <div className="relative w-full">

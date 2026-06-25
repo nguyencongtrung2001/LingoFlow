@@ -43,8 +43,11 @@ export function MatchResult({
           </p>
         </div>
 
-        {/* Bento Grid */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 my-2 shrink-0">
+        {/* Two-Column Layout for Stats and History */}
+        <div className="w-full flex flex-col md:flex-row gap-6 overflow-hidden flex-1 min-h-[300px]">
+          
+          {/* Left Side: Stats (Vertical Bento) */}
+          <div className="w-full md:w-[220px] shrink-0 flex flex-col gap-3">
           {/* Time */}
           <div className="bg-[#eff4ff] border border-[#dce9ff] rounded-xl p-4 flex flex-col items-center text-center justify-center shadow-sm">
             <Timer className="text-[#4648d4] w-6 h-6 mb-1" />
@@ -77,10 +80,10 @@ export function MatchResult({
               Tốc độ trung bình
             </span>
           </div>
-        </div>
+          </div>
 
-        {/* Review Box */}
-        <div className="w-full flex-1 overflow-y-auto bg-[#f8f9ff] border border-[#e5eeff] rounded-xl p-3 md:p-4 min-h-[140px] max-h-[240px] custom-scrollbar">
+          {/* Right Side: Review Box */}
+          <div className="w-full flex-1 overflow-y-auto bg-[#f8f9ff] border border-[#e5eeff] rounded-xl p-3 md:p-4 custom-scrollbar">
           <p className="text-[12px] text-[#464554] font-bold uppercase tracking-wider mb-2 flex items-center gap-1 sticky top-0 bg-[#f8f9ff] pb-2 z-10">
             <LinkIcon className="w-4 h-4" /> Danh sách các cặp từ đã ghép
           </p>
@@ -108,7 +111,8 @@ export function MatchResult({
             ))}
           </div>
         </div>
-
+        </div>
+        
         {/* Buttons */}
         <div className="w-full flex flex-col sm:flex-row gap-4 justify-center items-center shrink-0 pt-2">
           <button

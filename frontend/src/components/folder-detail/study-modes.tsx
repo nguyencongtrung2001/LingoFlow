@@ -15,9 +15,6 @@ export function StudyModes() {
 
   return (
     <section>
-      <h2 className="text-[24px] font-semibold mb-4 text-[#1a1a2e]">
-        Chế độ học
-      </h2>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <button
           onClick={() => launchGame("flashcard")}

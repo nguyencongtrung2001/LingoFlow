@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { FolderStats } from "@/components/folder/folder-stats";
 import { FolderGrid } from "@/components/folder/folder-grid";
 import { CreateFolderModal } from "@/components/folder/create-folder-modal";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 export default function FoldersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,6 +17,7 @@ export default function FoldersPage() {
       description: "Các từ về AI, Web, Data và Lập trình phần mềm.",
       wordCount: 15,
       colorTheme: "primary" as const,
+      createdAt: Date.now() - 400000,
     },
     {
       id: "comm",
@@ -24,6 +25,7 @@ export default function FoldersPage() {
       description: "Tiếng Anh hàng ngày, đàm thoại công sở.",
       wordCount: 42,
       colorTheme: "secondary" as const,
+      createdAt: Date.now() - 300000,
     },
     {
       id: "comm-2",
@@ -31,6 +33,7 @@ export default function FoldersPage() {
       description: "Tiếng Anh hàng ngày, đàm thoại công sở nâng cao.",
       wordCount: 42,
       colorTheme: "secondary" as const,
+      createdAt: Date.now() - 200000,
     },
     {
       id: "comm-3",
@@ -38,8 +41,28 @@ export default function FoldersPage() {
       description: "Tiếng Anh hàng ngày, đàm thoại công sở chuyên nghiệp.",
       wordCount: 42,
       colorTheme: "secondary" as const,
+      createdAt: Date.now() - 100000,
     },
   ]);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"date_desc" | "date_asc" | "az" | "za">("date_desc");
+
+  const filteredAndSortedFolders = useMemo(() => {
+    return folders
+      .filter(
+        (f) =>
+          f.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          f.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .sort((a, b) => {
+        if (sortBy === "date_desc") return b.createdAt - a.createdAt;
+        if (sortBy === "date_asc") return a.createdAt - b.createdAt;
+        if (sortBy === "az") return a.title.localeCompare(b.title);
+        if (sortBy === "za") return b.title.localeCompare(a.title);
+        return 0;
+      });
+  }, [folders, searchQuery, sortBy]);
 
   const handleCreateFolder = (data: { name: string; description: string }) => {
     // Determine alternating theme for mock purpose
@@ -52,14 +75,18 @@ export default function FoldersPage() {
         description: data.description || "Chưa có mô tả ngắn cho thư mục này.",
         wordCount: 0,
         colorTheme: theme,
+        createdAt: Date.now(),
       },
       ...folders,
     ]);
   };
 
-  const handleEditFolder = (id: string) => {
-    console.log("Edit folder", id);
-    // TODO: Implement edit folder logic
+  const handleEditFolder = (id: string, title: string, description: string) => {
+    setFolders(
+      folders.map((f) =>
+        f.id === id ? { ...f, title, description } : f
+      )
+    );
   };
 
   const handleDeleteFolder = (id: string) => {
@@ -79,23 +106,58 @@ export default function FoldersPage() {
         />
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 pt-4">
-          <h2 className="font-bold text-[32px] tracking-[-0.01em]">
+          <h2 className="font-bold text-[32px] tracking-[-0.01em] shrink-0">
             Thư mục từ vựng
           </h2>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-[#4648d4] text-white font-semibold text-[14px] px-6 py-2 rounded-full shadow-[0_8px_16px_-4px_rgba(70,72,212,0.04)] hover:shadow-[0_16px_32px_-8px_rgba(70,72,212,0.08)] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2"
-          >
-            <Plus className="w-[18px] h-[18px]" />
-            Thêm thư mục mới
-          </button>
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+            <div className="relative w-full sm:w-[240px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#767586] w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Tìm kiếm thư mục..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 bg-white border border-[#c7c4d7] rounded-full text-[14px] text-[#0b1c30] placeholder-[#767586] focus:outline-none focus:border-[#4648d4] focus:ring-1 focus:ring-[#4648d4] transition-all"
+              />
+            </div>
+            
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="w-full sm:w-auto px-4 py-2 bg-white border border-[#c7c4d7] rounded-full text-[14px] text-[#0b1c30] focus:outline-none focus:border-[#4648d4] focus:ring-1 focus:ring-[#4648d4] transition-all cursor-pointer"
+              >
+                <option value="date_desc">Mới nhất</option>
+                <option value="date_asc">Cũ nhất</option>
+                <option value="az">Tên A-Z</option>
+                <option value="za">Tên Z-A</option>
+              </select>
+
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-[#4648d4] text-white font-semibold text-[14px] px-6 py-2 rounded-full shadow-[0_8px_16px_-4px_rgba(70,72,212,0.04)] hover:shadow-[0_16px_32px_-8px_rgba(70,72,212,0.08)] hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2 shrink-0 w-full sm:w-auto"
+              >
+                <Plus className="w-[18px] h-[18px]" />
+                <span className="whitespace-nowrap">Thêm mới</span>
+              </button>
+            </div>
+          </div>
         </div>
 
-        <FolderGrid
-          folders={folders}
-          onEditFolder={handleEditFolder}
-          onDeleteFolder={handleDeleteFolder}
-        />
+        {filteredAndSortedFolders.length === 0 ? (
+          <div className="w-full bg-white rounded-xl border border-[#e5eeff] p-8 text-center mt-6">
+            <p className="text-[#464554] text-[16px]">Không tìm thấy thư mục nào phù hợp với tìm kiếm của bạn.</p>
+            <button onClick={() => setSearchQuery("")} className="mt-2 text-[#4648d4] hover:underline font-semibold text-[14px]">
+              Xóa tìm kiếm
+            </button>
+          </div>
+        ) : (
+          <FolderGrid
+            folders={filteredAndSortedFolders}
+            onEditFolder={handleEditFolder}
+            onDeleteFolder={handleDeleteFolder}
+          />
+        )}
 
         <CreateFolderModal
           isOpen={isModalOpen}
