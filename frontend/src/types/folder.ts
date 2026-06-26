@@ -1,4 +1,4 @@
-export type PartOfSpeech = "Noun" | "Verb" | "Adjective" | "Adverb" | "Phrase";
+export type PartOfSpeech = "NOUN" | "VERB" | "ADJECTIVE" | "ADVERB" | "PHRASE";
 
 export interface Word {
   id: number;

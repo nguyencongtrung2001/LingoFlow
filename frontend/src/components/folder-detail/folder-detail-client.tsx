@@ -5,14 +5,25 @@ import { StudyModes } from "@/components/folder-detail/study-modes";
 import { Toolbar, ViewMode } from "@/components/folder-detail/toolbar";
 import { AddWordPanel } from "@/components/folder-detail/add-word-panel";
 import { WordList } from "@/components/folder-detail/word-list";
-import { FolderDetail, Word, PartOfSpeech } from "@/types/folder";
+import { FolderHeader } from "@/components/folder-detail/folder-header";
+import { useGetFolderById } from "@/feature/folders/hooks/useFolders";
+import { useGetWords, useCreateWord, useUpdateWord, useDeleteWord } from "@/feature/words/hooks/useWords";
+import { Loader2 } from "lucide-react";
+import type { Word, PartOfSpeech } from "@/api/words.api";
 
 export interface FolderDetailClientProps {
-  initialFolder: FolderDetail;
+  folderId: number;
 }
 
-export default function FolderDetailClient({ initialFolder }: FolderDetailClientProps) {
-  const [folder, setFolder] = useState<FolderDetail>(initialFolder);
+export default function FolderDetailClient({ folderId }: FolderDetailClientProps) {
+  // Query data
+  const { data: folder, isLoading: isLoadingFolder } = useGetFolderById(folderId);
+  const { data: words = [], isLoading: isLoadingWords } = useGetWords(folderId);
+
+  // Mutations
+  const createMutation = useCreateWord(folderId);
+  const updateMutation = useUpdateWord(folderId);
+  const deleteMutation = useDeleteWord(folderId);
 
   // UI States
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -23,16 +34,16 @@ export default function FolderDetailClient({ initialFolder }: FolderDetailClient
 
   // Derived State: Filtered Words
   const filteredWords = useMemo(() => {
-    return folder.words.filter((w) => {
+    return words.filter((w) => {
       const matchSearch =
         w.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
         w.meaning.toLowerCase().includes(searchQuery.toLowerCase());
       const matchPos = posFilter === "all" || w.pos === posFilter;
-      const matchHeart = !showFavoritesOnly || w.learned;
+      // const matchHeart = !showFavoritesOnly || w.learned; // Will need to implement favorites logic later
 
-      return matchSearch && matchPos && matchHeart;
+      return matchSearch && matchPos;
     });
-  }, [folder.words, searchQuery, posFilter, showFavoritesOnly]);
+  }, [words, searchQuery, posFilter, showFavoritesOnly]);
 
   // Handlers
   const handleAddWord = (wordData: {
@@ -43,62 +54,49 @@ export default function FolderDetailClient({ initialFolder }: FolderDetailClient
     example: string;
     image: string;
   }) => {
-    const newWord: Word = {
-      id: Date.now(),
-      ...wordData,
-      image:
-        wordData.image ||
-        "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=200",
-      learned: false,
-    };
-    setFolder((prev) => ({
-      ...prev,
-      words: [newWord, ...prev.words],
-    }));
+    createMutation.mutate(wordData, {
+      onSuccess: () => setShowAddPanel(false),
+    });
   };
 
   const handleEditWord = (id: number, updates: Partial<Word>) => {
-    setFolder((prev) => ({
-      ...prev,
-      words: prev.words.map((w) => (w.id === id ? { ...w, ...updates } : w)),
-    }));
+    updateMutation.mutate({ id, data: updates });
   };
 
   const handleDeleteWord = (id: number) => {
-    setFolder((prev) => ({
-      ...prev,
-      words: prev.words.filter((w) => w.id !== id),
-    }));
+    if (window.confirm("Bạn có chắc chắn muốn xóa từ này không?")) {
+      deleteMutation.mutate(id);
+    }
   };
 
-  const handleAddMultipleWords = (newWords: Omit<Word, "id" | "learned">[]) => {
-    const timestamp = Date.now();
-    const formattedWords: Word[] = newWords.map((w, index) => ({
-      id: timestamp + index,
-      ...w,
-      image: w.image || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=200",
-      learned: false,
-    }));
-    setFolder((prev) => ({
-      ...prev,
-      words: [...formattedWords, ...prev.words],
-    }));
+  const handleAddMultipleWords = (newWords: any[]) => {
+    // Để sau nếu cần (hiện tại AddWordPanel chưa hỗ trợ add multiple bằng hook dễ dàng)
   };
 
   const handleToggleLearned = (id: number) => {
-    setFolder((prev) => ({
-      ...prev,
-      words: prev.words.map((w) =>
-        w.id === id ? { ...w, learned: !w.learned } : w
-      ),
-    }));
+    // TODO: Implement toggle favorite API
   };
 
-  const totalWords = folder.words.length;
-  const lovedWords = folder.words.filter((w) => w.learned).length;
+  if (isLoadingFolder || isLoadingWords) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-[#4648d4]" />
+      </div>
+    );
+  }
+
+  if (!folder) {
+    return <div className="text-center py-10 text-red-500">Thư mục không tồn tại!</div>;
+  }
+
+  const totalWords = words.length;
+  // const lovedWords = words.filter((w) => w.learned).length;
+  const lovedWords = 0;
 
   return (
     <>
+      <FolderHeader name={folder.name} desc={folder.description || "Không có mô tả"} />
+
       <StudyModes />
 
       <Toolbar
@@ -128,7 +126,7 @@ export default function FolderDetailClient({ initialFolder }: FolderDetailClient
           </p>
         </div>
         <WordList
-          words={filteredWords}
+          words={filteredWords as any} // Ép kiểu tạm thời vì Word từ API chưa có cờ learned
           viewMode={viewMode}
           heartFilterOn={showFavoritesOnly}
           onEditWord={handleEditWord}

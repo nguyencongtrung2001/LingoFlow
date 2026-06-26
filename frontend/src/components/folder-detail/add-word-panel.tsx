@@ -39,7 +39,7 @@ export function AddWordPanel({
   const [word, setWord] = useState("");
   const [meaning, setMeaning] = useState("");
   const [phonetic, setPhonetic] = useState("");
-  const [pos, setPos] = useState<PartOfSpeech>("Noun");
+  const [pos, setPos] = useState<PartOfSpeech>("NOUN");
   const [example, setExample] = useState("");
   const [image, setImage] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -72,11 +72,11 @@ export function AddWordPanel({
         if (w && m) {
           // Normalize POS
           const posStr = String(t).toLowerCase();
-          let pos: PartOfSpeech = "Noun";
-          if (posStr.includes("verb") || posStr === "v") pos = "Verb";
-          else if (posStr.includes("adj")) pos = "Adjective";
-          else if (posStr.includes("adv")) pos = "Adverb";
-          else if (posStr.includes("phrase") || posStr === "phr") pos = "Phrase";
+          let pos: PartOfSpeech = "NOUN";
+          if (posStr.includes("verb") || posStr === "v") pos = "VERB";
+          else if (posStr.includes("adj")) pos = "ADJECTIVE";
+          else if (posStr.includes("adv")) pos = "ADVERB";
+          else if (posStr.includes("phrase") || posStr === "phr") pos = "PHRASE";
 
           newWords.push({
             word: String(w).trim(),
@@ -126,7 +126,7 @@ export function AddWordPanel({
     setWord("");
     setMeaning("");
     setPhonetic("");
-    setPos("Noun");
+    setPos("NOUN");
     setExample("");
     setImage("");
     onClose();
@@ -208,11 +208,11 @@ export function AddWordPanel({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Noun">Noun</SelectItem>
-                    <SelectItem value="Verb">Verb</SelectItem>
-                    <SelectItem value="Adjective">Adjective</SelectItem>
-                    <SelectItem value="Adverb">Adverb</SelectItem>
-                    <SelectItem value="Phrase">Phrase</SelectItem>
+                    <SelectItem value="NOUN">Noun</SelectItem>
+                    <SelectItem value="VERB">Verb</SelectItem>
+                    <SelectItem value="ADJECTIVE">Adjective</SelectItem>
+                    <SelectItem value="ADVERB">Adverb</SelectItem>
+                    <SelectItem value="PHRASE">Phrase</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

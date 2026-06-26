@@ -27,11 +27,11 @@ export interface WordCardProps {
 }
 
 const posMap: Record<PartOfSpeech, { label: string; cls: string }> = {
-  Noun: { label: "n", cls: "bg-[#e1e0ff] text-[#3c3489]" },
-  Verb: { label: "v", cls: "bg-[#d0f4e7] text-[#00714d]" },
-  Adjective: { label: "adj", cls: "bg-[#ffddb8] text-[#653e00]" },
-  Adverb: { label: "adv", cls: "bg-[#f4c0d1] text-[#72243e]" },
-  Phrase: { label: "phr", cls: "bg-[#d3e4fe] text-[#185fa5]" },
+  NOUN: { label: "n", cls: "bg-[#e1e0ff] text-[#3c3489]" },
+  VERB: { label: "v", cls: "bg-[#d0f4e7] text-[#00714d]" },
+  ADJECTIVE: { label: "adj", cls: "bg-[#ffddb8] text-[#653e00]" },
+  ADVERB: { label: "adv", cls: "bg-[#f4c0d1] text-[#72243e]" },
+  PHRASE: { label: "phr", cls: "bg-[#d3e4fe] text-[#185fa5]" },
 };
 
 function PosBadge({ pos }: { pos: PartOfSpeech }) {
@@ -138,11 +138,11 @@ export function WordCard({
             value={editPos}
             onChange={(e) => setEditPos(e.target.value as PartOfSpeech)}
           >
-            <option value="Noun">Noun</option>
-            <option value="Verb">Verb</option>
-            <option value="Adjective">Adjective</option>
-            <option value="Adverb">Adverb</option>
-            <option value="Phrase">Phrase</option>
+            <option value="NOUN">Noun</option>
+            <option value="VERB">Verb</option>
+            <option value="ADJECTIVE">Adjective</option>
+            <option value="ADVERB">Adverb</option>
+            <option value="PHRASE">Phrase</option>
           </select>
         </div>
         <input
