@@ -30,12 +30,14 @@ export function CreateFolderModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="bg-[#4648d4] hover:bg-[#3b3db8] text-white flex items-center gap-2">
-          <FolderPlus className="w-4 h-4" />
-          <span>Tạo thư mục mới</span>
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button className="bg-[#4648d4] hover:bg-[#3b3db8] text-white flex items-center gap-2">
+            <FolderPlus className="w-4 h-4" />
+            <span>Tạo thư mục mới</span>
+          </Button>
+        }
+      />
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-[#1a1a2e]">Thêm thư mục mới</DialogTitle>

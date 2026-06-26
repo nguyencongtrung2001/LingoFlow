@@ -1,11 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-import { Pool } from "pg";
-import { PrismaPg } from "@prisma/adapter-pg";
-
-// Khởi tạo Database Connection ở tầng Repository
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+import { prisma } from "../config/prisma";
 
 export const timNguoiDungTheoEmail = async (email: string) => {
   return prisma.user.findUnique({
