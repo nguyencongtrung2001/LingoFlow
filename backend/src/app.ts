@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import xacThucRoutes from "./routes/xac_thuc.routes";
+import thuMucRoutes from "./routes/thu_muc.routes";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(
 
 // Định tuyến API
 app.use("/api/xac-thuc", xacThucRoutes);
+app.use("/api/thu-muc", thuMucRoutes);
 
 // Health check
 app.get("/health", (req, res) => {
