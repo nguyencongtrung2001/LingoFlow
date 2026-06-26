@@ -29,7 +29,7 @@ export const taoThuMucRepo = async (userId: string, name: string, description?: 
   return await prisma.folder.create({
     data: {
       name,
-      description,
+      description: description || null,
       userId,
     },
   });

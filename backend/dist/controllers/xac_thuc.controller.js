@@ -7,10 +7,11 @@ exports.xuLyCapNhatAvatar = exports.layThongTinCaNhan = exports.xuLyDangXuat = e
 const xac_thuc_service_1 = require("../services/xac_thuc.service");
 const cloudinary_1 = __importDefault(require("../config/cloudinary"));
 // Cấu hình chuẩn cho Cookie
+const isProd = process.env.NODE_ENV === "production";
 const COOKIE_OPTIONS = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    secure: isProd,
+    sameSite: (isProd ? "none" : "lax"),
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
 };
 const xuLyDangKy = async (yeuCau, phanHoi) => {
