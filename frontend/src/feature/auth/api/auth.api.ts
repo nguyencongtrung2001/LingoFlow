@@ -13,7 +13,12 @@ export const loginUser = async (data: LoginInput) => {
 };
 
 export const registerUser = async (data: RegisterInput) => {
-  const response = await authClient.post("/dang-ky", data);
+  const payload = {
+    email: data.email,
+    password: data.password,
+    name: data.fullName,
+  };
+  const response = await authClient.post("/dang-ky", payload);
   return response.data;
 };
 

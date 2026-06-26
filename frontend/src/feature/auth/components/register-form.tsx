@@ -113,6 +113,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             type={showPassword ? "text" : "password"}
             placeholder="Tối thiểu 8 ký tự"
             className="h-[44px] pl-[42px] pr-10 rounded-[10px] border-[#E5E7EB] bg-[#FAFAFA] text-sm text-[#1F2937] placeholder:text-[#9CA3AF] focus-visible:border-[#4F46E5] focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-[#4F46E5]/10"
+            autoComplete="new-password"
             {...form.register("password")}
             onFocus={() => setIsPasswordFocused(true)}
           />
