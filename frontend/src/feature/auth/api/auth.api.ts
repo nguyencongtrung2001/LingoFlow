@@ -3,7 +3,7 @@ import type { LoginInput, RegisterInput } from "../schemas/auth.schema";
 
 // Cấu hình Axios instance
 export const authClient = axios.create({
-  baseURL: "http://localhost:5000/api/xac-thuc",
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/xac-thuc`,
   withCredentials: true, // Cho phép nhận HttpOnly Cookies từ Backend
 });
 
