@@ -73,11 +73,11 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
     }
   };
 
-  const handleAddMultipleWords = (_newWords: unknown[]) => {
+  const handleAddMultipleWords = () => {
     // Để sau nếu cần (hiện tại AddWordPanel chưa hỗ trợ add multiple bằng hook dễ dàng)
   };
 
-  const handleToggleLearned = (_id: number) => {
+  const handleToggleLearned = () => {
     // TODO: Implement toggle favorite API
   };
 
@@ -126,7 +126,7 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
         <div className="flex items-center justify-between mb-3">
           <p className="text-[14px] text-[#464554] font-medium">
             {filteredWords.length} / {totalWords} từ
-            {showFavoritesOnly ? ` · ❤️ ${lovedWords} yêu thích` : ""}
+            {showFavoritesOnly ? ` ·  ${lovedWords} yêu thích` : ""}
           </p>
         </div>
         <WordList
