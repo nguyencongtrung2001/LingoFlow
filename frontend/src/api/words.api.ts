@@ -18,6 +18,7 @@ export interface Word {
   folderId: number;
   createdAt: string;
   updatedAt: string;
+  learned?: boolean;
 }
 
 export type CreateWordInput = Omit<Word, "id" | "createdAt" | "updatedAt">;

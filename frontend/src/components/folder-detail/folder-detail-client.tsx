@@ -43,9 +43,9 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
         w.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
         w.meaning.toLowerCase().includes(searchQuery.toLowerCase());
       const matchPos = posFilter === "all" || w.pos === posFilter;
-      // const matchHeart = !showFavoritesOnly || w.learned; // Will need to implement favorites logic later
+      const matchHeart = !showFavoritesOnly || w.learned;
 
-      return matchSearch && matchPos;
+      return matchSearch && matchPos && matchHeart;
     });
   }, [words, searchQuery, posFilter, showFavoritesOnly]);
 
@@ -73,11 +73,11 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
     }
   };
 
-  const handleAddMultipleWords = (newWords: any[]) => {
+  const handleAddMultipleWords = (_newWords: unknown[]) => {
     // Để sau nếu cần (hiện tại AddWordPanel chưa hỗ trợ add multiple bằng hook dễ dàng)
   };
 
-  const handleToggleLearned = (id: number) => {
+  const handleToggleLearned = (_id: number) => {
     // TODO: Implement toggle favorite API
   };
 
@@ -130,7 +130,7 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
           </p>
         </div>
         <WordList
-          words={filteredWords as any} // Ép kiểu tạm thời vì Word từ API chưa có cờ learned
+          words={filteredWords}
           viewMode={viewMode}
           heartFilterOn={showFavoritesOnly}
           onEditWord={handleEditWord}

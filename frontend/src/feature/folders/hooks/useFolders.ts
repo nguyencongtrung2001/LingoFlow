@@ -5,7 +5,6 @@ import {
   createFolder,
   updateFolder,
   deleteFolder,
-  Folder,
 } from "@/api/folders.api";
 import { toast } from "sonner";
 
@@ -35,8 +34,8 @@ export function useCreateFolder() {
       toast.success("Tạo thư mục thành công!");
       queryClient.invalidateQueries({ queryKey: ["folders"] });
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || "Lỗi khi tạo thư mục!");
+    onError: (error: unknown) => {
+      toast.error((error as any).response?.data?.error || "Lỗi khi tạo thư mục!");
     },
   });
 }
@@ -52,8 +51,8 @@ export function useUpdateFolder() {
       queryClient.invalidateQueries({ queryKey: ["folders"] });
       queryClient.invalidateQueries({ queryKey: ["folders", variables.id] });
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || "Lỗi khi cập nhật thư mục!");
+    onError: (error: unknown) => {
+      toast.error((error as any).response?.data?.error || "Lỗi khi cập nhật thư mục!");
     },
   });
 }
@@ -67,8 +66,8 @@ export function useDeleteFolder() {
       toast.success("Xóa thư mục thành công!");
       queryClient.invalidateQueries({ queryKey: ["folders"] });
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || "Lỗi khi xóa thư mục!");
+    onError: (error: unknown) => {
+      toast.error((error as any).response?.data?.error || "Lỗi khi xóa thư mục!");
     },
   });
 }

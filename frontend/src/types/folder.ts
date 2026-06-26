@@ -4,11 +4,11 @@ export interface Word {
   id: number;
   word: string;
   meaning: string;
-  phonetic?: string;
+  phonetic?: string | null;
   pos: PartOfSpeech;
-  example?: string;
-  image?: string;
-  learned: boolean;
+  example?: string | null;
+  image?: string | null;
+  learned?: boolean;
 }
 
 export interface FolderDetail {
