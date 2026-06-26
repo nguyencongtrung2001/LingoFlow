@@ -1,4 +1,4 @@
-import { FolderType } from "@/api/folders.api";
+import type { Folder as FolderType } from "@/api/folders.api";
 import { Folder, LibraryBig, TrendingUp } from "lucide-react";
 
 interface FolderStatsProps {
