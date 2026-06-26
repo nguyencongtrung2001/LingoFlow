@@ -34,11 +34,11 @@ export function DeleteFolderDialog({ folder }: DeleteFolderDialogProps) {
           </button>
         }
       />
-      <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()} onClick={(e) => e.stopPropagation()}>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-red-600">Xóa thư mục</DialogTitle>
           <DialogDescription className="mt-2 text-gray-600">
-            Bạn có chắc chắn muốn xóa thư mục <span className="font-semibold text-gray-900">"{folder.name}"</span> không?
+            Bạn có chắc chắn muốn xóa thư mục <span className="font-semibold text-gray-900">&quot;{folder.name}&quot;</span> không?
             Toàn bộ từ vựng bên trong cũng sẽ bị xóa vĩnh viễn và không thể khôi phục.
           </DialogDescription>
         </DialogHeader>

@@ -44,7 +44,7 @@ export function UpdateFolderModal({ folder }: UpdateFolderModalProps) {
           </button>
         }
       />
-      <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()} onClick={(e) => e.stopPropagation()}>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-[#1a1a2e]">Cập nhật thư mục</DialogTitle>
         </DialogHeader>
