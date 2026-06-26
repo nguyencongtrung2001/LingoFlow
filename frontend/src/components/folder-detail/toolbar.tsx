@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { ExcelUploadButton } from "./excel-upload-button";
 
 export type ViewMode = "grid" | "row" | "list";
 
@@ -23,6 +24,7 @@ export interface ToolbarProps {
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   onAddWordClick: () => void;
+  folderId: number;
 }
 
 export function Toolbar({
@@ -35,6 +37,7 @@ export function Toolbar({
   viewMode,
   setViewMode,
   onAddWordClick,
+  folderId,
 }: ToolbarProps) {
   return (
     <section className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
@@ -116,6 +119,8 @@ export function Toolbar({
             <List className="w-[18px] h-[18px]" />
           </button>
         </div>
+
+        <ExcelUploadButton folderId={folderId} />
 
         <Button
           onClick={onAddWordClick}

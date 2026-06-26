@@ -113,6 +113,7 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
         viewMode={viewMode}
         setViewMode={setViewMode}
         onAddWordClick={() => setShowAddPanel(true)}
+        folderId={folderId}
       />
 
       <AddWordPanel

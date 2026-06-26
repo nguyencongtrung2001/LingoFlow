@@ -34,6 +34,11 @@ export const createWord = async (data: CreateWordInput): Promise<Word> => {
   return res.data;
 };
 
+export const createMultipleWords = async (folderId: number, wordsArray: any[]): Promise<Word[]> => {
+  const res = await api.post("/tu-vung/batch", { folderId, wordsArray });
+  return res.data;
+};
+
 export const updateWord = async (id: number, data: UpdateWordInput): Promise<Word> => {
   const res = await api.put(`/tu-vung/${id}`, data);
   return res.data;

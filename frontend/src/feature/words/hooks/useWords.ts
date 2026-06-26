@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getWordsByFolder,
   createWord,
+  createMultipleWords,
   updateWord,
   deleteWord,
   CreateWordInput,
@@ -25,6 +26,20 @@ export function useCreateWord(folderId: number) {
       // Làm mới danh sách từ
       queryClient.invalidateQueries({ queryKey: ["words", folderId.toString()] });
       // Làm mới cả folder grid (để update word count)
+      queryClient.invalidateQueries({ queryKey: ["folders"] });
+    },
+  });
+}
+
+export function useCreateMultipleWords(folderId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (wordsArray: any[]) => {
+      return await createMultipleWords(folderId, wordsArray);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["words", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });
     },
   });

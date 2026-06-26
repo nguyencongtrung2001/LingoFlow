@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   layDanhSachTuVungService,
   taoTuVungService,
+  taoNhieuTuVungService,
   suaTuVungService,
   xoaTuVungService,
 } from "../services/tu_vung.service";
@@ -34,6 +35,22 @@ export const xuLyThemTu = async (yeuCau: Request, phanHoi: Response) => {
       word, meaning, pos, phonetic, example, image
     });
     return phanHoi.status(201).json(tuMoi);
+  } catch (loi: any) {
+    return phanHoi.status(403).json({ error: loi.message });
+  }
+};
+
+export const xuLyThemNhieuTu = async (yeuCau: Request, phanHoi: Response) => {
+  try {
+    const maNguoiDung = yeuCau.user?.id;
+    const { folderId, wordsArray } = yeuCau.body;
+
+    if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+    if (!folderId || isNaN(parseInt(folderId))) return phanHoi.status(400).json({ error: "Thư mục không hợp lệ." });
+    if (!Array.isArray(wordsArray) || wordsArray.length === 0) return phanHoi.status(400).json({ error: "Danh sách từ vựng trống." });
+
+    const ketQua = await taoNhieuTuVungService(maNguoiDung, parseInt(folderId), wordsArray);
+    return phanHoi.status(201).json(ketQua);
   } catch (loi: any) {
     return phanHoi.status(403).json({ error: loi.message });
   }

@@ -4,6 +4,7 @@ import {
   taoTuVungRepo,
   suaTuVungRepo,
   xoaTuVungRepo,
+  taoNhieuTuVungRepo,
 } from "../repositories/tu_vung.repository";
 
 export const layDanhSachTuVungService = async (folderId: number, userId: string) => {
@@ -30,6 +31,19 @@ export const taoTuVungService = async (userId: string, folderId: number, data: a
   }
 
   return await taoTuVungRepo(userId, folderId, data);
+};
+
+export const taoNhieuTuVungService = async (userId: string, folderId: number, danhSachTu: any[]) => {
+  // Xác thực quyền sở hữu thư mục
+  const folder = await prisma.folder.findFirst({
+    where: { id: folderId, userId },
+  });
+
+  if (!folder) {
+    throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  return await taoNhieuTuVungRepo(userId, folderId, danhSachTu);
 };
 
 export const suaTuVungService = async (wordId: number, userId: string, data: any) => {
