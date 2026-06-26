@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import * as XLSX from "xlsx";
-import { Upload, Loader2, FileDown } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCreateMultipleWords } from "@/feature/words/hooks/useWords";
 
@@ -73,16 +73,7 @@ export function ExcelUploadButton({ folderId }: ExcelUploadButtonProps) {
     reader.readAsBinaryString(file);
   };
 
-  const handleDownloadTemplate = () => {
-    const templateData = [
-      { Word: "hello", Meaning: "xin chào", Pos: "NOUN", Phonetic: "həˈlō", Example: "Hello there!" },
-      { Word: "run", Meaning: "chạy", Pos: "VERB", Phonetic: "rən", Example: "I run fast." }
-    ];
-    const ws = XLSX.utils.json_to_sheet(templateData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Template");
-    XLSX.writeFile(wb, "LingoFlow_Template.xlsx");
-  };
+
 
   const isPending = isParsing || createMultipleMutation.isPending;
 
@@ -99,22 +90,14 @@ export function ExcelUploadButton({ folderId }: ExcelUploadButtonProps) {
       <button
         onClick={() => fileInputRef.current?.click()}
         disabled={isPending}
-        className="flex items-center gap-2 px-4 py-2 bg-white text-[#4648d4] font-semibold rounded-lg shadow border border-transparent hover:border-[#4648d4] transition-all disabled:opacity-50"
+        title="Nhập từ Excel"
+        className="flex items-center justify-center w-[38px] h-[38px] bg-white text-[#4648d4] rounded-lg shadow border border-transparent hover:border-[#4648d4] transition-all disabled:opacity-50"
       >
         {isPending ? (
-          <Loader2 className="w-5 h-5 animate-spin" />
+          <Loader2 className="w-[18px] h-[18px] animate-spin" />
         ) : (
-          <Upload className="w-5 h-5" />
+          <Upload className="w-[18px] h-[18px]" />
         )}
-        {isPending ? "Đang xử lý..." : "Nhập từ Excel"}
-      </button>
-
-      <button 
-        onClick={handleDownloadTemplate}
-        title="Tải Excel mẫu"
-        className="p-2 text-gray-500 hover:text-[#4648d4] transition-colors bg-white rounded-lg shadow"
-      >
-        <FileDown className="w-5 h-5" />
       </button>
     </div>
   );
