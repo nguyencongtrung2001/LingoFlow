@@ -49,7 +49,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       const response = await registerUser(data);
       setUser(response.user);
       toast.success("Tạo tài khoản LingoFlow thành công!");
-      router.push("/dashboard");
+      router.push("/");
       onSuccess?.();
     } catch (error) {
       toast.error(

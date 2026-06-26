@@ -32,7 +32,7 @@ export function LoginForm() {
       const response = await loginUser(data);
       setUser(response.user);
       toast.success("Đăng nhập vào LingoFlow thành công!");
-      router.push("/dashboard");
+      router.push("/");
     } catch (error) {
       toast.error(
         // @ts-expect-error - Error from axios response

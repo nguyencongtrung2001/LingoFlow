@@ -90,7 +90,7 @@ export function Navbar() {
               </Link>
             </div>
           </div>
-          {isAuthenticated && (
+          {isAuthenticated ? (
             <div className="flex items-center gap-[16px]">
               <button
                 aria-label="Exit"
@@ -121,6 +121,15 @@ export function Navbar() {
                 accept="image/*"
                 onChange={handleFileChange}
               />
+            </div>
+          ) : (
+            <div className="flex items-center gap-[16px]">
+              <Link href="/auth" className="text-[#464554] text-[15px] font-semibold hover:text-[#4648d4] transition-colors">
+                Đăng nhập
+              </Link>
+              <Link href="/auth?tab=register" className="bg-[#4648d4] text-[15px] text-white px-5 py-2 rounded-[10px] font-semibold hover:bg-[#3b3db8] hover:-translate-y-0.5 shadow-[0_4px_12px_rgba(79,70,229,0.15)] transition-all duration-200">
+                Đăng ký
+              </Link>
             </div>
           )}
         </div>
