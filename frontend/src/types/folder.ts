@@ -8,7 +8,7 @@ export interface Word {
   pos: PartOfSpeech;
   example?: string | null;
   image?: string | null;
-  learned?: boolean;
+  learned: boolean;
 }
 
 export interface FolderDetail {

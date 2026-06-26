@@ -18,10 +18,10 @@ export interface Word {
   folderId: number;
   createdAt: string;
   updatedAt: string;
-  learned?: boolean;
+  learned: boolean;
 }
 
-export type CreateWordInput = Omit<Word, "id" | "createdAt" | "updatedAt">;
+export type CreateWordInput = Omit<Word, "id" | "createdAt" | "updatedAt" | "learned"> & { learned?: boolean };
 export type UpdateWordInput = Partial<CreateWordInput>;
 
 export const getWordsByFolder = async (folderId: number): Promise<Word[]> => {
