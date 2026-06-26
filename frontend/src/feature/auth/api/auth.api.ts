@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { LoginInput, RegisterInput } from "../schemas/auth.schema";
 
 // Cấu hình Axios instance
 export const authClient = axios.create({
@@ -6,12 +7,12 @@ export const authClient = axios.create({
   withCredentials: true, // Cho phép nhận HttpOnly Cookies từ Backend
 });
 
-export const loginUser = async (data: any) => {
+export const loginUser = async (data: LoginInput) => {
   const response = await authClient.post("/dang-nhap", data);
   return response.data;
 };
 
-export const registerUser = async (data: any) => {
+export const registerUser = async (data: RegisterInput) => {
   const response = await authClient.post("/dang-ky", data);
   return response.data;
 };
