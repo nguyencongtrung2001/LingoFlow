@@ -93,6 +93,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             type="email"
             placeholder="name@example.com"
             className="h-[44px] pl-[42px] pr-4 rounded-[10px] border-[#E5E7EB] bg-[#FAFAFA] text-sm text-[#1F2937] placeholder:text-[#9CA3AF] focus-visible:border-[#4F46E5] focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-[#4F46E5]/10"
+            autoComplete="username"
             {...form.register("email")}
           />
         </div>
