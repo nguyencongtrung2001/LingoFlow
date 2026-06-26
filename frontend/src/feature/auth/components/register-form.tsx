@@ -5,8 +5,11 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User, Mail, Lock, Eye, EyeOff, UserPlus, CheckCircle2, Circle } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { registerSchema, type RegisterInput } from "../schemas/auth.schema";
+import { registerUser } from "../api/auth.api";
+import { useAuthStore } from "../stores/auth-store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,8 +20,10 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const { setUser } = useAuthStore();
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -39,10 +44,19 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     },
   ];
 
-  const onSubmit = (data: RegisterInput) => {
-    console.log("Register Data Submitted:", data);
-    toast.success("Đăng ký thành công! Vui lòng kiểm tra Email xác thực.");
-    setTimeout(() => onSuccess(), 2000);
+  const onSubmit = async (data: RegisterInput) => {
+    try {
+      const response = await registerUser(data);
+      setUser(response.user);
+      toast.success("Tạo tài khoản LingoFlow thành công!");
+      router.push("/dashboard");
+      onSuccess?.();
+    } catch (error) {
+      toast.error(
+        // @ts-expect-error - Error from axios response
+        error.response?.data?.error || "Đăng ký thất bại!"
+      );
+    }
   };
 
   return (

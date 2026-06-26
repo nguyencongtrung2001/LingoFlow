@@ -5,15 +5,20 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { loginSchema, type LoginInput } from "../schemas/auth.schema";
+import { loginUser } from "../api/auth.api";
+import { useAuthStore } from "../stores/auth-store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const { setUser } = useAuthStore();
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -22,9 +27,18 @@ export function LoginForm() {
 
   const rememberMe = useWatch({ control: form.control, name: "rememberMe" });
 
-  const onSubmit = (data: LoginInput) => {
-    console.log("Login Data Submitted:", data);
-    toast.success("Đăng nhập vào LingoFlow thành công!");
+  const onSubmit = async (data: LoginInput) => {
+    try {
+      const response = await loginUser(data);
+      setUser(response.user);
+      toast.success("Đăng nhập vào LingoFlow thành công!");
+      router.push("/dashboard");
+    } catch (error) {
+      toast.error(
+        // @ts-expect-error - Error from axios response
+        error.response?.data?.error || "Đăng nhập thất bại!"
+      );
+    }
   };
 
   return (

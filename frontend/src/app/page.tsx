@@ -1,7 +1,7 @@
 import { StreakCard } from "@/components/dashboard/streak-card";
 import { MediaCard } from "@/components/dashboard/media-card";
 import { HeatmapCard } from "@/components/dashboard/heatmap-card";
-import { LanguageChartDynamic } from "@/components/dashboard/language-chart-dynamic";
+import { WordTypeChartDynamic } from "@/components/dashboard/word-type-chart-dynamic";
 import "@/components/dashboard/dashboard-styles.css";
 
 export default function Home() {
@@ -28,7 +28,7 @@ export default function Home() {
             <HeatmapCard />
           </div>
           <div className="h-full">
-            <LanguageChartDynamic />
+            <WordTypeChartDynamic />
           </div>
         </div>
       </main>

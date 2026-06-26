@@ -1,13 +1,162 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
-generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
-}
-
 datasource db {
   provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ==========================================
+// ENUMS DEFINITIONS
+// ==========================================
+
+enum Role {
+  LEARNER
+  ADMIN
+}
+
+enum PartOfSpeech {
+  NOUN
+  VERB
+  ADJECTIVE
+  ADVERB
+  PHRASE
+}
+
+enum StudyMode {
+  FLASHCARD
+  QUIZ
+  MATCH
+  WRITE
+}
+
+// ==========================================
+// MODELS DEFINITIONS
+// ==========================================
+
+model User {
+  id            String          @id @default(uuid())
+  email         String          @unique
+  name          String
+  avatar        String?
+  assetUrl      String?
+  role          Role            @default(LEARNER)
+  googleId      String?         @unique
+  password      String?         // Nullable phục vụ đăng nhập qua Google OAuth
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  // Relations
+  folders       Folder[]
+  wordProgress  WordProgress[]
+  studySessions StudySession[]
+  activities    DailyActivity[]
+
+  @@index([email])
+}
+
+model Folder {
+  id            Int            @id @default(autoincrement())
+  name          String
+  description   String?
+  userId        String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  // Relations
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  words         Word[]
+  studySessions StudySession[]
+
+  @@index([userId])
+}
+
+model Word {
+  id            Int             @id @default(autoincrement())
+  word          String
+  meaning       String          
+  phonetic      String?
+  pos           PartOfSpeech    @default(NOUN)
+  example       String?
+  image         String?
+  folderId      Int
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  // Relations
+  folder        Folder          @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  progress      WordProgress[]
+  sessionDetails SessionDetail[]
+
+  @@index([folderId])
+}
+
+model WordProgress {
+  id            String   @id @default(uuid())
+  userId        String
+  wordId        Int
+  box           Int      @default(1)      // Cấp độ Leitner (Hộp 1 -> 5)
+  lastResult    Boolean?                  // Kết quả phiên gần nhất (true: Đúng, false: Sai, null: Mới)
+  attempts      Int      @default(0)      // Tổng số lần ôn luyện từ này
+  corrects      Int      @default(0)      // Tổng số lần trả lời đúng
+  learned       Boolean  @default(false)  // Trạng thái đã thuộc (Tương ứng icon Heart/Check FE)
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  word          Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, wordId]) // Đảm bảo tính duy nhất per-user per-word
+  @@index([userId, box])     // Tối ưu hóa cực cao cho câu lệnh Query bốc 10 từ của thuật toán Weighted Queue
+}
+
+model StudySession {
+  id            String          @id @default(uuid())
+  userId        String
+  folderId      Int
+  mode          StudyMode
+  totalWords    Int             // Tổng số từ tham gia phiên học này (thường là 10)
+  correctCount  Int             // Số lượng từ trả lời chính xác
+  accuracy      Float           // Tỷ lệ chính xác (%)
+  maxStreak     Int             @default(0) // Chuỗi đúng liên tiếp dài nhất (Quiz & Write)
+  timeSeconds   Int?            // Tổng thời gian làm bài (giây)
+  bestRecord    Boolean         @default(false) // Đánh dấu nếu phiên này phá kỷ lục của Match Game
+  startedAt     DateTime        @default(now())
+  completedAt   DateTime        @default(now())
+
+  // Relations
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder        Folder          @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  details       SessionDetail[]
+
+  @@index([userId, folderId])
+}
+
+model SessionDetail {
+  id             String       @id @default(uuid())
+  sessionId      String
+  wordId         Int
+  isCorrect      Boolean
+  userAnswer     String?      // Nullable vì Match Game không ghi nhận chuỗi nhập text
+  expectedAnswer String?      // Nullable
+  orderIndex     Int          // Thứ tự câu hỏi hiển thị trong game
+
+  // Relations
+  session        StudySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  word           Word         @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+
+model DailyActivity {
+  id            String   @id @default(uuid())
+  userId        String
+  date          DateTime @db.Date // Chỉ lưu ngày Y-m-d, giải quyết triệt để lỗi giờ giấc trùng lặp
+  sessionsCount Int      @default(0) // Tính toán độ đậm nhạt (intensity) cho Heatmap Card
+  wordsStudied  Int      @default(0) // Tổng số từ đã làm trong ngày phục vụ thống kê số liệu
+
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
 }

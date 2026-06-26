@@ -16,14 +16,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { LanguageCode } from "@/types/folder";
-
 export interface FolderCardProps {
   id: string;
   title: string;
   description: string;
   wordCount: number;
-  language?: LanguageCode;
   colorTheme?: "primary" | "secondary";
   onEdit?: (id: string, title: string, description: string) => void;
   onDelete?: (id: string) => void;
@@ -34,7 +31,6 @@ export function FolderCard({
   title,
   description,
   wordCount,
-  language = "en",
   colorTheme = "primary",
   onEdit,
   onDelete,
@@ -59,18 +55,6 @@ export function FolderCard({
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
   const [editDesc, setEditDesc] = useState(description);
-
-  const getLanguageFlag = (code: LanguageCode) => {
-    switch (code) {
-      case "en": return "🇬🇧 Tiếng Anh";
-      case "zh": return "🇨🇳 Tiếng Trung";
-      case "ja": return "🇯🇵 Tiếng Nhật";
-      case "ko": return "🇰🇷 Tiếng Hàn";
-      case "fr": return "🇫🇷 Tiếng Pháp";
-      case "vi": return "🇻🇳 Tiếng Việt";
-      default: return "🌍 Khác";
-    }
-  };
 
   const handleSave = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -190,15 +174,10 @@ export function FolderCard({
         {description}
       </p>
       
-      <div className="flex items-center justify-between text-[14px] border-t border-[#d3e4fe] pt-4 mt-auto">
-        <div className="flex items-center gap-3 text-[#464554] font-medium">
-          <span className="flex items-center bg-[#f2f2f7] px-2 py-0.5 rounded-md text-[12px] text-[#464554]">
-            {getLanguageFlag(language)}
-          </span>
-          <span>
-            {wordCount} <span className="text-[#767586] font-normal">từ vựng</span>
-          </span>
-        </div>
+      <div className="flex justify-between items-center border-t border-[#d3e4fe] pt-2 mt-auto">
+        <span className={`font-semibold text-[14px] ${theme.text}`}>
+          {wordCount} từ
+        </span>
 
         <Link
           href={`/folders/${id}`}

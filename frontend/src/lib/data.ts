@@ -5,7 +5,6 @@ export const defaultFolderData: FolderDetail[] = [
     id: "tech",
     name: "Công nghệ",
     desc: "Các từ vựng về AI, Web và Dữ liệu",
-    language: "en",
     words: [
       {
         id: 101,
@@ -93,7 +92,6 @@ export const defaultFolderData: FolderDetail[] = [
     id: "comm",
     name: "Giao tiếp cơ bản",
     desc: "Tiếng Anh giao tiếp hàng ngày",
-    language: "en",
     words: [
       {
         id: 201,
@@ -132,51 +130,5 @@ export const defaultFolderData: FolderDetail[] = [
         learned: false,
       }
     ],
-  },
-  {
-    id: "japanese-basic",
-    name: "Nhật ngữ N5",
-    desc: "Tự vựng tiếng Nhật trình độ N5",
-    language: "ja",
-    words: [
-      {
-        id: 301,
-        word: "ありがとう",
-        meaning: "Cảm ơn",
-        phonetic: "Arigatou",
-        pos: "Phrase",
-        example: "ありがとうございます。",
-        image: "https://images.unsplash.com/photo-1480796927426-f609979314bd?w=200",
-        learned: true,
-      },
-      {
-        id: 302,
-        word: "こんにちは",
-        meaning: "Xin chào (Ban ngày)",
-        phonetic: "Konnichiwa",
-        pos: "Phrase",
-        example: "こんにちは、元気ですか？",
-        image: "https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=200",
-        learned: false,
-      }
-    ]
-  },
-  {
-    id: "chinese-basic",
-    name: "Giao tiếp Tiếng Trung",
-    desc: "Từ vựng HSK 1",
-    language: "zh",
-    words: [
-      {
-        id: 401,
-        word: "你好",
-        meaning: "Xin chào",
-        phonetic: "nǐ hǎo",
-        pos: "Phrase",
-        example: "你好，很高兴认识你。",
-        image: "https://images.unsplash.com/photo-1508804052814-cd3ba865a116?w=200",
-        learned: true,
-      }
-    ]
   }
 ];

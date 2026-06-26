@@ -9,7 +9,6 @@ type Props = {
 export default async function FolderDetailPage({ params }: Props) {
   const { slug } = await params;
 
-  // In a real app, fetch from API. Here we use mock data.
   const initialFolder = defaultFolderData.find((f) => f.id === slug) || defaultFolderData[0];
 
   return (

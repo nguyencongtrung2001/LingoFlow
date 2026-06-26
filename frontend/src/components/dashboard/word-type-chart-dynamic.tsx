@@ -2,8 +2,8 @@
 
 import dynamic from "next/dynamic";
 
-export const LanguageChartDynamic = dynamic(
-  () => import("./language-chart").then((mod) => mod.LanguageChart),
+export const WordTypeChartDynamic = dynamic(
+  () => import("./word-type-chart").then((mod) => mod.WordTypeChart),
   {
     ssr: false,
     loading: () => (

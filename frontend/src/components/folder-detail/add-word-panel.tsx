@@ -180,7 +180,7 @@ export function AddWordPanel({
                 value={word}
                 onChange={(e) => setWord(e.target.value)}
                 className="w-full px-4 py-2 bg-[#ffffff] border border-[#c7c4d7] rounded-lg text-[16px] text-[#0b1c30] focus-visible:ring-[#4648d4]/20 focus-visible:border-[#4648d4]"
-                placeholder="Ví dụ: Algorithm / 你好 / ありがとう"
+                placeholder="Ví dụ: Algorithm"
                 required
               />
             </div>
@@ -193,7 +193,7 @@ export function AddWordPanel({
                   value={phonetic}
                   onChange={(e) => setPhonetic(e.target.value)}
                   className="w-full px-4 py-2 bg-[#ffffff] border border-[#c7c4d7] rounded-lg text-[16px] text-[#0b1c30] focus-visible:ring-[#4648d4]/20 focus-visible:border-[#4648d4]"
-                  placeholder="/ˈæl.ɡə.../ nǐ hǎo / Arigatou"
+                  placeholder="/ˈæl.ɡə.rɪ.ðəm/"
                 />
               </div>
               <div className="w-1/3">
@@ -225,7 +225,7 @@ export function AddWordPanel({
                 value={meaning}
                 onChange={(e) => setMeaning(e.target.value)}
                 className="w-full px-4 py-2 bg-[#ffffff] border border-[#c7c4d7] rounded-lg text-[16px] text-[#0b1c30] focus-visible:ring-[#4648d4]/20 focus-visible:border-[#4648d4]"
-                placeholder="Thuật toán / Xin chào / Cảm ơn"
+                placeholder="Thuật toán"
                 required
               />
             </div>
