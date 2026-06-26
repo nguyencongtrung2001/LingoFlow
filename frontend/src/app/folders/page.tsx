@@ -4,7 +4,6 @@ import { useGetFolders } from "@/feature/folders/hooks/useFolders";
 import { FolderCard } from "@/feature/folders/components/FolderCard";
 import { FolderSkeleton } from "@/feature/folders/components/FolderSkeleton";
 import { CreateFolderModal } from "@/feature/folders/components/CreateFolderModal";
-import { FolderStats } from "@/feature/folders/components/FolderStats";
 import { FolderOpen } from "lucide-react";
 
 export default function FoldersPage() {
@@ -28,9 +27,9 @@ export default function FoldersPage() {
         )}
 
         {/* Thống kê chung (Chỉ hiện khi đã load xong và có dữ liệu) */}
-        {!isLoading && folders && folders.length > 0 && (
+        {/* {!isLoading && folders && folders.length > 0 && (
           <FolderStats folders={folders} />
-        )}
+        )} */}
 
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
