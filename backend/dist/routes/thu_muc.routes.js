@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const thu_muc_controller_1 = require("../controllers/thu_muc.controller");
-const auth_middleware_1 = require("../middlewares/auth.middleware");
+const kiem_tra_token_1 = require("../middleware/kiem_tra_token");
 const router = express_1.default.Router();
 // Tất cả các routes đều yêu cầu đăng nhập
-router.use(auth_middleware_1.kiemTraXacThuc);
+router.use(kiem_tra_token_1.xacThucNguoiDung);
 router.get("/", thu_muc_controller_1.danhSachThuMuc);
 router.post("/", thu_muc_controller_1.taoMoiThuMuc);
 router.get("/:id", thu_muc_controller_1.chiTietThuMuc);

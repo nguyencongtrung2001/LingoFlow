@@ -18,7 +18,7 @@ export declare const layThuMucChiTiet: (id: number, userId: string) => Promise<{
         word: string;
         meaning: string;
         phonetic: string | null;
-        pos: import(".prisma/client").$Enums.PartOfSpeech;
+        pos: import("@prisma/client").$Enums.PartOfSpeech;
         example: string | null;
         image: string | null;
         folderId: number;

@@ -24,7 +24,7 @@ export const danhSachThuMuc = async (yeuCau: Request, phanHoi: Response) => {
 export const chiTietThuMuc = async (yeuCau: Request, phanHoi: Response) => {
   try {
     const maNguoiDung = yeuCau.user?.id;
-    const folderId = parseInt(yeuCau.params.id);
+    const folderId = parseInt(yeuCau.params.id as string);
 
     if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
     if (isNaN(folderId)) return phanHoi.status(400).json({ error: "ID thư mục không hợp lệ." });
@@ -53,7 +53,7 @@ export const taoMoiThuMuc = async (yeuCau: Request, phanHoi: Response) => {
 export const suaThuMuc = async (yeuCau: Request, phanHoi: Response) => {
   try {
     const maNguoiDung = yeuCau.user?.id;
-    const folderId = parseInt(yeuCau.params.id);
+    const folderId = parseInt(yeuCau.params.id as string);
     const { name, description } = yeuCau.body;
 
     if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
@@ -69,7 +69,7 @@ export const suaThuMuc = async (yeuCau: Request, phanHoi: Response) => {
 export const xoaBoThuMuc = async (yeuCau: Request, phanHoi: Response) => {
   try {
     const maNguoiDung = yeuCau.user?.id;
-    const folderId = parseInt(yeuCau.params.id);
+    const folderId = parseInt(yeuCau.params.id as string);
 
     if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
     if (isNaN(folderId)) return phanHoi.status(400).json({ error: "ID thư mục không hợp lệ." });

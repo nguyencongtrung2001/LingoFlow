@@ -6,12 +6,12 @@ import {
   suaThuMuc,
   xoaBoThuMuc,
 } from "../controllers/thu_muc.controller";
-import { kiemTraXacThuc } from "../middlewares/auth.middleware";
+import { xacThucNguoiDung } from "../middleware/kiem_tra_token";
 
 const router = express.Router();
 
 // Tất cả các routes đều yêu cầu đăng nhập
-router.use(kiemTraXacThuc);
+router.use(xacThucNguoiDung);
 
 router.get("/", danhSachThuMuc);
 router.post("/", taoMoiThuMuc);

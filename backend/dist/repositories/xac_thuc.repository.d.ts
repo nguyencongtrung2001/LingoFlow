@@ -5,7 +5,7 @@ export declare const timNguoiDungTheoEmail: (email: string) => Promise<{
     name: string;
     avatar: string | null;
     assetUrl: string | null;
-    role: import(".prisma/client").$Enums.Role;
+    role: import("@prisma/client").$Enums.Role;
     password: string | null;
     createdAt: Date;
     updatedAt: Date;
@@ -15,7 +15,7 @@ export declare const timNguoiDungTheoId: (id: string) => Promise<{
     email: string;
     name: string;
     avatar: string | null;
-    role: import(".prisma/client").$Enums.Role;
+    role: import("@prisma/client").$Enums.Role;
     createdAt: Date;
 } | null>;
 export declare const taoNguoiDungMoi: (thongTinNguoiDung: any) => Promise<{
@@ -25,7 +25,7 @@ export declare const taoNguoiDungMoi: (thongTinNguoiDung: any) => Promise<{
     name: string;
     avatar: string | null;
     assetUrl: string | null;
-    role: import(".prisma/client").$Enums.Role;
+    role: import("@prisma/client").$Enums.Role;
     password: string | null;
     createdAt: Date;
     updatedAt: Date;
@@ -35,6 +35,6 @@ export declare const capNhatAvatarNguoiDung: (id: string, urlAnh: string) => Pro
     email: string;
     name: string;
     avatar: string | null;
-    role: import(".prisma/client").$Enums.Role;
+    role: import("@prisma/client").$Enums.Role;
 }>;
 //# sourceMappingURL=xac_thuc.repository.d.ts.map
