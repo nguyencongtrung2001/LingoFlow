@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import {
   getFolders,
   getFolderById,
@@ -35,7 +36,11 @@ export function useCreateFolder() {
       queryClient.invalidateQueries({ queryKey: ["folders"] });
     },
     onError: (error: unknown) => {
-      toast.error((error as any).response?.data?.error || "Lỗi khi tạo thư mục!");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.error || "Lỗi khi tạo thư mục!");
+      } else {
+        toast.error("Lỗi không xác định khi tạo thư mục!");
+      }
     },
   });
 }
@@ -52,7 +57,11 @@ export function useUpdateFolder() {
       queryClient.invalidateQueries({ queryKey: ["folders", variables.id] });
     },
     onError: (error: unknown) => {
-      toast.error((error as any).response?.data?.error || "Lỗi khi cập nhật thư mục!");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.error || "Lỗi khi cập nhật thư mục!");
+      } else {
+        toast.error("Lỗi không xác định khi cập nhật thư mục!");
+      }
     },
   });
 }
@@ -67,7 +76,11 @@ export function useDeleteFolder() {
       queryClient.invalidateQueries({ queryKey: ["folders"] });
     },
     onError: (error: unknown) => {
-      toast.error((error as any).response?.data?.error || "Lỗi khi xóa thư mục!");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.error || "Lỗi khi xóa thư mục!");
+      } else {
+        toast.error("Lỗi không xác định khi xóa thư mục!");
+      }
     },
   });
 }
