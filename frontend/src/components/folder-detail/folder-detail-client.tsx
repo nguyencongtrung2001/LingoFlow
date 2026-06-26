@@ -12,18 +12,22 @@ import { Loader2 } from "lucide-react";
 import type { Word, PartOfSpeech } from "@/api/words.api";
 
 export interface FolderDetailClientProps {
-  folderId: number;
+  slug: string;
 }
 
-export default function FolderDetailClient({ folderId }: FolderDetailClientProps) {
+export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
   // Query data
-  const { data: folder, isLoading: isLoadingFolder } = useGetFolderById(folderId);
-  const { data: words = [], isLoading: isLoadingWords } = useGetWords(folderId);
+  const { data: folder, isLoading: isLoadingFolder } = useGetFolderById(slug);
+  
+  // Real folderId from DB
+  const folderId = folder?.id as number;
+
+  const { data: words = [], isLoading: isLoadingWords } = useGetWords(folderId || 0);
 
   // Mutations
-  const createMutation = useCreateWord(folderId);
-  const updateMutation = useUpdateWord(folderId);
-  const deleteMutation = useDeleteWord(folderId);
+  const createMutation = useCreateWord(folderId || 0);
+  const updateMutation = useUpdateWord(folderId || 0);
+  const deleteMutation = useDeleteWord(folderId || 0);
 
   // UI States
   const [viewMode, setViewMode] = useState<ViewMode>("grid");

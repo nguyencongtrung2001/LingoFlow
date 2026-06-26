@@ -23,6 +23,17 @@ export const layThuMucChiTietRepo = async (id: number, userId: string) => {
   });
 };
 
+export const layThuMucChiTietQuaNameRepo = async (name: string, userId: string) => {
+  return await prisma.folder.findFirst({
+    where: { name, userId },
+    include: {
+      words: {
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+};
+
 export const taoThuMucRepo = async (userId: string, name: string, description?: string) => {
   return await prisma.folder.create({
     data: {

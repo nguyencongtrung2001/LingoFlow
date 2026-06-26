@@ -12,7 +12,7 @@ export function FolderCard({ folder }: FolderCardProps) {
   const wordsCount = folder._count?.words || 0;
 
   return (
-    <Link href={`/folders/${folder.id}`}>
+    <Link href={`/folders/${encodeURIComponent(folder.name)}`}>
       <div className="group relative bg-white border border-[#e5e7eb] rounded-2xl p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden flex flex-col h-[160px]">
         {/* Top Accent line */}
         <div className="absolute top-0 left-0 w-full h-1.5 bg-[#4648d4] opacity-80 group-hover:opacity-100 transition-opacity" />

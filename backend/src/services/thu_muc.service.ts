@@ -4,6 +4,7 @@ import {
   taoThuMucRepo,
   capNhatThuMucRepo,
   xoaThuMucRepo,
+  layThuMucChiTietQuaNameRepo,
 } from "../repositories/thu_muc.repository";
 
 export const layDanhSachThuMuc = async (userId: string) => {
@@ -12,6 +13,14 @@ export const layDanhSachThuMuc = async (userId: string) => {
 
 export const layThuMucChiTiet = async (id: number, userId: string) => {
   const thuMuc = await layThuMucChiTietRepo(id, userId);
+  if (!thuMuc) {
+    throw new Error("Không tìm thấy thư mục hoặc bạn không có quyền truy cập.");
+  }
+  return thuMuc;
+};
+
+export const layThuMucChiTietQuaName = async (name: string, userId: string) => {
+  const thuMuc = await layThuMucChiTietQuaNameRepo(name, userId);
   if (!thuMuc) {
     throw new Error("Không tìm thấy thư mục hoặc bạn không có quyền truy cập.");
   }

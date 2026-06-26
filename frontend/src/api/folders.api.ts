@@ -23,7 +23,7 @@ export const getFolders = async (): Promise<Folder[]> => {
   return response.data;
 };
 
-export const getFolderById = async (id: number): Promise<Folder> => {
+export const getFolderById = async (id: string): Promise<Folder> => {
   const response = await folderClient.get(`/${id}`);
   return response.data;
 };

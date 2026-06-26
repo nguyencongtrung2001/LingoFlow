@@ -16,11 +16,13 @@ export function useGetFolders() {
   });
 }
 
-export function useGetFolderById(id: number) {
+export function useGetFolderById(id: string) {
   return useQuery({
     queryKey: ["folders", id],
     queryFn: () => getFolderById(id),
     enabled: !!id, // Only run if ID is provided
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 }
 

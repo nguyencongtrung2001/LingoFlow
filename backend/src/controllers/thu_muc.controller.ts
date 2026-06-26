@@ -5,6 +5,7 @@ import {
   taoThuMuc,
   capNhatThuMuc,
   xoaThuMuc,
+  layThuMucChiTietQuaName,
 } from "../services/thu_muc.service";
 
 export const danhSachThuMuc = async (yeuCau: Request, phanHoi: Response) => {
@@ -24,12 +25,12 @@ export const danhSachThuMuc = async (yeuCau: Request, phanHoi: Response) => {
 export const chiTietThuMuc = async (yeuCau: Request, phanHoi: Response) => {
   try {
     const maNguoiDung = yeuCau.user?.id;
-    const folderId = parseInt(yeuCau.params.id as string);
+    const slug = yeuCau.params.id as string; // slug is the name
 
     if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
-    if (isNaN(folderId)) return phanHoi.status(400).json({ error: "ID thư mục không hợp lệ." });
+    if (!slug) return phanHoi.status(400).json({ error: "Tên thư mục không hợp lệ." });
 
-    const thuMuc = await layThuMucChiTiet(folderId, maNguoiDung);
+    const thuMuc = await layThuMucChiTietQuaName(slug, maNguoiDung);
     return phanHoi.status(200).json(thuMuc);
   } catch (loi: any) {
     return phanHoi.status(404).json({ error: loi.message || "Không tìm thấy thư mục." });
