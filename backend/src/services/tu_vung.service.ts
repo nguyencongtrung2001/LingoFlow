@@ -1,0 +1,65 @@
+import { prisma } from "../config/prisma";
+import {
+  layDanhSachTuVungRepo,
+  taoTuVungRepo,
+  suaTuVungRepo,
+  xoaTuVungRepo,
+} from "../repositories/tu_vung.repository";
+
+export const layDanhSachTuVungService = async (folderId: number, userId: string) => {
+  // Xác thực thư mục có thuộc về người dùng không
+  const folder = await prisma.folder.findFirst({
+    where: { id: folderId, userId },
+  });
+
+  if (!folder) {
+    throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  return await layDanhSachTuVungRepo(folderId);
+};
+
+export const taoTuVungService = async (userId: string, folderId: number, data: any) => {
+  // Xác thực quyền sở hữu thư mục
+  const folder = await prisma.folder.findFirst({
+    where: { id: folderId, userId },
+  });
+
+  if (!folder) {
+    throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  return await taoTuVungRepo(userId, folderId, data);
+};
+
+export const suaTuVungService = async (wordId: number, userId: string, data: any) => {
+  // Bảo mật tối cao: Ép điều kiện Folder cha phải thuộc về User này
+  const tuVung = await prisma.word.findFirst({
+    where: {
+      id: wordId,
+      folder: { userId },
+    },
+  });
+
+  if (!tuVung) {
+    throw new Error("Từ vựng không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  return await suaTuVungRepo(wordId, data);
+};
+
+export const xoaTuVungService = async (wordId: number, userId: string) => {
+  // Bảo mật tối cao: Ép điều kiện Folder cha phải thuộc về User này
+  const tuVung = await prisma.word.findFirst({
+    where: {
+      id: wordId,
+      folder: { userId },
+    },
+  });
+
+  if (!tuVung) {
+    throw new Error("Từ vựng không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  return await xoaTuVungRepo(wordId);
+};
