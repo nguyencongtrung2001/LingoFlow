@@ -222,9 +222,7 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
             </button>
           )}
 
-          <span className="px-3 py-1 bg-[#eff4ff] text-[#4648d4] text-[11px] rounded-full mb-3 font-bold uppercase tracking-wider">
-            {direction === "EN_TO_VI" ? "Học xuôi: Anh → Việt" : "Học ngược: Việt → Anh"}
-          </span>
+
 
           <div className="mb-4 flex justify-center">
             {currentWord.image && (
