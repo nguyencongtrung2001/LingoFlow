@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.taoPhienHocRepo = exports.xoaTuVungRepo = exports.suaTuVungRepo = exports.taoNhieuTuVungRepo = exports.taoTuVungRepo = exports.layDanhSachTuVungRepo = void 0;
+exports.layDanhSachTuCuonChieuRepo = exports.taoPhienHocRepo = exports.xoaTuVungRepo = exports.suaTuVungRepo = exports.taoNhieuTuVungRepo = exports.taoTuVungRepo = exports.layDanhSachTuVungRepo = void 0;
 const prisma_1 = require("../config/prisma");
 const client_1 = require("@prisma/client");
 const layDanhSachTuVungRepo = async (folderId) => {
@@ -188,4 +188,14 @@ const taoPhienHocRepo = async (maNguoiDung, folderId, thongTinPhien) => {
     });
 };
 exports.taoPhienHocRepo = taoPhienHocRepo;
+const layDanhSachTuCuonChieuRepo = async (folderId, trang) => {
+    const SO_TU_MOI_LUOT = 15;
+    return await prisma_1.prisma.word.findMany({
+        where: { folderId },
+        orderBy: { createdAt: "asc" },
+        skip: (trang - 1) * SO_TU_MOI_LUOT,
+        take: SO_TU_MOI_LUOT,
+    });
+};
+exports.layDanhSachTuCuonChieuRepo = layDanhSachTuCuonChieuRepo;
 //# sourceMappingURL=tu_vung.repository.js.map

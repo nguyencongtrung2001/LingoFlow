@@ -215,3 +215,14 @@ export const taoPhienHocRepo = async (
     return phienHocMoi;
   });
 };
+
+export const layDanhSachTuCuonChieuRepo = async (folderId: number, trang: number) => {
+  const SO_TU_MOI_LUOT = 15;
+  
+  return await prisma.word.findMany({
+    where: { folderId },
+    orderBy: { createdAt: "asc" },
+    skip: (trang - 1) * SO_TU_MOI_LUOT,
+    take: SO_TU_MOI_LUOT,
+  });
+};

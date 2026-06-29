@@ -5,7 +5,8 @@ import {
   xuLyThemNhieuTu,
   xuLyCapNhatTu, 
   xuLyXoaTu,
-  xuLyLuuPhienHoc
+  xuLyLuuPhienHoc,
+  xuLyLayTuCuonChieu
 } from "../controllers/tu_vung.controller";
 import { xacThucNguoiDung } from "../middleware/kiem_tra_token";
 
@@ -15,6 +16,7 @@ const router = Router();
 router.use(xacThucNguoiDung);
 
 router.get("/thu-muc/:folderId", xuLyLayDanhSachTu);
+router.get("/cuon-chieu/:folderId", xuLyLayTuCuonChieu);
 router.post("/", xuLyThemTu);
 router.post("/batch", xuLyThemNhieuTu);
 router.post("/phien-hoc", xuLyLuuPhienHoc);

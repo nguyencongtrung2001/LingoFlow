@@ -6,6 +6,7 @@ import {
   suaTuVungService,
   xoaTuVungService,
   ghiNhanPhienHocService,
+  layDanhSachTuCuonChieuService,
 } from "../services/tu_vung.service";
 
 export const xuLyLayDanhSachTu = async (yeuCau: Request, phanHoi: Response) => {
@@ -109,6 +110,24 @@ export const xuLyLuuPhienHoc = async (yeuCau: Request, phanHoi: Response) => {
     });
 
     return phanHoi.status(201).json(ketQua);
+  } catch (loi: any) {
+    return phanHoi.status(403).json({ error: loi.message });
+  }
+};
+
+export const xuLyLayTuCuonChieu = async (yeuCau: Request, phanHoi: Response) => {
+  try {
+    const maNguoiDung = yeuCau.user?.id;
+    const folderId = parseInt(String(yeuCau.params.folderId || "0"), 10);
+    const trang = parseInt(typeof yeuCau.query.page === "string" ? yeuCau.query.page : "1", 10) || 1;
+
+    if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+    if (isNaN(folderId)) {
+      return phanHoi.status(400).json({ error: "Mã thư mục không hợp lệ." });
+    }
+
+    const danhSachTu = await layDanhSachTuCuonChieuService(maNguoiDung, folderId, trang);
+    return phanHoi.status(200).json(danhSachTu);
   } catch (loi: any) {
     return phanHoi.status(403).json({ error: loi.message });
   }

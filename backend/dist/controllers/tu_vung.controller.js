@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
+exports.xuLyLayTuCuonChieu = exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
 const tu_vung_service_1 = require("../services/tu_vung.service");
 const xuLyLayDanhSachTu = async (yeuCau, phanHoi) => {
     try {
@@ -117,4 +117,22 @@ const xuLyLuuPhienHoc = async (yeuCau, phanHoi) => {
     }
 };
 exports.xuLyLuuPhienHoc = xuLyLuuPhienHoc;
+const xuLyLayTuCuonChieu = async (yeuCau, phanHoi) => {
+    try {
+        const maNguoiDung = yeuCau.user?.id;
+        const folderId = parseInt(String(yeuCau.params.folderId || "0"), 10);
+        const trang = parseInt(typeof yeuCau.query.page === "string" ? yeuCau.query.page : "1", 10) || 1;
+        if (!maNguoiDung)
+            return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+        if (isNaN(folderId)) {
+            return phanHoi.status(400).json({ error: "Mã thư mục không hợp lệ." });
+        }
+        const danhSachTu = await (0, tu_vung_service_1.layDanhSachTuCuonChieuService)(maNguoiDung, folderId, trang);
+        return phanHoi.status(200).json(danhSachTu);
+    }
+    catch (loi) {
+        return phanHoi.status(403).json({ error: loi.message });
+    }
+};
+exports.xuLyLayTuCuonChieu = xuLyLayTuCuonChieu;
 //# sourceMappingURL=tu_vung.controller.js.map

@@ -10,6 +10,7 @@ import {
   ExcelWordInput,
   saveStudySession,
   StudySessionInput,
+  getWordsSequential,
 } from "@/api/words.api";
 
 export function useGetWords(folderId: number) {
@@ -79,6 +80,15 @@ export function useSaveStudySession(folderId: number) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["words", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });
+      queryClient.invalidateQueries({ queryKey: ["words-sequential", folderId.toString()] });
     },
+  });
+}
+
+export function useGetWordsSequential(folderId: number, page: number) {
+  return useQuery({
+    queryKey: ["words-sequential", folderId.toString(), page.toString()],
+    queryFn: () => getWordsSequential(folderId, page),
+    enabled: !!folderId,
   });
 }

@@ -72,4 +72,16 @@ export declare const ghiNhanPhienHocService: (userId: string, folderId: number, 
     startedAt: Date;
     completedAt: Date;
 }>;
+export declare const layDanhSachTuCuonChieuService: (userId: string, folderId: number, trang: number) => Promise<{
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    word: string;
+    meaning: string;
+    phonetic: string | null;
+    pos: import("@prisma/client").$Enums.PartOfSpeech;
+    example: string | null;
+    image: string | null;
+    folderId: number;
+}[]>;
 //# sourceMappingURL=tu_vung.service.d.ts.map

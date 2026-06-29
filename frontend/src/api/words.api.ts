@@ -78,3 +78,8 @@ export const saveStudySession = async (data: StudySessionInput) => {
   const res = await api.post("/tu-vung/phien-hoc", data);
   return res.data;
 };
+
+export const getWordsSequential = async (folderId: number, page: number): Promise<Word[]> => {
+  const res = await api.get(`/tu-vung/cuon-chieu/${folderId}?page=${page}`);
+  return res.data;
+};
