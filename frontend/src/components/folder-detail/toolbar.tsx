@@ -54,11 +54,11 @@ export function Toolbar({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Tất cả từ loại</SelectItem>
-            <SelectItem value="Noun">Danh từ (n)</SelectItem>
-            <SelectItem value="Verb">Động từ (v)</SelectItem>
-            <SelectItem value="Adjective">Tính từ (adj)</SelectItem>
-            <SelectItem value="Adverb">Trạng từ (adv)</SelectItem>
-            <SelectItem value="Phrase">Cụm từ (phrase)</SelectItem>
+            <SelectItem value="NOUN">Danh từ (n)</SelectItem>
+            <SelectItem value="VERB">Động từ (v)</SelectItem>
+            <SelectItem value="ADJECTIVE">Tính từ (adj)</SelectItem>
+            <SelectItem value="ADVERB">Trạng từ (adv)</SelectItem>
+            <SelectItem value="PHRASE">Cụm từ (phrase)</SelectItem>
           </SelectContent>
         </Select>
       </div>

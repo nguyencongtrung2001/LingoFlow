@@ -1,22 +1,7 @@
 /* Dashboard Specific Styles */
 
 /* ── GRID SYSTEM FIXED HEIGHT ── */
-.dashboard-row-1 {
-  display: grid;
-  gap: 16px;
-  margin-bottom: 16px;
-  align-items: stretch;
-  grid-template-columns: 320px 1fr;
-  height: 235px;
-}
-
-.dashboard-row-2 {
-  display: grid;
-  gap: 16px;
-  margin-bottom: 16px;
-  align-items: stretch;
-  grid-template-columns: 1fr 400px;
-}
+/* Replaced by Tailwind CSS grid in page.tsx */
 
 /* ── HEATMAP GRID ── */
 .hm-grid {
@@ -67,14 +52,4 @@
 }
 
 /* Responsive Overrides */
-@media (max-width: 1024px) {
-  .dashboard-row-1 { height: auto; grid-template-columns: 1fr 1fr; }
-  .dashboard-row-2 { grid-template-columns: 1fr 1fr; }
-}
-
-@media (max-width: 680px) {
-  .dashboard-row-1, .dashboard-row-2 {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-}
+/* Removed as responsiveness is handled by Tailwind grid */

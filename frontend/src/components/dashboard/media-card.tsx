@@ -158,7 +158,7 @@ export function MediaCard() {
         )}
       </div>
 
-      <div className="flex gap-[6px] mt-auto items-center pt-[10px]">
+      <div className="flex gap-[6px] mt-auto items-center pt-[10px] w-full">
         <label
           className="w-[34px] h-[34px] rounded-[8px] border-[0.5px] border-[rgba(70,69,90,0.10)] bg-white text-[#5f5e6e] cursor-pointer flex items-center justify-center transition-all duration-150 shrink-0 hover:bg-[#eeedfe] hover:border-[#4648d4] hover:text-[#4648d4]"
           title="Tải ảnh từ máy tính"
@@ -173,7 +173,7 @@ export function MediaCard() {
           />
         </label>
         <input
-          className={`flex-1 h-[34px] border-[0.5px] rounded-[8px] px-[10px] text-[12px] text-[#1a1a2e] bg-[#f8f8fc] outline-none transition-all duration-150 placeholder:text-[#9998aa] focus:border-[#4648d4] focus:shadow-[0_0_0_3px_rgba(70,72,212,0.1)] ${
+          className={`flex-1 min-w-0 h-[34px] border-[0.5px] rounded-[8px] px-[10px] text-[12px] text-[#1a1a2e] bg-[#f8f8fc] outline-none transition-all duration-150 placeholder:text-[#9998aa] focus:border-[#4648d4] focus:shadow-[0_0_0_3px_rgba(70,72,212,0.1)] ${
             isUrlError ? "border-[#ba1a1a]" : "border-[rgba(70,69,90,0.10)]"
           }`}
           type="text"

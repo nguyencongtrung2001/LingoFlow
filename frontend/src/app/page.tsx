@@ -13,21 +13,21 @@ export default function Home() {
         </p>
 
         {/* Row 1: Streak (fixed width) + Media (flexible) */}
-        <div className="dashboard-row-1">
-          <div className="h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 mb-4 lg:h-[235px]">
+          <div className="h-full min-h-[235px] lg:min-h-0">
             <StreakCard />
           </div>
-          <div className="h-full">
+          <div className="h-full min-h-[235px] lg:min-h-0">
             <MediaCard />
           </div>
         </div>
 
         {/* Row 2: Heatmap (flexible) + Donut Chart (fixed width) */}
-        <div className="dashboard-row-2">
-          <div className="h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 mb-4">
+          <div className="h-full min-h-[235px]">
             <HeatmapCard />
           </div>
-          <div className="h-full">
+          <div className="h-full min-h-[235px]">
             <WordTypeChartDynamic />
           </div>
         </div>

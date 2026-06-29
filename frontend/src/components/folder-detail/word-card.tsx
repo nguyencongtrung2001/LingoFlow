@@ -266,11 +266,26 @@ export function WordCard({
         viewMode === "row" ? "flex flex-row items-center gap-4 py-3 px-4" : ""
       }`}
     >
-      {word.image && (
+      {viewMode === "grid" && (
+        <div className="flex justify-between items-start w-full mb-3">
+          {word.image ? (
+            <Image
+              className="rounded-lg object-cover bg-[#d3e4fe] shrink-0 border border-[#e5eeff] w-16 h-16"
+              src={word.image}
+              alt={word.word}
+              width={64}
+              height={64}
+            />
+          ) : (
+            <div className="w-16 h-16" />
+          )}
+          <PosBadge pos={word.pos} />
+        </div>
+      )}
+
+      {viewMode === "row" && word.image && (
         <Image
-          className={`rounded-lg object-cover bg-[#d3e4fe] shrink-0 border border-[#e5eeff] ${
-            viewMode === "row" ? "w-12 h-12 mb-0 order-last" : "w-16 h-16 mb-3"
-          }`}
+          className="rounded-lg object-cover bg-[#d3e4fe] shrink-0 border border-[#e5eeff] w-12 h-12 mb-0 order-last"
           src={word.image}
           alt={word.word}
           width={64}
@@ -291,7 +306,7 @@ export function WordCard({
             >
               <Volume2 className="w-[18px] h-[18px]" />
             </button>
-            <PosBadge pos={word.pos} />
+            {viewMode === "row" && <PosBadge pos={word.pos} />}
           </div>
           {word.phonetic && (
             <p className="text-[14px] text-[#464554] italic">
