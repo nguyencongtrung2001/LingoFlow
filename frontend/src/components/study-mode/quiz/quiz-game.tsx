@@ -200,14 +200,11 @@ export function QuizGame({ folder, onBack }: QuizGameProps) {
         {/* Question Area */}
         <div className="flex flex-col gap-5 relative shrink-0">
           <div className="bg-[#ffffff] rounded-[24px] p-6 shadow-sm border border-[#c7c4d7]/20 flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4">
-            <span className="px-3 py-1 bg-[#eff4ff] text-[#4648d4] text-[11px] rounded-full mb-3 font-bold uppercase tracking-wider">
-              {direction === "EN_TO_VI" ? "Học xuôi: Anh → Việt" : "Học ngược: Việt → Anh"}
-            </span>
             <h2 className="text-[20px] md:text-[24px] font-extrabold text-[#0b1c30] mb-2 leading-tight">
               {direction === "EN_TO_VI" ? (
-                <>Từ vựng <span className="text-[#4648d4] font-black">&quot;{currentWord.word}&quot;</span> mang nghĩa nào sau đây?</>
+                <><span className="text-[#4648d4] font-black">&quot;{currentWord.word}&quot;</span> </>
               ) : (
-                <>Nghĩa <span className="text-[#4648d4] font-black">&quot;{currentWord.meaning}&quot;</span> là của từ nào sau đây?</>
+                <><span className="text-[#4648d4] font-black">&quot;{currentWord.meaning}&quot;</span></>
               )}
             </h2>
             {currentWord.image && (
