@@ -5,6 +5,7 @@ import {
   suaTuVungRepo,
   xoaTuVungRepo,
   taoNhieuTuVungRepo,
+  taoPhienHocRepo,
 } from "../repositories/tu_vung.repository";
 import { uploadImageFromUrl } from "../utils/cloudinary_upload";
 
@@ -89,4 +90,21 @@ export const xoaTuVungService = async (wordId: number, userId: string) => {
   }
 
   return await xoaTuVungRepo(wordId);
+};
+
+export const ghiNhanPhienHocService = async (
+  userId: string,
+  folderId: number,
+  thongTinPhien: any
+) => {
+  // Xác thực quyền sở hữu thư mục
+  const folder = await prisma.folder.findFirst({
+    where: { id: folderId, userId },
+  });
+
+  if (!folder) {
+    throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  return await taoPhienHocRepo(userId, folderId, thongTinPhien);
 };

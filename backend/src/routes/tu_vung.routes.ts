@@ -4,7 +4,8 @@ import {
   xuLyThemTu, 
   xuLyThemNhieuTu,
   xuLyCapNhatTu, 
-  xuLyXoaTu 
+  xuLyXoaTu,
+  xuLyLuuPhienHoc
 } from "../controllers/tu_vung.controller";
 import { xacThucNguoiDung } from "../middleware/kiem_tra_token";
 
@@ -16,6 +17,7 @@ router.use(xacThucNguoiDung);
 router.get("/thu-muc/:folderId", xuLyLayDanhSachTu);
 router.post("/", xuLyThemTu);
 router.post("/batch", xuLyThemNhieuTu);
+router.post("/phien-hoc", xuLyLuuPhienHoc);
 router.put("/:id", xuLyCapNhatTu);
 router.delete("/:id", xuLyXoaTu);
 

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState} from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { FolderDetail, Word } from "@/types/folder";
 import { ArrowLeft, ArrowRight, CheckCircle, Volume2, Heart } from "lucide-react";
 import { FlashcardResult } from "./flashcard-result";
+import { useSaveStudySession } from "@/feature/words/hooks/useWords";
 
 export interface FlashcardGameProps {
   folder: FolderDetail;
@@ -12,6 +13,9 @@ export interface FlashcardGameProps {
 }
 
 export function FlashcardGame({ folder, onBack }: FlashcardGameProps) {
+  const folderId = parseInt(folder.id);
+  const saveSessionMutation = useSaveStudySession(folderId);
+
   const [words, setWords] = useState<Word[]>(folder.words);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -29,8 +33,27 @@ export function FlashcardGame({ folder, onBack }: FlashcardGameProps) {
       setCurrentIndex(currentIndex + 1);
       setIsFlipped(false);
     } else {
-      setEndTime(Date.now());
+      const endTimeVal = Date.now();
+      setEndTime(endTimeVal);
       setIsCompleted(true);
+
+      const timeSeconds = Math.floor((endTimeVal - startTime) / 1000);
+      const learnedCount = words.filter((w) => w.learned).length;
+      const accuracy = totalCount > 0 ? (learnedCount / totalCount) * 100 : 0;
+
+      saveSessionMutation.mutate({
+        folderId: folderId,
+        mode: "FLASHCARD",
+        totalWords: totalCount,
+        correctCount: learnedCount,
+        accuracy: accuracy,
+        timeSeconds: timeSeconds,
+        maxStreak: learnedCount,
+        details: words.map((w) => ({
+          wordId: w.id,
+          isCorrect: w.learned,
+        })),
+      });
     }
   };
 
@@ -153,9 +176,11 @@ export function FlashcardGame({ folder, onBack }: FlashcardGameProps) {
               <h2 className="text-[32px] md:text-[48px] text-[#0b1c30] mb-6 text-center font-extrabold tracking-tight leading-none">
                 {currentWord.word}
               </h2>
-              <p className="text-[18px] text-[#464554] mb-10 italic">
-                {currentWord.phonetic || "..."}
-              </p>
+              {currentWord.phonetic && (
+                <p className="text-[18px] text-[#464554] mb-10 italic">
+                  {currentWord.phonetic}
+                </p>
+              )}
               <p className="text-[12px] text-[#767586] absolute bottom-6 flex items-center gap-1 animate-pulse">
                 Chạm để xem nghĩa
               </p>

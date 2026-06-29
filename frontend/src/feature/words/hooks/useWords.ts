@@ -8,6 +8,8 @@ import {
   CreateWordInput,
   UpdateWordInput,
   ExcelWordInput,
+  saveStudySession,
+  StudySessionInput,
 } from "@/api/words.api";
 
 export function useGetWords(folderId: number) {
@@ -62,6 +64,18 @@ export function useDeleteWord(folderId: number) {
 
   return useMutation({
     mutationFn: (id: number) => deleteWord(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["words", folderId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["folders"] });
+    },
+  });
+}
+
+export function useSaveStudySession(folderId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: StudySessionInput) => saveStudySession(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["words", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });

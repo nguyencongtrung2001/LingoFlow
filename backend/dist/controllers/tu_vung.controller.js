@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
+exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
 const tu_vung_service_1 = require("../services/tu_vung.service");
 const xuLyLayDanhSachTu = async (yeuCau, phanHoi) => {
     try {
@@ -89,4 +89,32 @@ const xuLyXoaTu = async (yeuCau, phanHoi) => {
     }
 };
 exports.xuLyXoaTu = xuLyXoaTu;
+const xuLyLuuPhienHoc = async (yeuCau, phanHoi) => {
+    try {
+        const maNguoiDung = yeuCau.user?.id;
+        const { folderId, mode, totalWords, correctCount, accuracy, timeSeconds, maxStreak, details } = yeuCau.body;
+        if (!maNguoiDung)
+            return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+        if (!folderId || isNaN(parseInt(folderId)))
+            return phanHoi.status(400).json({ error: "Thư mục không hợp lệ." });
+        if (!mode)
+            return phanHoi.status(400).json({ error: "Thiếu chế độ học tập (mode)." });
+        if (!Array.isArray(details) || details.length === 0)
+            return phanHoi.status(400).json({ error: "Danh sách chi tiết phiên học trống." });
+        const ketQua = await (0, tu_vung_service_1.ghiNhanPhienHocService)(maNguoiDung, parseInt(folderId), {
+            mode,
+            totalWords: parseInt(totalWords) || details.length,
+            correctCount: parseInt(correctCount) || 0,
+            accuracy: parseFloat(accuracy) || 0,
+            timeSeconds: parseInt(timeSeconds) || 0,
+            maxStreak: parseInt(maxStreak) || 0,
+            details,
+        });
+        return phanHoi.status(201).json(ketQua);
+    }
+    catch (loi) {
+        return phanHoi.status(403).json({ error: loi.message });
+    }
+};
+exports.xuLyLuuPhienHoc = xuLyLuuPhienHoc;
 //# sourceMappingURL=tu_vung.controller.js.map

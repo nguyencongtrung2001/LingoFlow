@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xoaTuVungService = exports.suaTuVungService = exports.taoNhieuTuVungService = exports.taoTuVungService = exports.layDanhSachTuVungService = void 0;
+exports.ghiNhanPhienHocService = exports.xoaTuVungService = exports.suaTuVungService = exports.taoNhieuTuVungService = exports.taoTuVungService = exports.layDanhSachTuVungService = void 0;
 const prisma_1 = require("../config/prisma");
 const tu_vung_repository_1 = require("../repositories/tu_vung.repository");
 const cloudinary_upload_1 = require("../utils/cloudinary_upload");
@@ -75,4 +75,15 @@ const xoaTuVungService = async (wordId, userId) => {
     return await (0, tu_vung_repository_1.xoaTuVungRepo)(wordId);
 };
 exports.xoaTuVungService = xoaTuVungService;
+const ghiNhanPhienHocService = async (userId, folderId, thongTinPhien) => {
+    // Xác thực quyền sở hữu thư mục
+    const folder = await prisma_1.prisma.folder.findFirst({
+        where: { id: folderId, userId },
+    });
+    if (!folder) {
+        throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+    }
+    return await (0, tu_vung_repository_1.taoPhienHocRepo)(userId, folderId, thongTinPhien);
+};
+exports.ghiNhanPhienHocService = ghiNhanPhienHocService;
 //# sourceMappingURL=tu_vung.service.js.map

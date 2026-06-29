@@ -4,4 +4,5 @@ export declare const xuLyThemTu: (yeuCau: Request, phanHoi: Response) => Promise
 export declare const xuLyThemNhieuTu: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
 export declare const xuLyCapNhatTu: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
 export declare const xuLyXoaTu: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
+export declare const xuLyLuuPhienHoc: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
 //# sourceMappingURL=tu_vung.controller.d.ts.map

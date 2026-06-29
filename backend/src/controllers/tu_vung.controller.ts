@@ -5,6 +5,7 @@ import {
   taoNhieuTuVungService,
   suaTuVungService,
   xoaTuVungService,
+  ghiNhanPhienHocService,
 } from "../services/tu_vung.service";
 
 export const xuLyLayDanhSachTu = async (yeuCau: Request, phanHoi: Response) => {
@@ -82,6 +83,32 @@ export const xuLyXoaTu = async (yeuCau: Request, phanHoi: Response) => {
 
     await xoaTuVungService(wordId, maNguoiDung);
     return phanHoi.status(200).json({ message: "Xóa từ vựng thành công." });
+  } catch (loi: any) {
+    return phanHoi.status(403).json({ error: loi.message });
+  }
+};
+
+export const xuLyLuuPhienHoc = async (yeuCau: Request, phanHoi: Response) => {
+  try {
+    const maNguoiDung = yeuCau.user?.id;
+    const { folderId, mode, totalWords, correctCount, accuracy, timeSeconds, maxStreak, details } = yeuCau.body;
+
+    if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+    if (!folderId || isNaN(parseInt(folderId))) return phanHoi.status(400).json({ error: "Thư mục không hợp lệ." });
+    if (!mode) return phanHoi.status(400).json({ error: "Thiếu chế độ học tập (mode)." });
+    if (!Array.isArray(details) || details.length === 0) return phanHoi.status(400).json({ error: "Danh sách chi tiết phiên học trống." });
+
+    const ketQua = await ghiNhanPhienHocService(maNguoiDung, parseInt(folderId), {
+      mode,
+      totalWords: parseInt(totalWords) || details.length,
+      correctCount: parseInt(correctCount) || 0,
+      accuracy: parseFloat(accuracy) || 0,
+      timeSeconds: parseInt(timeSeconds) || 0,
+      maxStreak: parseInt(maxStreak) || 0,
+      details,
+    });
+
+    return phanHoi.status(201).json(ketQua);
   } catch (loi: any) {
     return phanHoi.status(403).json({ error: loi.message });
   }

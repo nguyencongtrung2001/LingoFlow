@@ -58,4 +58,18 @@ export declare const xoaTuVungService: (wordId: number, userId: string) => Promi
     image: string | null;
     folderId: number;
 }>;
+export declare const ghiNhanPhienHocService: (userId: string, folderId: number, thongTinPhien: any) => Promise<{
+    id: string;
+    userId: string;
+    folderId: number;
+    mode: import("@prisma/client").$Enums.StudyMode;
+    totalWords: number;
+    correctCount: number;
+    accuracy: number;
+    maxStreak: number;
+    timeSeconds: number | null;
+    bestRecord: boolean;
+    startedAt: Date;
+    completedAt: Date;
+}>;
 //# sourceMappingURL=tu_vung.service.d.ts.map

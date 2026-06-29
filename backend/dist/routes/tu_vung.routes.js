@@ -9,6 +9,7 @@ router.use(kiem_tra_token_1.xacThucNguoiDung);
 router.get("/thu-muc/:folderId", tu_vung_controller_1.xuLyLayDanhSachTu);
 router.post("/", tu_vung_controller_1.xuLyThemTu);
 router.post("/batch", tu_vung_controller_1.xuLyThemNhieuTu);
+router.post("/phien-hoc", tu_vung_controller_1.xuLyLuuPhienHoc);
 router.put("/:id", tu_vung_controller_1.xuLyCapNhatTu);
 router.delete("/:id", tu_vung_controller_1.xuLyXoaTu);
 exports.default = router;

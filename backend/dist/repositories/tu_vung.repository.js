@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xoaTuVungRepo = exports.suaTuVungRepo = exports.taoNhieuTuVungRepo = exports.taoTuVungRepo = exports.layDanhSachTuVungRepo = void 0;
+exports.taoPhienHocRepo = exports.xoaTuVungRepo = exports.suaTuVungRepo = exports.taoNhieuTuVungRepo = exports.taoTuVungRepo = exports.layDanhSachTuVungRepo = void 0;
 const prisma_1 = require("../config/prisma");
 const client_1 = require("@prisma/client");
 const layDanhSachTuVungRepo = async (folderId) => {
@@ -94,4 +94,98 @@ const xoaTuVungRepo = async (wordId) => {
     });
 };
 exports.xoaTuVungRepo = xoaTuVungRepo;
+const taoPhienHocRepo = async (maNguoiDung, folderId, thongTinPhien) => {
+    // Chuẩn hóa ngày theo múi giờ Việt Nam để triệt tiêu lỗi lệch Heatmap
+    const chuoiNgayVN = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" });
+    const ngayFormat = new Date(chuoiNgayVN);
+    // Kích hoạt Prisma ACID Transaction tổng hợp
+    return await prisma_1.prisma.$transaction(async (tx) => {
+        // 1. Ghi nhận phiên học tổng quan vào bảng StudySession
+        const phienHocMoi = await tx.studySession.create({
+            data: {
+                userId: maNguoiDung,
+                folderId: folderId,
+                mode: thongTinPhien.mode,
+                totalWords: thongTinPhien.totalWords,
+                correctCount: thongTinPhien.correctCount,
+                accuracy: thongTinPhien.accuracy,
+                timeSeconds: thongTinPhien.timeSeconds,
+                maxStreak: thongTinPhien.maxStreak,
+                // Tiện ích Prisma lồng ghi chi tiết SessionDetail cùng một lúc
+                details: {
+                    create: thongTinPhien.details.map((ct, chiSo) => ({
+                        wordId: ct.wordId,
+                        isCorrect: ct.isCorrect,
+                        userAnswer: ct.userAnswer || null,
+                        expectedAnswer: ct.expectedAnswer || null,
+                        orderIndex: chiSo
+                    }))
+                }
+            }
+        });
+        // 2. Vòng lặp cập nhật hoặc khởi tạo tiến độ Leitner cho từng từ
+        for (const chiTiet of thongTinPhien.details) {
+            // Tìm bản ghi tiến độ hiện tại của User cho từ này
+            const tienDoHienTai = await tx.wordProgress.findFirst({
+                where: { userId: maNguoiDung, wordId: chiTiet.wordId }
+            });
+            const hopHienTai = tienDoHienTai ? tienDoHienTai.box : 1;
+            let hopMoi = hopHienTai;
+            if (chiTiet.isCorrect) {
+                // Đúng: Tăng lên 1 cấp (Kịch trần là hộp 5)
+                hopMoi = hopHienTai < 5 ? hopHienTai + 1 : 5;
+            }
+            else {
+                // Sai: Đẩy lùi về hộp 1 học lại từ đầu
+                hopMoi = 1;
+            }
+            // Tạo đối tượng update động tránh truyền undefined cho exactOptionalPropertyTypes
+            const updateData = {
+                box: hopMoi,
+                lastResult: chiTiet.isCorrect,
+                attempts: { increment: 1 }
+            };
+            if (chiTiet.isCorrect) {
+                updateData.corrects = { increment: 1 };
+            }
+            if (hopMoi === 5) {
+                updateData.learned = true;
+            }
+            // Thực hiện cập nhật hoặc tạo mới nếu từ chưa có bản ghi tiến độ
+            await tx.wordProgress.upsert({
+                where: {
+                    userId_wordId: { userId: maNguoiDung, wordId: chiTiet.wordId }
+                },
+                update: updateData,
+                create: {
+                    userId: maNguoiDung,
+                    wordId: chiTiet.wordId,
+                    box: hopMoi,
+                    lastResult: chiTiet.isCorrect,
+                    attempts: 1,
+                    corrects: chiTiet.isCorrect ? 1 : 0,
+                    learned: hopMoi === 5
+                }
+            });
+        }
+        // 3. Cộng dồn dữ liệu hoạt động hàng ngày phục vụ vẽ Heatmap Card
+        await tx.dailyActivity.upsert({
+            where: {
+                userId_date: { userId: maNguoiDung, date: ngayFormat }
+            },
+            update: {
+                sessionsCount: { increment: 1 },
+                wordsStudied: { increment: thongTinPhien.totalWords }
+            },
+            create: {
+                userId: maNguoiDung,
+                date: ngayFormat,
+                sessionsCount: 1,
+                wordsStudied: thongTinPhien.totalWords
+            }
+        });
+        return phienHocMoi;
+    });
+};
+exports.taoPhienHocRepo = taoPhienHocRepo;
 //# sourceMappingURL=tu_vung.repository.js.map

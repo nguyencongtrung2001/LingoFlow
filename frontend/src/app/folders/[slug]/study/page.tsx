@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { defaultFolderData } from "@/lib/data";
 import StudyContent from "@/components/study-mode/study-content";
 
 type Props = {
@@ -22,20 +21,9 @@ function StudyLoadingFallback() {
 export default async function StudyPage({ params }: Props) {
   const { slug } = await params;
 
-  // In a real app, fetch from API. Here we use mock data.
-  const folder = defaultFolderData.find((f) => f.id === slug) || defaultFolderData[0];
-
-  if (!folder) {
-    return (
-      <div className="p-8 text-center text-[#464554]">
-        Đang tải dữ liệu thư mục...
-      </div>
-    );
-  }
-
   return (
     <Suspense fallback={<StudyLoadingFallback />}>
-      <StudyContent folder={folder} slug={slug} />
+      <StudyContent slug={slug} />
     </Suspense>
   );
 }

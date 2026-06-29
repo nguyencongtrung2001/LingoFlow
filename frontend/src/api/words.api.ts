@@ -55,3 +55,26 @@ export const updateWord = async (id: number, data: UpdateWordInput): Promise<Wor
 export const deleteWord = async (id: number): Promise<void> => {
   await api.delete(`/tu-vung/${id}`);
 };
+
+export interface StudySessionDetailInput {
+  wordId: number;
+  isCorrect: boolean;
+  userAnswer?: string;
+  expectedAnswer?: string;
+}
+
+export interface StudySessionInput {
+  folderId: number;
+  mode: "FLASHCARD" | "QUIZ" | "MATCH" | "WRITE";
+  totalWords: number;
+  correctCount: number;
+  accuracy: number;
+  timeSeconds: number;
+  maxStreak?: number;
+  details: StudySessionDetailInput[];
+}
+
+export const saveStudySession = async (data: StudySessionInput) => {
+  const res = await api.post("/tu-vung/phien-hoc", data);
+  return res.data;
+};
