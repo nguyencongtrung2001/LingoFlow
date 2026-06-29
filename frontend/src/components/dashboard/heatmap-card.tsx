@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { IconCalendarStats } from "@tabler/icons-react";
+import "./dashboard-styles.css";
 
 export function HeatmapCard() {
   const [gridData, setGridData] = useState<string[]>([]);
