@@ -1,103 +1,89 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState } from "react";
 import { IconCalendarStats } from "@tabler/icons-react";
 import "./dashboard-styles.css";
 
-export function HeatmapCard({ serverData }: { serverData?: Array<{ date: string; wordsStudied: number }> }) {
-  const gridData = useMemo(() => {
-    const generated: string[] = [];
-    const totalDays = 7 * 53; // 371 days as per backend
-    
-    if (serverData && serverData.length > 0) {
-      // Map dates to words studied
-      const dataMap = new Map<string, number>();
-      serverData.forEach(item => {
-        // Just take the YYYY-MM-DD part if it's ISO
-        const dateStr = new Date(item.date).toISOString().split('T')[0];
-        dataMap.set(dateStr, item.wordsStudied);
-      });
-
-      // Calculate last 371 days ending today
-      const today = new Date();
-      
-      for (let i = totalDays - 1; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(today.getDate() - i);
-        const dateStr = d.toISOString().split('T')[0];
-        
-        const studied = dataMap.get(dateStr) || 0;
-        let l = "hc0";
-        if (studied > 50) l = "hc4";
-        else if (studied > 30) l = "hc3";
-        else if (studied > 10) l = "hc2";
-        else if (studied > 0) l = "hc1";
-        
-        generated.push(l);
-      }
-    } else {
-      // Fallback random data if no server data
-      const lvls = ["hc0", "hc1", "hc2", "hc3", "hc4"];
-      for (let i = 0; i < totalDays; i++) {
-        let l = "hc0";
-        if (Math.floor(i / 7) >= 31) {
-          const r = Math.random();
-          if (r > 0.55) l = lvls[Math.floor(Math.random() * 4) + 1];
-        }
-        generated.push(l);
-      }
+// Tách hàm khởi tạo dữ liệu thuần khiết ra ngoài phạm vi Render của Component để giữ tính thuần khiết (Pure Function)
+const khoiTaoDuLieuGiaLap = (): string[] => {
+  const lvls = ["hc0", "hc1", "hc2", "hc3", "hc4"];
+  const generated: string[] = [];
+  
+  // 7 ngày * 53 tuần = 371 ô vuông đại diện cho toàn năm
+  for (let i = 0; i < 7 * 53; i++) {
+    let l = "hc0";
+    const r = Math.random();
+    if (r > 0.4) {
+      const randomIndex = Math.floor(Math.random() * 4) + 1;
+      l = lvls[randomIndex] || "hc0";
     }
-    return generated;
-  }, [serverData]);
+    generated.push(l);
+  }
+  return generated;
+};
+
+export function HeatmapCard() {
+  // KHỬ HOÀN TOÀN USEEFFECT: Nạp trực tiếp hàm khởi tạo vào useState (Lazy Initial State)
+  const [gridData] = useState<string[]>(() => khoiTaoDuLieuGiaLap());
 
   return (
-    <div className="bg-white border-[0.5px] border-[rgba(70,69,90,0.10)] rounded-[16px] p-5 flex flex-col justify-between shadow-[0_2px_12px_-2px_rgba(70,72,212,0.04)] h-full">
-      <div className="text-[11px] font-bold text-[#5f5e6e] uppercase tracking-[0.06em] flex items-center gap-[6px] mb-[0.8rem]">
+    <div className="bg-white border-[0.5px] border-slate-100 rounded-[16px] p-5 flex flex-col justify-between shadow-sm h-full">
+      
+      {/* Tiêu đề Card */}
+      <div className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.06em] flex items-center gap-[6px] mb-4">
         <IconCalendarStats className="w-[14px] h-[14px] text-[#4648d4]" />
         Tần suất ôn tập từ vựng
       </div>
 
-      <div className="overflow-x-auto py-1 flex-1">
-        <div className="flex pl-[32px] mb-[6px]">
-          <div className="flex w-full justify-between min-w-[689px]">
-            {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map((month) => (
-              <div key={month} className="text-[10px] text-[#9998aa] font-medium flex-1 text-left">
-                {month}
-              </div>
-            ))}
-          </div>
+      <div className="overflow-x-auto py-1 flex-1 scrollbar-none">
+        {/* TRỤC NGANG: Tiến độ tháng rải đều từ Jan đến Dec */}
+        <div className="flex justify-between pl-8 pr-2 mb-2 text-[10px] text-slate-400 font-medium select-none min-w-[500px]">
+          <span>Jan</span>
+          <span>Feb</span>
+          <span>Mar</span>
+          <span>Apr</span>
+          <span>May</span>
+          <span>Jun</span>
+          <span>Jul</span>
+          <span>Aug</span>
+          <span>Sep</span>
+          <span>Oct</span>
+          <span>Nov</span>
+          <span>Dec</span>
         </div>
 
-        <div className="flex gap-2 items-start">
-          <div className="flex flex-col gap-[3px] text-[10px] text-[#9998aa] font-medium min-w-[24px]">
-            <span className="h-[10px] leading-[10px]">Mon</span>
-            <span className="h-[10px] leading-[10px]">Tue</span>
-            <span className="h-[10px] leading-[10px]">Wed</span>
-            <span className="h-[10px] leading-[10px]">Thu</span>
-            <span className="h-[10px] leading-[10px]">Fri</span>
-            <span className="h-[10px] leading-[10px]">Sat</span>
-            <span className="h-[10px] leading-[10px]">Sun</span>
+        <div className="flex gap-3 items-start min-w-[500px]">
+          {/* TRỤC DỌC: Thứ tự ngày xếp cân đối từ Mon đến Sun */}
+          <div className="flex flex-col justify-between h-[88px] text-[10px] text-slate-400 font-medium pt-px select-none">
+            <span>Mon</span>
+            <span>Wed</span>
+            <span>Fri</span>
+            <span>Sun</span>
           </div>
+
+          {/* KHU VỰC LƯỚI Ô VUÔNG TỰ ĐỘNG BẺ DÒNG THEO CỘT */}
           <div className="hm-grid">
             {gridData.map((level, i) => (
-              <div key={i} className={`hc ${level}`}></div>
+              <div key={i} className={`hc ${level}`} />
             ))}
           </div>
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-[14px] text-[11px] text-[#9998aa]">
-        <span>Learn how we count contributions</span>
-        <div className="flex items-center gap-[3px]">
-          <span>Less</span>
-          <div className="hc hc0"></div>
+      {/* Thanh chú giải Cấp độ thắp sáng (Legend) */}
+      <div className="flex justify-between items-center mt-4 text-[11px] text-slate-400 border-t border-slate-50 pt-3 select-none">
+        <span>Ghi nhận dựa trên số lượng phiên học</span>
+        <div className="flex items-center gap-[4px] font-medium text-[10px]">
+          <span className="mr-1 text-slate-400">Less</span>
+          <div className="hc hc0 border border-slate-200/40"></div>
           <div className="hc hc1"></div>
           <div className="hc hc2"></div>
           <div className="hc hc3"></div>
           <div className="hc hc4"></div>
-          <span>More</span>
+          <span className="ml-1 text-slate-500">More</span>
         </div>
       </div>
+
     </div>
   );
 }
