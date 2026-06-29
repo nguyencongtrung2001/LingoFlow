@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Heart, LayoutGrid, Rows, List, Plus } from "lucide-react";
+import { Search, LayoutGrid, Rows, List, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { ExcelUploadButton } from "./excel-upload-button";
 
 export type ViewMode = "grid" | "row" | "list";
 
@@ -18,11 +19,10 @@ export interface ToolbarProps {
   setSearchQuery: (query: string) => void;
   posFilter: string;
   setPosFilter: (pos: string) => void;
-  showFavoritesOnly: boolean;
-  setShowFavoritesOnly: (show: boolean) => void;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   onAddWordClick: () => void;
+  folderId: number;
 }
 
 export function Toolbar({
@@ -30,11 +30,10 @@ export function Toolbar({
   setSearchQuery,
   posFilter,
   setPosFilter,
-  showFavoritesOnly,
-  setShowFavoritesOnly,
   viewMode,
   setViewMode,
   onAddWordClick,
+  folderId,
 }: ToolbarProps) {
   return (
     <section className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
@@ -62,22 +61,6 @@ export function Toolbar({
             <SelectItem value="Phrase">Cụm từ (phrase)</SelectItem>
           </SelectContent>
         </Select>
-
-        <button
-          onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-          className={`flex items-center gap-1.5 px-3.5 h-[38px] rounded-lg text-[13px] font-semibold border-[1.5px] transition-all whitespace-nowrap ${
-            showFavoritesOnly
-              ? "border-[#ff4d6d] bg-[#fff0f3] text-[#cc2244]"
-              : "border-[#c7c4d7] bg-[#ffffff] text-[#464554] hover:bg-[#f8f9ff]"
-          }`}
-        >
-          <Heart
-            className={`w-[18px] h-[18px] transition-colors ${
-              showFavoritesOnly ? "fill-[#ff4d6d] text-[#ff4d6d]" : "text-[#c7c4d7]"
-            }`}
-          />
-          Yêu thích
-        </button>
       </div>
 
       <div className="flex items-center gap-2 shrink-0">
@@ -116,6 +99,8 @@ export function Toolbar({
             <List className="w-[18px] h-[18px]" />
           </button>
         </div>
+
+        <ExcelUploadButton folderId={folderId} />
 
         <Button
           onClick={onAddWordClick}

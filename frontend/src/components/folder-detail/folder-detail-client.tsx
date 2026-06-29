@@ -33,7 +33,6 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [posFilter, setPosFilter] = useState("all");
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showAddPanel, setShowAddPanel] = useState(false);
 
   // Derived State: Filtered Words
@@ -43,11 +42,10 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
         w.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
         w.meaning.toLowerCase().includes(searchQuery.toLowerCase());
       const matchPos = posFilter === "all" || w.pos === posFilter;
-      const matchHeart = !showFavoritesOnly || w.learned;
 
-      return matchSearch && matchPos && matchHeart;
+      return matchSearch && matchPos;
     });
-  }, [words, searchQuery, posFilter, showFavoritesOnly]);
+  }, [words, searchQuery, posFilter]);
 
   // Handlers
   const handleAddWord = (wordData: {
@@ -90,8 +88,6 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
   }
 
   const totalWords = words.length;
-  // const lovedWords = words.filter((w) => w.learned).length;
-  const lovedWords = 0;
 
   return (
     <>
@@ -104,11 +100,10 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
         setSearchQuery={setSearchQuery}
         posFilter={posFilter}
         setPosFilter={setPosFilter}
-        showFavoritesOnly={showFavoritesOnly}
-        setShowFavoritesOnly={setShowFavoritesOnly}
         viewMode={viewMode}
         setViewMode={setViewMode}
         onAddWordClick={() => setShowAddPanel(true)}
+        folderId={folderId}
       />
 
       <AddWordPanel
@@ -121,13 +116,12 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
         <div className="flex items-center justify-between mb-3">
           <p className="text-[14px] text-[#464554] font-medium">
             {filteredWords.length} / {totalWords} từ
-            {showFavoritesOnly ? ` ·  ${lovedWords} yêu thích` : ""}
           </p>
         </div>
         <WordList
           words={filteredWords}
           viewMode={viewMode}
-          heartFilterOn={showFavoritesOnly}
+          heartFilterOn={false}
           onEditWord={handleEditWord}
           onDeleteWord={handleDeleteWord}
           onToggleLearned={handleToggleLearned}

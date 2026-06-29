@@ -18,24 +18,24 @@ export function FolderCard({ folder }: FolderCardProps) {
         <div className="absolute top-0 left-0 w-full h-1.5 bg-[#4648d4] opacity-80 group-hover:opacity-100 transition-opacity" />
 
         <div className="flex items-start justify-between mb-4 mt-1">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#f0f1ff] rounded-xl text-[#4648d4]">
-              <Folder className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-semibold px-2.5 py-1 bg-[#f3f4f6] text-[#4b5563] rounded-full">
-              {wordsCount} từ
-            </span>
+          <div className="p-2.5 bg-[#f0f1ff] rounded-xl text-[#4648d4]">
+            <Folder className="w-6 h-6" />
           </div>
 
-          <div 
-            className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-          >
-            <UpdateFolderModal folder={folder} />
-            <DeleteFolderDialog folder={folder} />
+          <div className="flex items-center gap-2 relative">
+            <span className="text-xs font-semibold px-2.5 py-1 bg-[#f3f4f6] text-[#4b5563] rounded-full group-hover:opacity-0 transition-opacity duration-200">
+              {wordsCount} từ
+            </span>
+            <div 
+              className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              <UpdateFolderModal folder={folder} />
+              <DeleteFolderDialog folder={folder} />
+            </div>
           </div>
         </div>
 

@@ -25,7 +25,11 @@ export async function uploadImageFromUrl(
   }
 
   try {
-    const response = await fetch(imageUrl);
+    const response = await fetch(imageUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+      }
+    });
     if (!response.ok) {
       console.warn(`Không thể tải ảnh từ URL: ${imageUrl}, Status: ${response.status}`);
       return imageUrl; // Fallback về link gốc
@@ -43,6 +47,7 @@ export async function uploadImageFromUrl(
       overwrite: true,
     });
 
+    console.log(`Tải gián tiếp ảnh thành công lên Cloudinary! URL mới: ${uploadResult.secure_url}`);
     return uploadResult.secure_url;
   } catch (error) {
     console.error("Lỗi khi tải gián tiếp ảnh lên Cloudinary:", error);
