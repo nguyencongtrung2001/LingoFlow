@@ -63,6 +63,7 @@ export function WordCard({
   const [editPos, setEditPos] = useState<PartOfSpeech>(word.pos);
   const [editPhonetic, setEditPhonetic] = useState(word.phonetic || "");
   const [editExample, setEditExample] = useState(word.example || "");
+  const [editImage, setEditImage] = useState(word.image || "");
 
   const handleSave = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -73,6 +74,7 @@ export function WordCard({
         pos: editPos,
         phonetic: editPhonetic.trim(),
         example: editExample.trim(),
+        image: editImage.trim(),
       });
       setIsEditing(false);
     }
@@ -85,6 +87,7 @@ export function WordCard({
     setEditPos(word.pos);
     setEditPhonetic(word.phonetic || "");
     setEditExample(word.example || "");
+    setEditImage(word.image || "");
     setIsEditing(false);
   };
 
@@ -156,6 +159,12 @@ export function WordCard({
           placeholder="Phiên âm (vd: /wɜːd/)"
           value={editPhonetic}
           onChange={(e) => setEditPhonetic(e.target.value)}
+        />
+        <input
+          className="px-3 py-1.5 border border-[#c7c4d7] rounded-lg text-[14px] outline-none focus:border-[#4648d4] bg-white"
+          placeholder="Hình ảnh minh họa (URL)"
+          value={editImage}
+          onChange={(e) => setEditImage(e.target.value)}
         />
         <textarea
           className="px-3 py-2 border border-[#c7c4d7] rounded-lg text-[14px] outline-none focus:border-[#4648d4] bg-white resize-none h-16"

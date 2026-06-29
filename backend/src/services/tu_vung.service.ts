@@ -6,6 +6,7 @@ import {
   xoaTuVungRepo,
   taoNhieuTuVungRepo,
 } from "../repositories/tu_vung.repository";
+import { uploadImageFromUrl } from "../utils/cloudinary_upload";
 
 export const layDanhSachTuVungService = async (folderId: number, userId: string) => {
   // Xác thực thư mục có thuộc về người dùng không
@@ -30,7 +31,13 @@ export const taoTuVungService = async (userId: string, folderId: number, data: a
     throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
   }
 
-  return await taoTuVungRepo(userId, folderId, data);
+  // Tải gián tiếp ảnh từ URL và đưa lên Cloudinary trước khi tạo từ
+  const cloneData = { ...data };
+  if (cloneData.image) {
+    cloneData.image = await uploadImageFromUrl(cloneData.image, "lingoflow/words", `word_${userId}`);
+  }
+
+  return await taoTuVungRepo(userId, folderId, cloneData);
 };
 
 export const taoNhieuTuVungService = async (userId: string, folderId: number, danhSachTu: any[]) => {
@@ -59,7 +66,13 @@ export const suaTuVungService = async (wordId: number, userId: string, data: any
     throw new Error("Từ vựng không tồn tại hoặc không có quyền truy cập.");
   }
 
-  return await suaTuVungRepo(wordId, data);
+  // Tải gián tiếp ảnh từ URL và đưa lên Cloudinary trước khi cập nhật từ
+  const cloneData = { ...data };
+  if (cloneData.image !== undefined) {
+    cloneData.image = await uploadImageFromUrl(cloneData.image, "lingoflow/words", `word_${userId}`);
+  }
+
+  return await suaTuVungRepo(wordId, cloneData);
 };
 
 export const xoaTuVungService = async (wordId: number, userId: string) => {

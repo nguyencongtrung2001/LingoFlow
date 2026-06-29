@@ -73,10 +73,6 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
     }
   };
 
-  const handleAddMultipleWords = () => {
-    // Để sau nếu cần (hiện tại AddWordPanel chưa hỗ trợ add multiple bằng hook dễ dàng)
-  };
-
   const handleToggleLearned = () => {
     // TODO: Implement toggle favorite API
   };
@@ -113,14 +109,12 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
         viewMode={viewMode}
         setViewMode={setViewMode}
         onAddWordClick={() => setShowAddPanel(true)}
-        folderId={folderId}
       />
 
       <AddWordPanel
         isVisible={showAddPanel}
         onClose={() => setShowAddPanel(false)}
         onAddWord={handleAddWord}
-        onAddMultipleWords={handleAddMultipleWords}
       />
 
       <section>
