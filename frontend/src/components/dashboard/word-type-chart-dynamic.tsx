@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 export const WordTypeChartDynamic = dynamic(
-  () => import("./word-type-chart").then((mod) => mod.WordTypeChart),
+  () => import("./word-type-chart").then((mod) => mod.ChartPieLegend),
   {
     ssr: false,
     loading: () => (
