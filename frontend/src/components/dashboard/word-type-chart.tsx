@@ -25,11 +25,11 @@ const chartData = [
 
 const chartConfig = {
   soLuong: { label: "Số lượng" },
-  noun: { label: "Danh từ (Noun)", color: "hsl(var(--chart-1))" },
-  verb: { label: "Động từ (Verb)", color: "hsl(var(--chart-2))" },
-  adj: { label: "Tính từ (Adj)", color: "hsl(var(--chart-3))" },
-  adv: { label: "Trạng từ (Adv)", color: "hsl(var(--chart-4))" },
-  phrase: { label: "Cụm từ (Phrase)", color: "hsl(var(--chart-5))" },
+  noun: { label: "Danh từ (Noun)", color: "#4338ca" },
+  verb: { label: "Động từ (Verb)", color: "#4f46e5" },
+  adj: { label: "Tính từ (Adj)", color: "#6366f1" },
+  adv: { label: "Trạng từ (Adv)", color: "#818cf8" },
+  phrase: { label: "Cụm từ (Phrase)", color: "#a5b4fc" },
 } satisfies ChartConfig
 
 export function ChartPieLegend() {

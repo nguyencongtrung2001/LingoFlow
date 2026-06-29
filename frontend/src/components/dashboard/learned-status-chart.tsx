@@ -31,15 +31,15 @@ const chartConfig = {
   },
   learned: {
     label: "Đã thuộc",
-    color: "var(--chart-1)",
+    color: "#4f46e5",
   },
   learning: {
     label: "Đang ôn",
-    color: "var(--chart-2)",
+    color: "#818cf8",
   },
   unlearned: {
     label: "Chưa thuộc",
-    color: "var(--chart-3)",
+    color: "#c7d2fe",
   },
 } satisfies ChartConfig
 

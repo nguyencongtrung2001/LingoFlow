@@ -32,23 +32,23 @@ const chartConfig = {
   },
   noun: {
     label: "Danh từ",
-    color: "var(--chart-1)",
+    color: "#4338ca",
   },
   verb: {
     label: "Động từ",
-    color: "var(--chart-2)",
+    color: "#4f46e5",
   },
   adj: {
     label: "Tính từ",
-    color: "var(--chart-3)",
+    color: "#6366f1",
   },
   adv: {
     label: "Trạng từ",
-    color: "var(--chart-4)",
+    color: "#818cf8",
   },
   other: {
     label: "Khác",
-    color: "var(--chart-5)",
+    color: "#a5b4fc",
   },
 } satisfies ChartConfig
 

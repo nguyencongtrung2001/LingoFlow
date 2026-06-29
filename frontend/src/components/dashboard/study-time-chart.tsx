@@ -31,7 +31,7 @@ const chartData = [
 const chartConfig = {
   phut: {
     label: "Thời gian học (phút)",
-    color: "hsl(var(--chart-1))",
+    color: "#4f46e5",
   },
 } satisfies ChartConfig
 
