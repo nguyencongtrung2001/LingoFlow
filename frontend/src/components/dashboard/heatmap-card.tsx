@@ -9,7 +9,7 @@ export function HeatmapCard() {
   useEffect(() => {
     const lvls = ["hc0", "hc1", "hc2", "hc3", "hc4"];
     const generated: string[] = [];
-    for (let i = 0; i < 7 * 53; i++) {
+    for (let i = 0; i < 7 * 52; i++) {
       let l = "hc0";
       if (Math.floor(i / 7) >= 31) {
         const r = Math.random();
@@ -28,27 +28,25 @@ export function HeatmapCard() {
       </div>
 
       <div className="overflow-x-auto py-1 flex-1">
-        <div className="flex pl-[28px] mb-[6px]">
-          <div className="text-[10px] text-[#9998aa] font-medium flex-2">Jun</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-2">Jul</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-3">Aug</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-3">Sep</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-3">Oct</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-3">Nov</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-3">Dec</div>
-          <div className="text-[10px] text-[#1a1a2e] font-bold flex-3">Jan</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-3">Feb</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-3">Mar</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-3">Apr</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-3">May</div>
-          <div className="text-[10px] text-[#9998aa] font-medium flex-2">Jun</div>
+        <div className="flex pl-[32px] mb-[6px]">
+          <div className="flex w-full justify-between min-w-[689px]">
+            {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map((month) => (
+              <div key={month} className="text-[10px] text-[#9998aa] font-medium flex-1 text-left">
+                {month}
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="flex gap-2 items-start">
-          <div className="flex flex-col justify-between h-[88px] pt-[2px]">
-            <span className="text-[10px] text-[#9998aa] font-medium">Mon</span>
-            <span className="text-[10px] text-[#9998aa] font-medium">Wed</span>
-            <span className="text-[10px] text-[#9998aa] font-medium">Fri</span>
+          <div className="flex flex-col gap-[3px] text-[10px] text-[#9998aa] font-medium min-w-[24px]">
+            <span className="h-[10px] leading-[10px]">Mon</span>
+            <span className="h-[10px] leading-[10px]">Tue</span>
+            <span className="h-[10px] leading-[10px]">Wed</span>
+            <span className="h-[10px] leading-[10px]">Thu</span>
+            <span className="h-[10px] leading-[10px]">Fri</span>
+            <span className="h-[10px] leading-[10px]">Sat</span>
+            <span className="h-[10px] leading-[10px]">Sun</span>
           </div>
           <div className="hm-grid">
             {gridData.map((level, i) => (
