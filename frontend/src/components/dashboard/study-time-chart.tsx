@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { TrendingUp } from "lucide-react"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 import {
@@ -35,18 +36,40 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartLineLinear() {
+export function ChartLineLinear({ serverData }: { serverData?: Array<{ startedAt: string; timeSeconds: number }> }) {
+  const dynamicData = React.useMemo(() => {
+    if (!serverData || serverData.length === 0) return chartData;
+
+    // Group by day of week
+    const daysMap = new Map<string, number>();
+    const days = ["CN", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ Bảy"];
+    
+    serverData.forEach(session => {
+      const date = new Date(session.startedAt);
+      const dayLabel = days[date.getDay()];
+      const currentMinutes = daysMap.get(dayLabel) || 0;
+      daysMap.set(dayLabel, currentMinutes + (session.timeSeconds / 60));
+    });
+
+    const result = Array.from(daysMap.entries()).map(([label, phut]) => ({
+      label,
+      phut: Math.round(phut)
+    })).reverse(); // Reverse because query is desc
+
+    return result.length > 0 ? result : chartData;
+  }, [serverData]);
+
   return (
     <Card className="flex flex-col h-full justify-between">
       <CardHeader>
         <CardTitle className="text-base font-semibold">Thời gian ôn tập</CardTitle>
-        <CardDescription>Dữ liệu tuần hiện tại (Phút)</CardDescription>
+        <CardDescription>Dữ liệu theo phiên học (Phút)</CardDescription>
       </CardHeader>
       <CardContent className="pb-4">
         <ChartContainer config={chartConfig} className="h-[180px] w-full">
           <LineChart
             accessibilityLayer
-            data={chartData}
+            data={dynamicData}
             margin={{ left: 16, right: 16, top: 10 }}
           >
             <CartesianGrid vertical={false} strokeDasharray="3 3" />

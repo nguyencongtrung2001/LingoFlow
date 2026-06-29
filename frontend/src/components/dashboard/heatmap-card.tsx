@@ -1,25 +1,54 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { IconCalendarStats } from "@tabler/icons-react";
 import "./dashboard-styles.css";
 
-export function HeatmapCard() {
-  const [gridData, setGridData] = useState<string[]>([]);
-
-  useEffect(() => {
-    const lvls = ["hc0", "hc1", "hc2", "hc3", "hc4"];
+export function HeatmapCard({ serverData }: { serverData?: Array<{ date: string; wordsStudied: number }> }) {
+  const gridData = useMemo(() => {
     const generated: string[] = [];
-    for (let i = 0; i < 7 * 52; i++) {
-      let l = "hc0";
-      if (Math.floor(i / 7) >= 31) {
-        const r = Math.random();
-        if (r > 0.55) l = lvls[Math.floor(Math.random() * 4) + 1];
+    const totalDays = 7 * 53; // 371 days as per backend
+    
+    if (serverData && serverData.length > 0) {
+      // Map dates to words studied
+      const dataMap = new Map<string, number>();
+      serverData.forEach(item => {
+        // Just take the YYYY-MM-DD part if it's ISO
+        const dateStr = new Date(item.date).toISOString().split('T')[0];
+        dataMap.set(dateStr, item.wordsStudied);
+      });
+
+      // Calculate last 371 days ending today
+      const today = new Date();
+      
+      for (let i = totalDays - 1; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        
+        const studied = dataMap.get(dateStr) || 0;
+        let l = "hc0";
+        if (studied > 50) l = "hc4";
+        else if (studied > 30) l = "hc3";
+        else if (studied > 10) l = "hc2";
+        else if (studied > 0) l = "hc1";
+        
+        generated.push(l);
       }
-      generated.push(l);
+    } else {
+      // Fallback random data if no server data
+      const lvls = ["hc0", "hc1", "hc2", "hc3", "hc4"];
+      for (let i = 0; i < totalDays; i++) {
+        let l = "hc0";
+        if (Math.floor(i / 7) >= 31) {
+          const r = Math.random();
+          if (r > 0.55) l = lvls[Math.floor(Math.random() * 4) + 1];
+        }
+        generated.push(l);
+      }
     }
-    setTimeout(() => setGridData(generated), 0);
-  }, []);
+    return generated;
+  }, [serverData]);
 
   return (
     <div className="bg-white border-[0.5px] border-[rgba(70,69,90,0.10)] rounded-[16px] p-5 flex flex-col justify-between shadow-[0_2px_12px_-2px_rgba(70,72,212,0.04)] h-full">

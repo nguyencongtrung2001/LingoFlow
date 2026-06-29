@@ -41,7 +41,24 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   return null;
 };
 
-export function ChartPieLegend() {
+export function ChartPieLegend({ serverData }: { serverData?: Array<{ pos: string; _count: { id: number } }> }) {
+  // Map server data to chartData format, mapping English POS to Vietnamese
+  const posMap: Record<string, { name: string; fill: string }> = {
+    NOUN: { name: "Danh từ (N)", fill: "#4338ca" },
+    VERB: { name: "Động từ (V)", fill: "#4f46e5" },
+    ADJECTIVE: { name: "Tính từ (Adj)", fill: "#6366f1" },
+    ADVERB: { name: "Trạng từ (Adv)", fill: "#818cf8" },
+    PHRASE: { name: "Cụm từ", fill: "#a5b4fc" },
+  };
+
+  const dynamicData = serverData && serverData.length > 0
+    ? serverData.map(item => ({
+        name: posMap[item.pos]?.name || item.pos,
+        value: item._count.id,
+        fill: posMap[item.pos]?.fill || "#cbd5e1"
+      }))
+    : chartData; // Fallback to dummy data if no data
+
   return (
     <Card className="flex flex-col h-full justify-between">
       <CardHeader className="items-center pb-0">
@@ -53,14 +70,14 @@ export function ChartPieLegend() {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie 
-                data={chartData} 
+                data={dynamicData} 
                 dataKey="value" 
                 nameKey="name"
                 cx="50%"
                 cy="50%"
                 outerRadius={85}
               >
-                {chartData.map((entry, index) => (
+                {dynamicData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.fill} />
                 ))}
               </Pie>

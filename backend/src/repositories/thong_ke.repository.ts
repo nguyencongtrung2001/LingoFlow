@@ -1,0 +1,33 @@
+import { prisma } from "../config/prisma";
+
+export const layThongKeTongHopRepo = async (userId: string) => {
+  // 1. Tính toán cơ cấu loại từ (Noun, Verb, Adj...)
+  const coCauLoaiTu = await prisma.word.groupBy({
+    by: ['pos'],
+    where: { folder: { userId } },
+    _count: { id: true }
+  });
+
+  // 2. Tính toán phân cấp tiến độ Leitner Box
+  const tienDoLeitner = await prisma.wordProgress.groupBy({
+    by: ['box'],
+    where: { userId },
+    _count: { id: true }
+  });
+
+  // 3. Lấy 371 ngày dữ liệu DailyActivity cho Heatmap Chart
+  const duLieuHeatmap = await prisma.dailyActivity.findMany({
+    where: { userId },
+    orderBy: { date: 'asc' }
+  });
+
+  // 4. Lấy thời gian ôn tập 7 phiên học gần nhất
+  const thoiGianOnTap = await prisma.studySession.findMany({
+    where: { userId },
+    take: 7,
+    orderBy: { startedAt: 'desc' },
+    select: { startedAt: true, timeSeconds: true }
+  });
+
+  return { coCauLoaiTu, tienDoLeitner, duLieuHeatmap, thoiGianOnTap };
+};

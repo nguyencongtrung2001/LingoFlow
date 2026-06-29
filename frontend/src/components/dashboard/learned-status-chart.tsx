@@ -43,10 +43,34 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function LearnedStatusChart() {
+export function LearnedStatusChart({ serverData }: { serverData?: Array<{ box: number; _count: { id: number } }> }) {
+  const dynamicData = React.useMemo(() => {
+    if (!serverData || serverData.length === 0) return chartData;
+
+    let learnedCount = 0;
+    let learningCount = 0;
+    let unlearnedCount = 0;
+
+    serverData.forEach(item => {
+      if (item.box === 5) {
+        learnedCount += item._count.id;
+      } else if (item.box === 1) {
+        unlearnedCount += item._count.id;
+      } else {
+        learningCount += item._count.id;
+      }
+    });
+
+    return [
+      { status: "learned", count: learnedCount, fill: "var(--color-learned)" },
+      { status: "learning", count: learningCount, fill: "var(--color-learning)" },
+      { status: "unlearned", count: unlearnedCount, fill: "var(--color-unlearned)" },
+    ];
+  }, [serverData]);
+
   const totalWords = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.count, 0)
-  }, [])
+    return dynamicData.reduce((acc, curr) => acc + curr.count, 0)
+  }, [dynamicData])
 
   return (
     <Card className="flex flex-col h-full w-full">
@@ -65,7 +89,7 @@ export function LearnedStatusChart() {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={chartData}
+              data={dynamicData}
               dataKey="count"
               nameKey="status"
               innerRadius={60}
