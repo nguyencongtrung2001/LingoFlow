@@ -1,4 +1,42 @@
+import https from "https";
+import http from "http";
 import cloudinary from "../config/cloudinary";
+
+/**
+ * Tải file ảnh từ URL bên ngoài bằng module Node.js truyền thống (Tương thích mọi phiên bản Node.js)
+ */
+function downloadImage(url: string): Promise<{ buffer: Buffer; mimeType: string }> {
+  return new Promise((resolve, reject) => {
+    const client = url.startsWith("https") ? https : http;
+    client.get(
+      url,
+      {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+        }
+      },
+      (res) => {
+        if (res.statusCode !== 200) {
+          reject(new Error(`Failed to get image, status code: ${res.statusCode}`));
+          return;
+        }
+
+        const data: Buffer[] = [];
+        res.on("data", (chunk) => {
+          data.push(chunk);
+        });
+
+        res.on("end", () => {
+          const buffer = Buffer.concat(data);
+          const mimeType = res.headers["content-type"] || "image/jpeg";
+          resolve({ buffer, mimeType });
+        });
+      }
+    ).on("error", (err) => {
+      reject(err);
+    });
+  });
+}
 
 /**
  * Tải ảnh từ URL bên ngoài và upload lên Cloudinary của dự án
@@ -25,19 +63,7 @@ export async function uploadImageFromUrl(
   }
 
   try {
-    const response = await fetch(imageUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-      }
-    });
-    if (!response.ok) {
-      console.warn(`Không thể tải ảnh từ URL: ${imageUrl}, Status: ${response.status}`);
-      return imageUrl; // Fallback về link gốc
-    }
-
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const mimeType = response.headers.get("content-type") || "image/jpeg";
+    const { buffer, mimeType } = await downloadImage(imageUrl);
     const base64 = buffer.toString("base64");
     const dataURI = `data:${mimeType};base64,${base64}`;
 
