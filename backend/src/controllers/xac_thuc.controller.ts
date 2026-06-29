@@ -132,7 +132,7 @@ export const xuLyCapNhatAvatar = async (yeuCau: Request, phanHoi: Response) => {
     const dataURI = "data:" + file.mimetype + ";base64," + b64;
     
     const ketQuaUpload = await cloudinary.uploader.upload(dataURI, {
-      folder: "folder/avatar",
+      folder: "lingoflow/avatar",
       public_id: `user_${maNguoiDung}_${Date.now()}`,
       overwrite: true,
       transformation: [{ width: 250, height: 250, crop: "fill" }],

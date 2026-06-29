@@ -108,7 +108,7 @@ const xuLyCapNhatAvatar = async (yeuCau, phanHoi) => {
         const b64 = Buffer.from(file.buffer).toString("base64");
         const dataURI = "data:" + file.mimetype + ";base64," + b64;
         const ketQuaUpload = await cloudinary_1.default.uploader.upload(dataURI, {
-            folder: "folder/avatar",
+            folder: "lingoflow/avatar",
             public_id: `user_${maNguoiDung}_${Date.now()}`,
             overwrite: true,
             transformation: [{ width: 250, height: 250, crop: "fill" }],
