@@ -7,6 +7,7 @@ import {
   deleteWord,
   CreateWordInput,
   UpdateWordInput,
+  ExcelWordInput,
 } from "@/api/words.api";
 
 export function useGetWords(folderId: number) {
@@ -35,7 +36,7 @@ export function useCreateMultipleWords(folderId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (wordsArray: any[]) => {
+    mutationFn: async (wordsArray: ExcelWordInput[]) => {
       return await createMultipleWords(folderId, wordsArray);
     },
     onSuccess: () => {

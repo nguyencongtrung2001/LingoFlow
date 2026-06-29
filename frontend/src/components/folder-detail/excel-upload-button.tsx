@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import { Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCreateMultipleWords } from "@/feature/words/hooks/useWords";
+import { ExcelWordInput } from "@/api/words.api";
 
 interface ExcelUploadButtonProps {
   folderId: number;
@@ -30,7 +31,7 @@ export function ExcelUploadButton({ folderId }: ExcelUploadButtonProps) {
         const ws = wb.Sheets[wsname];
         
         // Chuyển sheet sang JSON
-        const parsedJson = XLSX.utils.sheet_to_json<any>(ws);
+        const parsedJson = XLSX.utils.sheet_to_json<ExcelWordInput>(ws);
 
         // Filter and Validate
         const validWords = parsedJson.filter(
@@ -51,14 +52,14 @@ export function ExcelUploadButton({ folderId }: ExcelUploadButtonProps) {
             setIsParsing(false);
             if (fileInputRef.current) fileInputRef.current.value = "";
           },
-          onError: (error: unknown) => {
+          onError: () => {
             toast.error("Đã xảy ra lỗi khi upload dữ liệu.");
             setIsParsing(false);
             if (fileInputRef.current) fileInputRef.current.value = "";
           }
         });
         
-      } catch (error) {
+      } catch {
         toast.error("Lỗi đọc file Excel.");
         setIsParsing(false);
         if (fileInputRef.current) fileInputRef.current.value = "";

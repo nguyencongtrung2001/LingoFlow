@@ -24,6 +24,14 @@ export interface Word {
 export type CreateWordInput = Omit<Word, "id" | "createdAt" | "updatedAt" | "learned"> & { learned?: boolean };
 export type UpdateWordInput = Partial<CreateWordInput>;
 
+export interface ExcelWordInput {
+  Word: string;
+  Meaning: string;
+  Pos?: string;
+  Phonetic?: string;
+  Example?: string;
+}
+
 export const getWordsByFolder = async (folderId: number): Promise<Word[]> => {
   const res = await api.get(`/tu-vung/thu-muc/${folderId}`);
   return res.data;
@@ -34,7 +42,7 @@ export const createWord = async (data: CreateWordInput): Promise<Word> => {
   return res.data;
 };
 
-export const createMultipleWords = async (folderId: number, wordsArray: any[]): Promise<Word[]> => {
+export const createMultipleWords = async (folderId: number, wordsArray: ExcelWordInput[]): Promise<Word[]> => {
   const res = await api.post("/tu-vung/batch", { folderId, wordsArray });
   return res.data;
 };
