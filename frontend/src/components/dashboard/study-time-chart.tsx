@@ -2,7 +2,6 @@
 
 import { TrendingUp } from "lucide-react"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
-
 import {
   Card,
   CardContent,
@@ -18,73 +17,76 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 
-export const description = "A linear line chart for study time"
-
-// Dummy data for study time (minutes) over 7 days
+// Định dạng dữ liệu mẫu theo ngày/tuần
 const chartData = [
-  { day: "Thứ 2", minutes: 45 },
-  { day: "Thứ 3", minutes: 60 },
-  { day: "Thứ 4", minutes: 30 },
-  { day: "Thứ 5", minutes: 90 },
-  { day: "Thứ 6", minutes: 120 },
-  { day: "Thứ 7", minutes: 85 },
-  { day: "CN", minutes: 110 },
+  { label: "Thứ 2", phut: 45 },
+  { label: "Thứ 3", phut: 80 },
+  { label: "Thứ 4", phut: 120 }, // Mốc tối đa 2h
+  { label: "Thứ 5", phut: 30 },
+  { label: "Thứ 6", phut: 95 },
+  { label: "Thứ Bảy", phut: 60 },
+  { label: "Chủ Nhật", phut: 110 },
 ]
 
 const chartConfig = {
-  minutes: {
-    label: "Phút",
-    color: "var(--chart-1)",
+  phut: {
+    label: "Thời gian học (phút)",
+    color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
-export function StudyTimeChart() {
+export function ChartLineLinear() {
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="flex flex-col h-full justify-between">
       <CardHeader>
-        <CardTitle>Thời gian học (phút)</CardTitle>
-        <CardDescription>Tuần này</CardDescription>
+        <CardTitle className="text-base font-semibold">Thời gian ôn tập</CardTitle>
+        <CardDescription>Dữ liệu tuần hiện tại (Phút)</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1">
-        <ChartContainer config={chartConfig} className="h-full min-h-[200px] w-full">
+      <CardContent className="pb-4">
+        <ChartContainer config={chartConfig} className="h-[180px] w-full">
           <LineChart
             accessibilityLayer
             data={chartData}
-            margin={{
-              left: 0,
-              right: 12,
-              top: 12,
-              bottom: 12,
-            }}
+            margin={{ left: 16, right: 16, top: 10 }}
           >
-            <CartesianGrid vertical={false} />
+            <CartesianGrid vertical={false} strokeDasharray="3 3" />
             <XAxis
-              dataKey="day"
+              dataKey="label"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
+              className="text-xs"
             />
             <YAxis 
               domain={[0, 120]} 
+              tickCount={5}
               tickLine={false}
               axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => `${value}p`}
+              className="text-xs"
             />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
             <Line
-              dataKey="minutes"
+              dataKey="phut"
               type="linear"
-              stroke="var(--color-minutes)"
-              strokeWidth={2}
-              dot={false}
+              stroke="var(--color-phut)"
+              strokeWidth={2.5}
+              dot={{ r: 4, fill: "var(--color-phut)" }}
+              activeDot={{ r: 6 }}
             />
           </LineChart>
         </ChartContainer>
       </CardContent>
+      <CardFooter className="flex-col items-start gap-1 text-sm border-t pt-3">
+        <div className="flex gap-2 leading-none font-medium text-green-600">
+          Tăng trưởng 12.4% so với tuần trước <TrendingUp className="h-4 w-4" />
+        </div>
+        <div className="leading-none text-xs text-muted-foreground">
+          Thời gian học khống chế tối đa 120 phút/ngày
+        </div>
+      </CardFooter>
     </Card>
   )
 }
