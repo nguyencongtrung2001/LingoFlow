@@ -12,23 +12,29 @@ export default function Home() {
           Tổng quan học tập
         </p>
 
-        {/* Row 1: Streak (fixed width) + Media (flexible) */}
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 mb-4 lg:h-[235px]">
-          <div className="h-full min-h-[235px] lg:min-h-0">
-            <StreakCard />
+        {/* Row 1: 2 Pie charts + Media + Streak (fixed width or all same size) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 lg:h-[300px]">
+          <div className="h-full min-h-[300px] lg:min-h-0">
+            <VocabCountChart />
           </div>
-          <div className="h-full min-h-[235px] lg:min-h-0">
+          <div className="h-full min-h-[300px] lg:min-h-0">
+            <LearnedStatusChart />
+          </div>
+          <div className="h-full min-h-[300px] lg:min-h-0">
             <MediaCard />
+          </div>
+          <div className="h-full min-h-[300px] lg:min-h-0">
+            <StreakCard />
           </div>
         </div>
 
-        {/* Row 2: Heatmap (flexible) + Donut Chart (fixed width) */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 mb-4">
-          <div className="h-full min-h-[235px]">
-            <HeatmapCard />
+        {/* Row 2: Linear chart + Heatmap (50/50 width) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+          <div className="h-full min-h-[300px]">
+            <StudyTimeChart />
           </div>
-          <div className="h-full min-h-[235px]">
-            <WordTypeChartDynamic />
+          <div className="h-full min-h-[300px]">
+            <HeatmapCard />
           </div>
         </div>
       </main>
