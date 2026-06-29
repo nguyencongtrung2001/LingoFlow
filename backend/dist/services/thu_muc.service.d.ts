@@ -31,6 +31,27 @@ export declare const layThuMucChiTiet: (id: number, userId: string) => Promise<{
     description: string | null;
     userId: string;
 }>;
+export declare const layThuMucChiTietQuaName: (name: string, userId: string) => Promise<{
+    words: {
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        word: string;
+        meaning: string;
+        phonetic: string | null;
+        pos: import("@prisma/client").$Enums.PartOfSpeech;
+        example: string | null;
+        image: string | null;
+        folderId: number;
+    }[];
+} & {
+    id: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    description: string | null;
+    userId: string;
+}>;
 export declare const taoThuMuc: (userId: string, name: string, description?: string) => Promise<{
     id: number;
     name: string;

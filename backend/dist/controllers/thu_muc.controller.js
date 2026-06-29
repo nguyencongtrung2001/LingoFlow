@@ -19,12 +19,12 @@ exports.danhSachThuMuc = danhSachThuMuc;
 const chiTietThuMuc = async (yeuCau, phanHoi) => {
     try {
         const maNguoiDung = yeuCau.user?.id;
-        const folderId = parseInt(yeuCau.params.id);
+        const slug = yeuCau.params.id; // slug is the name
         if (!maNguoiDung)
             return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
-        if (isNaN(folderId))
-            return phanHoi.status(400).json({ error: "ID thư mục không hợp lệ." });
-        const thuMuc = await (0, thu_muc_service_1.layThuMucChiTiet)(folderId, maNguoiDung);
+        if (!slug)
+            return phanHoi.status(400).json({ error: "Tên thư mục không hợp lệ." });
+        const thuMuc = await (0, thu_muc_service_1.layThuMucChiTietQuaName)(slug, maNguoiDung);
         return phanHoi.status(200).json(thuMuc);
     }
     catch (loi) {

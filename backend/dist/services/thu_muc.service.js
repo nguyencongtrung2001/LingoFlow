@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xoaThuMuc = exports.capNhatThuMuc = exports.taoThuMuc = exports.layThuMucChiTiet = exports.layDanhSachThuMuc = void 0;
+exports.xoaThuMuc = exports.capNhatThuMuc = exports.taoThuMuc = exports.layThuMucChiTietQuaName = exports.layThuMucChiTiet = exports.layDanhSachThuMuc = void 0;
 const thu_muc_repository_1 = require("../repositories/thu_muc.repository");
 const layDanhSachThuMuc = async (userId) => {
     return await (0, thu_muc_repository_1.layDanhSachThuMucRepo)(userId);
@@ -14,6 +14,14 @@ const layThuMucChiTiet = async (id, userId) => {
     return thuMuc;
 };
 exports.layThuMucChiTiet = layThuMucChiTiet;
+const layThuMucChiTietQuaName = async (name, userId) => {
+    const thuMuc = await (0, thu_muc_repository_1.layThuMucChiTietQuaNameRepo)(name, userId);
+    if (!thuMuc) {
+        throw new Error("Không tìm thấy thư mục hoặc bạn không có quyền truy cập.");
+    }
+    return thuMuc;
+};
+exports.layThuMucChiTietQuaName = layThuMucChiTietQuaName;
 const taoThuMuc = async (userId, name, description) => {
     if (!name || name.trim() === "") {
         throw new Error("Tên thư mục không được để trống.");

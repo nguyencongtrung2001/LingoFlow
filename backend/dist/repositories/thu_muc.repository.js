@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xoaThuMucRepo = exports.capNhatThuMucRepo = exports.taoThuMucRepo = exports.layThuMucChiTietRepo = exports.layDanhSachThuMucRepo = void 0;
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+exports.xoaThuMucRepo = exports.capNhatThuMucRepo = exports.taoThuMucRepo = exports.layThuMucChiTietQuaNameRepo = exports.layThuMucChiTietRepo = exports.layDanhSachThuMucRepo = void 0;
+const prisma_1 = require("../config/prisma");
 const layDanhSachThuMucRepo = async (userId) => {
-    return await prisma.folder.findMany({
+    return await prisma_1.prisma.folder.findMany({
         where: { userId },
         include: {
             _count: {
@@ -16,7 +15,7 @@ const layDanhSachThuMucRepo = async (userId) => {
 };
 exports.layDanhSachThuMucRepo = layDanhSachThuMucRepo;
 const layThuMucChiTietRepo = async (id, userId) => {
-    return await prisma.folder.findFirst({
+    return await prisma_1.prisma.folder.findFirst({
         where: { id, userId },
         include: {
             words: {
@@ -26,8 +25,19 @@ const layThuMucChiTietRepo = async (id, userId) => {
     });
 };
 exports.layThuMucChiTietRepo = layThuMucChiTietRepo;
+const layThuMucChiTietQuaNameRepo = async (name, userId) => {
+    return await prisma_1.prisma.folder.findFirst({
+        where: { name, userId },
+        include: {
+            words: {
+                orderBy: { createdAt: "desc" },
+            },
+        },
+    });
+};
+exports.layThuMucChiTietQuaNameRepo = layThuMucChiTietQuaNameRepo;
 const taoThuMucRepo = async (userId, name, description) => {
-    return await prisma.folder.create({
+    return await prisma_1.prisma.folder.create({
         data: {
             name,
             description: description || null,
@@ -37,14 +47,14 @@ const taoThuMucRepo = async (userId, name, description) => {
 };
 exports.taoThuMucRepo = taoThuMucRepo;
 const capNhatThuMucRepo = async (id, userId, data) => {
-    return await prisma.folder.update({
+    return await prisma_1.prisma.folder.update({
         where: { id },
         data,
     });
 };
 exports.capNhatThuMucRepo = capNhatThuMucRepo;
 const xoaThuMucRepo = async (id, userId) => {
-    return await prisma.folder.delete({
+    return await prisma_1.prisma.folder.delete({
         where: { id },
     });
 };
