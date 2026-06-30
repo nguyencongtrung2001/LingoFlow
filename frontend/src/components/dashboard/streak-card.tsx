@@ -14,6 +14,13 @@ const getDayLabel = (date: Date): string => {
   return `T${day + 1}`;
 };
 
+const formatLocalDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 const calculateStreak = (serverData?: HeatmapDataPoint[]) => {
   if (!serverData || serverData.length === 0) {
     return { currentStreak: 0, studiedDays: new Set<string>() };
@@ -28,11 +35,11 @@ const calculateStreak = (serverData?: HeatmapDataPoint[]) => {
   });
 
   const today = new Date();
-  const todayStr = today.toISOString().split("T")[0];
+  const todayStr = formatLocalDate(today);
 
   const yesterday = new Date();
   yesterday.setDate(today.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().split("T")[0];
+  const yesterdayStr = formatLocalDate(yesterday);
 
   if (!studiedDays.has(todayStr) && !studiedDays.has(yesterdayStr)) {
     return { currentStreak: 0, studiedDays };
@@ -42,7 +49,7 @@ const calculateStreak = (serverData?: HeatmapDataPoint[]) => {
   const checkDate = new Date(studiedDays.has(todayStr) ? today : yesterday);
 
   while (true) {
-    const checkStr = checkDate.toISOString().split("T")[0];
+    const checkStr = formatLocalDate(checkDate);
     if (studiedDays.has(checkStr)) {
       currentStreak++;
       checkDate.setDate(checkDate.getDate() - 1);
@@ -58,14 +65,14 @@ export function StreakCard({ serverData }: { serverData?: HeatmapDataPoint[] }) 
   const { currentStreak, days } = useMemo(() => {
     const { currentStreak, studiedDays } = calculateStreak(serverData);
     const today = new Date();
-    const todayStr = today.toISOString().split("T")[0];
+    const todayStr = formatLocalDate(today);
 
     const generatedDays = Array.from({ length: 7 }).map((_, idx) => {
       // Offset from -5 to +1
       const offset = idx - 5;
       const date = new Date(today);
       date.setDate(today.getDate() + offset);
-      const dateStr = date.toISOString().split("T")[0];
+      const dateStr = formatLocalDate(date);
 
       const isToday = dateStr === todayStr;
       const isFuture = date > today && !isToday;
