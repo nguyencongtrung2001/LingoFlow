@@ -9,6 +9,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card"
 import {
   ChartContainer,
@@ -136,6 +137,27 @@ export function LearnedStatusChart({ serverData }: { serverData?: Array<{ box: n
           </ChartContainer>
         )}
       </CardContent>
+      {totalWords > 0 && (
+        <CardFooter className="flex-col gap-2 text-sm border-t pt-3 pb-4">
+          <div className="flex w-full items-center justify-around text-xs select-none">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#4f46e5]" />
+              <span className="text-slate-500">Đã thuộc:</span>
+              <span className="font-semibold text-slate-800">{dynamicData.find(d => d.status === "learned")?.count || 0}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#818cf8]" />
+              <span className="text-slate-500">Đang ôn:</span>
+              <span className="font-semibold text-slate-800">{dynamicData.find(d => d.status === "learning")?.count || 0}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#c7d2fe]" />
+              <span className="text-slate-500">Chưa thuộc:</span>
+              <span className="font-semibold text-slate-800">{dynamicData.find(d => d.status === "unlearned")?.count || 0}</span>
+            </div>
+          </div>
+        </CardFooter>
+      )}
     </Card>
   )
 }
