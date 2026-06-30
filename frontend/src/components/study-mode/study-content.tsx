@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { FolderDetail } from "@/types/folder";
 import { useGetFolderById } from "@/feature/folders/hooks/useFolders";
 import { useGetWords, useGetWordsSequential } from "@/feature/words/hooks/useWords";
-import { Loader2, ArrowLeft, BookOpen, HelpCircle, Layers, Edit3, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { QuizGame } from "@/components/study-mode/quiz/quiz-game";
 import { FlashcardGame } from "@/components/study-mode/flashcard/flashcard-game";
@@ -111,18 +111,7 @@ export default function StudyContent({ slug }: StudyContentProps) {
     })),
   };
 
-  const handlePageChange = (newPage: number) => {
-    if (newPage < 1 || newPage > totalPages) return;
-    const params = new URLSearchParams(searchParams?.toString() || "");
-    params.set("page", newPage.toString());
-    router.push(`/folders/${slug}/study?${params.toString()}`);
-  };
 
-  const handleModeChange = (newType: string) => {
-    const params = new URLSearchParams(searchParams?.toString() || "");
-    params.set("type", newType);
-    router.push(`/folders/${slug}/study?${params.toString()}`);
-  };
 
   const handleBack = () => {
     router.push(`/folders/${slug}`);
@@ -130,81 +119,6 @@ export default function StudyContent({ slug }: StudyContentProps) {
 
   return (
     <div className="flex-1 flex flex-col w-full bg-[#f8fafc] min-h-[90vh]">
-      {/* Top Header Điều Hướng Cao Cấp */}
-      <header className="bg-white border-b border-[#e2e8f0] px-4 py-3 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Back button & Folder title */}
-          <div className="flex items-center gap-3 self-start sm:self-auto">
-            <button
-              onClick={handleBack}
-              className="p-2 hover:bg-[#f1f5f9] rounded-xl transition-all duration-200 text-[#475569] hover:text-[#0f172a]"
-              title="Quay lại thư mục"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <div>
-              <h1 className="text-[16px] font-bold text-[#0f172a] line-clamp-1">
-                {folder.name}
-              </h1>
-              <p className="text-[11px] text-[#64748b]">
-                Tổng số từ: {allWords.length}
-              </p>
-            </div>
-          </div>
-
-          {/* Pagination Cuốn Chiếu */}
-          {totalPages > 1 && (
-            <div className="flex items-center gap-2 bg-[#f1f5f9] p-1.5 rounded-xl shadow-inner">
-              <button
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page === 1}
-                className="p-1.5 rounded-lg hover:bg-white transition-all disabled:opacity-40 disabled:hover:bg-transparent text-[#475569]"
-                title="Đợt trước"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <span className="text-[12px] font-bold text-[#334155] px-2">
-                Đợt {page} / {totalPages} (từ {(page - 1) * 15 + 1} - {Math.min(page * 15, allWords.length)})
-              </span>
-              <button
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page === totalPages}
-                className="p-1.5 rounded-lg hover:bg-white transition-all disabled:opacity-40 disabled:hover:bg-transparent text-[#475569]"
-                title="Đợt sau"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-
-          {/* Mode Switcher Tabs */}
-          <div className="flex items-center bg-[#f1f5f9] p-1 rounded-xl shadow-inner w-full sm:w-auto overflow-x-auto">
-            {[
-              { id: "flashcard", label: "Flashcard", icon: Layers },
-              { id: "quiz", label: "Quiz", icon: HelpCircle },
-              { id: "match", label: "Ghép từ", icon: BookOpen },
-              { id: "write", label: "Gõ từ", icon: Edit3 },
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = type === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => handleModeChange(tab.id)}
-                  className={`flex items-center justify-center gap-1.5 py-1.5 px-3.5 text-[12px] font-bold rounded-lg transition-all whitespace-nowrap grow sm:grow-0 ${
-                    isActive
-                      ? "bg-white text-[#4648d4] shadow-sm"
-                      : "text-[#64748b] hover:text-[#475569] hover:bg-white/50"
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </header>
 
       {/* Vùng Render Game Chính */}
       <main className="grow flex items-center justify-center p-4 md:p-8">
