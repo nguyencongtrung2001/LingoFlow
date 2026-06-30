@@ -19,12 +19,6 @@ import {
 
 export const description = "A donut chart for learned status"
 
-const chartData = [
-  { status: "learned", count: 275, fill: "var(--color-learned)" },
-  { status: "learning", count: 200, fill: "var(--color-learning)" },
-  { status: "unlearned", count: 187, fill: "var(--color-unlearned)" },
-]
-
 const chartConfig = {
   count: {
     label: "Từ vựng",

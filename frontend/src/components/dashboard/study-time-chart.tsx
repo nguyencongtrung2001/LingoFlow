@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { TrendingUp } from "lucide-react"
+import { TrendingUp, TrendingDown } from "lucide-react"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 import {
   Card,
@@ -17,17 +17,6 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
-
-// Định dạng dữ liệu mẫu theo ngày/tuần
-const chartData = [
-  { label: "Thứ 2", phut: 45 },
-  { label: "Thứ 3", phut: 80 },
-  { label: "Thứ 4", phut: 120 }, // Mốc tối đa 2h
-  { label: "Thứ 5", phut: 30 },
-  { label: "Thứ 6", phut: 95 },
-  { label: "Thứ Bảy", phut: 60 },
-  { label: "Chủ Nhật", phut: 110 },
-]
 
 const chartConfig = {
   phut: {
@@ -66,9 +55,33 @@ export function ChartLineLinear({ serverData }: { serverData?: Array<{ startedAt
     });
   }, [serverData]);
 
-  const hasData = React.useMemo(() => {
-    return dynamicData.some(d => d.phut > 0);
-  }, [dynamicData]);
+  const growthRate = React.useMemo(() => {
+    if (!serverData || serverData.length === 0) return 0;
+
+    const today = new Date();
+    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const sevenDaysAgo = new Date(todayMidnight);
+    sevenDaysAgo.setDate(todayMidnight.getDate() - 6);
+
+    let thisWeekSeconds = 0;
+    let lastWeekSeconds = 0;
+
+    serverData.forEach(session => {
+      const sessionDate = new Date(session.startedAt);
+      if (sessionDate >= sevenDaysAgo) {
+        thisWeekSeconds += session.timeSeconds;
+      } else {
+        lastWeekSeconds += session.timeSeconds;
+      }
+    });
+
+    if (lastWeekSeconds === 0) {
+      return thisWeekSeconds > 0 ? 100 : 0;
+    }
+
+    const rate = ((thisWeekSeconds - lastWeekSeconds) / lastWeekSeconds) * 100;
+    return parseFloat(rate.toFixed(1));
+  }, [serverData]);
 
   return (
     <Card className="flex flex-col h-full justify-between">
@@ -114,13 +127,17 @@ export function ChartLineLinear({ serverData }: { serverData?: Array<{ startedAt
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-1 text-sm border-t pt-3">
-        {hasData ? (
+        {growthRate > 0 ? (
           <div className="flex gap-2 leading-none font-medium text-green-600">
-            Tăng trưởng 12.4% so với tuần trước <TrendingUp className="h-4 w-4" />
+            Tăng trưởng {growthRate}% so với tuần trước <TrendingUp className="h-4 w-4" />
+          </div>
+        ) : growthRate < 0 ? (
+          <div className="flex gap-2 leading-none font-medium text-rose-600">
+            Giảm {Math.abs(growthRate)}% so với tuần trước <TrendingDown className="h-4 w-4" />
           </div>
         ) : (
           <div className="flex gap-2 leading-none font-medium text-slate-400">
-            Chưa ghi nhận phiên ôn tập nào tuần này
+            Không đổi so với tuần trước
           </div>
         )}
         <div className="leading-none text-xs text-muted-foreground">

@@ -21,10 +21,15 @@ export const layThongKeTongHopRepo = async (userId: string) => {
     orderBy: { date: 'asc' }
   });
 
-  // 4. Lấy thời gian ôn tập 7 phiên học gần nhất
+  // 4. Lấy thời gian ôn tập 14 ngày gần nhất để tính toán tăng trưởng tuần
+  const fourteenDaysAgo = new Date();
+  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+
   const thoiGianOnTap = await prisma.studySession.findMany({
-    where: { userId },
-    take: 7,
+    where: {
+      userId,
+      startedAt: { gte: fourteenDaysAgo }
+    },
     orderBy: { startedAt: 'desc' },
     select: { startedAt: true, timeSeconds: true }
   });
