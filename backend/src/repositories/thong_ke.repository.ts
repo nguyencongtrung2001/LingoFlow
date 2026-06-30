@@ -36,3 +36,17 @@ export const layThongKeTongHopRepo = async (userId: string) => {
 
   return { coCauLoaiTu, tienDoLeitner, duLieuHeatmap, thoiGianOnTap };
 };
+
+export const layLichSuHocTapRepo = async (userId: string) => {
+  return await prisma.studySession.findMany({
+    where: { userId },
+    orderBy: { startedAt: "desc" },
+    include: {
+      folder: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+};

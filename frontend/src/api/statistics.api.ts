@@ -13,3 +13,24 @@ export const getDashboardStats = async (): Promise<DashboardStatsResponse> => {
   const res = await axios.get(`${API_URL}/api/thong-ke`, { withCredentials: true });
   return res.data;
 };
+
+export interface StudySessionHistoryItem {
+  id: string;
+  folderId: number;
+  mode: "FLASHCARD" | "QUIZ" | "MATCH" | "WRITE";
+  totalWords: number;
+  correctCount: number;
+  accuracy: number;
+  maxStreak: number;
+  timeSeconds: number | null;
+  startedAt: string;
+  completedAt: string;
+  folder: {
+    name: string;
+  };
+}
+
+export const getStudyHistory = async (): Promise<StudySessionHistoryItem[]> => {
+  const res = await axios.get(`${API_URL}/api/thong-ke/lich-su`, { withCredentials: true });
+  return res.data;
+};
