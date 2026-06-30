@@ -7,7 +7,6 @@ import { HeatmapCard } from "@/components/dashboard/heatmap-card"
 import { ChartPieLegend } from "@/components/dashboard/word-type-chart"
 import { LearnedStatusChart } from "@/components/dashboard/learned-status-chart"
 import { ChartLineLinear } from "@/components/dashboard/study-time-chart"
-import FoldersClient from "@/components/folder/folders-client"
 
 export default function DashboardPage() {
   const { data: stats, isLoading } = useDashboardStats();
@@ -35,10 +34,6 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
         <div className="flex flex-col h-full"><HeatmapCard serverData={stats?.duLieuHeatmap} /></div>
         <div className="flex flex-col h-full"><ChartLineLinear serverData={stats?.thoiGianOnTap} /></div>
-      </div>
-
-      <div className="border-t border-slate-100 pt-6">
-        <FoldersClient />
       </div>
     </div>
   )

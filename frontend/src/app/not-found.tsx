@@ -1,3 +1,4 @@
+import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function NotFound() {
@@ -8,7 +9,7 @@ export default function NotFound() {
           404
         </div>
         <div className="w-16 h-16 rounded-full bg-[#e1e0ff] flex items-center justify-center mx-auto mb-5 text-[28px]">
-          🔍
+          <SearchIcon />
         </div>
         <h1 className="text-[24px] font-bold text-[#0b1c30] mb-2">
           Không tìm thấy trang

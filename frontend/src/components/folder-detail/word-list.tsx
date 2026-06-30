@@ -25,8 +25,8 @@ export function WordList({
     return (
       <div className="col-span-full text-center py-12 text-[#464554] bg-[#f8f9ff] rounded-xl border border-dashed border-[#c7c4d7]">
         {heartFilterOn
-          ? "Chưa có từ yêu thích nào. Nhấn ❤️ trên thẻ từ để lưu!"
-          : "Không tìm thấy từ vựng nào khớp."}
+          ? "Chưa có từ yêu thích nào. Nhấn vào trái tim trên các thẻ từ để thêm vào danh sách yêu thích!"
+          : "Không tìm thấy từ vựng nào."}
       </div>
     );
   }

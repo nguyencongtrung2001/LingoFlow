@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo } from "react";
 import { IconCalendarStats } from "@tabler/icons-react";
 import "./dashboard-styles.css";
 
@@ -22,9 +22,51 @@ const khoiTaoDuLieuGiaLap = (): string[] => {
   return generated;
 };
 
-export function HeatmapCard() {
-  // KHỬ HOÀN TOÀN USEEFFECT: Nạp trực tiếp hàm khởi tạo vào useState (Lazy Initial State)
-  const [gridData] = useState<string[]>(() => khoiTaoDuLieuGiaLap());
+interface HeatmapDataPoint {
+  date: string;
+  wordsStudied: number;
+}
+
+const buildGridData = (serverData?: HeatmapDataPoint[]): string[] => {
+  if (!serverData) {
+    return khoiTaoDuLieuGiaLap();
+  }
+
+  const dataMap = new Map<string, number>();
+  serverData.forEach(item => {
+    const dateKey = item.date.split("T")[0];
+    dataMap.set(dateKey, (dataMap.get(dateKey) || 0) + item.wordsStudied);
+  });
+
+  const today = new Date();
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() - 364);
+  
+  const day = startDate.getDay();
+  const diff = day === 0 ? -6 : 1 - day; // adjust to Monday
+  startDate.setDate(startDate.getDate() + diff);
+
+  const generated: string[] = [];
+  for (let i = 0; i < 371; i++) {
+    const currentDate = new Date(startDate);
+    currentDate.setDate(startDate.getDate() + i);
+    const dateString = currentDate.toISOString().split("T")[0];
+    const words = dataMap.get(dateString) || 0;
+
+    let level = "hc0";
+    if (words > 0) {
+      if (words <= 3) level = "hc1";
+      else if (words <= 7) level = "hc2";
+      else if (words <= 15) level = "hc3";
+      else level = "hc4";
+    }
+    generated.push(level);
+  }
+  return generated;
+};
+
+export function HeatmapCard({ serverData }: { serverData?: HeatmapDataPoint[] }) {
+  const gridData = useMemo(() => buildGridData(serverData), [serverData]);
 
   return (
     <div className="bg-white border-[0.5px] border-slate-100 rounded-[16px] p-5 flex flex-col justify-between shadow-sm h-full">
