@@ -80,3 +80,55 @@ export async function uploadImageFromUrl(
     return imageUrl; // Fallback về link gốc nếu xảy ra lỗi
   }
 }
+
+/**
+ * Trích xuất publicId của ảnh từ URL Cloudinary
+ */
+export function extractPublicIdFromUrl(url: string): string | null {
+  if (!url || !url.includes("res.cloudinary.com")) return null;
+
+  try {
+    const parts = url.split("/upload/");
+    if (parts.length < 2) return null;
+
+    const pathAfterUpload = parts[1];
+    if (!pathAfterUpload) return null;
+
+    const segments = pathAfterUpload.split("/");
+    const firstSegment = segments[0];
+    
+    // Loại bỏ version (ví dụ: v1688133593) nếu có
+    if (firstSegment && firstSegment.startsWith("v") && !isNaN(Number(firstSegment.substring(1)))) {
+      segments.shift();
+    }
+
+    const fullPathWithoutVersion = segments.join("/");
+    const lastDotIndex = fullPathWithoutVersion.lastIndexOf(".");
+    if (lastDotIndex !== -1) {
+      return fullPathWithoutVersion.substring(0, lastDotIndex);
+    }
+    return fullPathWithoutVersion;
+  } catch (error) {
+    console.error("Lỗi khi giải mã publicId từ URL Cloudinary:", error);
+    return null;
+  }
+}
+
+/**
+ * Xóa ảnh khỏi Cloudinary dựa trên URL
+ */
+export async function deleteImageFromCloudinary(url: string | null | undefined): Promise<boolean> {
+  if (!url) return false;
+
+  const publicId = extractPublicIdFromUrl(url);
+  if (!publicId) return false;
+
+  try {
+    const result = await cloudinary.uploader.destroy(publicId);
+    console.log(`Xóa ảnh thành công trên Cloudinary! publicId: ${publicId}. Kết quả:`, result);
+    return result.result === "ok";
+  } catch (error) {
+    console.error(`Lỗi khi xóa ảnh trên Cloudinary với publicId ${publicId}:`, error);
+    return false;
+  }
+}

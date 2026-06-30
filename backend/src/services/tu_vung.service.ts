@@ -8,7 +8,7 @@ import {
   taoPhienHocRepo,
   layDanhSachTuCuonChieuRepo,
 } from "../repositories/tu_vung.repository";
-import { uploadImageFromUrl } from "../utils/cloudinary_upload";
+import { uploadImageFromUrl, deleteImageFromCloudinary } from "../utils/cloudinary_upload";
 
 export const layDanhSachTuVungService = async (folderId: number, userId: string) => {
   // Xác thực thư mục có thuộc về người dùng không
@@ -70,8 +70,15 @@ export const suaTuVungService = async (wordId: number, userId: string, data: any
 
   // Tải gián tiếp ảnh từ URL và đưa lên Cloudinary trước khi cập nhật từ
   const cloneData = { ...data };
-  if (cloneData.image !== undefined) {
-    cloneData.image = await uploadImageFromUrl(cloneData.image, "lingoflow/words", `word_${userId}`);
+  if (cloneData.image !== undefined && cloneData.image !== tuVung.image) {
+    // Xóa ảnh cũ trên Cloudinary nếu có
+    if (tuVung.image) {
+      await deleteImageFromCloudinary(tuVung.image);
+    }
+    // Upload ảnh mới nếu có
+    if (cloneData.image) {
+      cloneData.image = await uploadImageFromUrl(cloneData.image, "lingoflow/words", `word_${userId}`);
+    }
   }
 
   return await suaTuVungRepo(wordId, cloneData);
@@ -88,6 +95,11 @@ export const xoaTuVungService = async (wordId: number, userId: string) => {
 
   if (!tuVung) {
     throw new Error("Từ vựng không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  // Xóa ảnh liên kết trên Cloudinary nếu có trước khi xóa từ vựng khỏi Database
+  if (tuVung.image) {
+    await deleteImageFromCloudinary(tuVung.image);
   }
 
   return await xoaTuVungRepo(wordId);

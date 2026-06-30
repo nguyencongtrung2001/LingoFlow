@@ -6,6 +6,7 @@ import {
   xoaThuMucRepo,
   layThuMucChiTietQuaNameRepo,
 } from "../repositories/thu_muc.repository";
+import { deleteImageFromCloudinary } from "../utils/cloudinary_upload";
 
 export const layDanhSachThuMuc = async (userId: string) => {
   return await layDanhSachThuMucRepo(userId);
@@ -53,6 +54,15 @@ export const xoaThuMuc = async (id: number, userId: string) => {
   const thuMuc = await layThuMucChiTietRepo(id, userId);
   if (!thuMuc) {
     throw new Error("Không tìm thấy thư mục hoặc bạn không có quyền truy cập.");
+  }
+
+  // Xóa toàn bộ ảnh của các từ vựng thuộc thư mục này trên Cloudinary
+  if (thuMuc.words && thuMuc.words.length > 0) {
+    for (const word of thuMuc.words) {
+      if (word.image) {
+        await deleteImageFromCloudinary(word.image);
+      }
+    }
   }
 
   return await xoaThuMucRepo(id, userId);
