@@ -57,7 +57,9 @@ export function ChartPieLegend({ serverData }: { serverData?: Array<{ pos: strin
         value: item._count.id,
         fill: posMap[item.pos]?.fill || "#cbd5e1"
       }))
-    : chartData; // Fallback to dummy data if no data
+    : [];
+
+  const totalWords = dynamicData.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
     <Card className="flex flex-col h-full justify-between">
@@ -65,32 +67,40 @@ export function ChartPieLegend({ serverData }: { serverData?: Array<{ pos: strin
         <CardTitle className="text-base font-semibold">Cơ cấu loại từ</CardTitle>
         <CardDescription>Phân loại tổng hợp kho từ</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-4 pt-4 flex flex-col justify-center">
-        <div className="h-[250px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie 
-                data={dynamicData} 
-                dataKey="value" 
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={85}
-              >
-                {dynamicData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-              <Legend 
-                verticalAlign="bottom" 
-                height={36} 
-                iconType="circle"
-                wrapperStyle={{ fontSize: "12px", paddingTop: "15px" }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+      <CardContent className="flex-1 pb-4 pt-4 flex flex-col justify-center min-h-[250px]">
+        {totalWords === 0 ? (
+          <div className="flex flex-col items-center justify-center text-slate-400 text-sm px-4 text-center select-none py-6">
+            <span className="text-3xl mb-1">📝</span>
+            <p className="font-semibold text-slate-500">Chưa có từ vựng nào</p>
+            <p className="text-[11px] text-slate-400 mt-1 max-w-[220px]">Hãy thêm từ vựng và chọn loại từ (Danh từ, Động từ...) để xem cơ cấu phân tích.</p>
+          </div>
+        ) : (
+          <div className="h-[250px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie 
+                  data={dynamicData} 
+                  dataKey="value" 
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={85}
+                >
+                  {dynamicData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+                <Legend 
+                  verticalAlign="bottom" 
+                  height={36} 
+                  iconType="circle"
+                  wrapperStyle={{ fontSize: "12px", paddingTop: "15px" }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </CardContent>
     </Card>
   )
