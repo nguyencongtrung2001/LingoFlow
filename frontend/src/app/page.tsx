@@ -2,7 +2,6 @@
 
 import { useDashboardStats } from "@/feature/dashboard/hooks/useDashboardStats";
 import { StreakCard } from "@/components/dashboard/streak-card"
-import { MediaCard } from "@/components/dashboard/media-card"
 import { HeatmapCard } from "@/components/dashboard/heatmap-card"
 import { ChartPieLegend } from "@/components/dashboard/word-type-chart"
 import { LearnedStatusChart } from "@/components/dashboard/learned-status-chart"
@@ -14,8 +13,15 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="p-8 max-w-[1400px] mx-auto space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-32 animate-pulse bg-slate-100 rounded-xl" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-64 animate-pulse bg-slate-50 rounded-xl" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="h-32 animate-pulse bg-slate-100 rounded-xl" />
+          <div className="h-32 animate-pulse bg-slate-100 rounded-xl" />
+          <div className="h-32 animate-pulse bg-slate-100 rounded-xl" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="h-64 animate-pulse bg-slate-50 rounded-xl" />
+          <div className="h-64 animate-pulse bg-slate-50 rounded-xl" />
+        </div>
       </div>
     );
   }
@@ -23,11 +29,10 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 animate-in fade-in duration-300">
       {/* Hàng 1 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
-        <div className="flex flex-col h-full"><StreakCard /></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+        <div className="flex flex-col h-full"><StreakCard serverData={stats?.duLieuHeatmap} /></div>
         <div className="flex flex-col h-full"><ChartPieLegend serverData={stats?.coCauLoaiTu} /></div>
         <div className="flex flex-col h-full"><LearnedStatusChart serverData={stats?.tienDoLeitner} /></div>
-        <div className="flex flex-col h-full"><MediaCard /></div>
       </div>
 
       {/* Hàng 2 */}
