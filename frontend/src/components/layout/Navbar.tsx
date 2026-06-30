@@ -63,9 +63,47 @@ export function Navbar() {
           <div className="flex items-center gap-[32px]">
             <Link
               href="/"
-              className="text-[24px] font-extrabold text-[#4648d4] tracking-tight"
+              className="text-[24px] font-extrabold text-[#4648d4] tracking-tight flex items-center"
             >
-              LingoFlow
+              <svg
+                className="w-8 h-8 mr-2 animate-logo-flow transition-transform duration-300 hover:rotate-12 select-none"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 13.9021 3.59051 15.667 4.59868 17.1194L3 21L6.88063 19.4013C8.33296 20.4095 10.0979 21 12 21Z"
+                  fill="url(#logoGrad)"
+                />
+                <path
+                  d="M7 10C9.5 9 11.5 12 14 11C16.5 10 17 12 17 12"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M7 14C9.5 13 11.5 16 14 15C16.5 14 17 16 17 16"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <defs>
+                  <linearGradient
+                    id="logoGrad"
+                    x1="3"
+                    y1="3"
+                    x2="21"
+                    y2="21"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stopColor="#4648d4" />
+                    <stop offset="1" stopColor="#7a7cff" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <span>LingoFlow</span>
             </Link>
             <div className="hidden md:flex gap-[16px]">
               <Link

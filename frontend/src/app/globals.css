@@ -128,3 +128,16 @@
     @apply font-sans;
   }
 }
+
+@keyframes logo-slide-flow {
+  0%, 100% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(5px) scale(1.05);
+  }
+}
+
+.animate-logo-flow {
+  animation: logo-slide-flow 3s ease-in-out infinite;
+}
