@@ -91,16 +91,14 @@ export function Navbar() {
             </div>
           </div>
           {isAuthenticated ? (
-            <div className="flex items-center gap-[16px]">
-              <button
-                aria-label="Exit"
-                onClick={handleLogout}
-                className="text-[#464554] hover:text-red-500 transition-colors duration-200"
-              >
-                <LogOut className="w-6 h-6" />
-              </button>
-              
-              <div className="relative cursor-pointer ml-[8px]" onClick={handleAvatarClick}>
+            <div className="flex items-center gap-[12px] sm:gap-[16px]">
+              {/* Tên người dùng */}
+              <span className="text-[14px] font-semibold text-[#5f5e6e] select-none max-w-[100px] sm:max-w-[150px] truncate" title={user?.name}>
+                {user?.name}
+              </span>
+
+              {/* Ảnh đại diện */}
+              <div className="relative cursor-pointer" onClick={handleAvatarClick} title="Đổi ảnh đại diện">
                 <Image
                   alt="User Avatar"
                   className={`w-8 h-8 rounded-full object-cover transition-opacity ${isUploading ? 'opacity-50' : 'hover:opacity-80'}`}
@@ -114,6 +112,20 @@ export function Navbar() {
                   </div>
                 )}
               </div>
+
+              {/* Đường phân cách */}
+              <div className="w-px h-[16px] bg-[#e5eeff]" />
+
+              {/* Nút đăng xuất (Exit) */}
+              <button
+                aria-label="Exit"
+                onClick={handleLogout}
+                className="text-[#464554] hover:text-red-500 transition-colors duration-200 flex items-center justify-center"
+                title="Đăng xuất"
+              >
+                <LogOut className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+
               <input
                 type="file"
                 ref={fileInputRef}
