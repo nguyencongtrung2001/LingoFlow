@@ -50,3 +50,24 @@ export const layLichSuHocTapRepo = async (userId: string) => {
     },
   });
 };
+
+export const ghiNhanHeartbeatRepo = async (userId: string, seconds: number) => {
+  const vnDateStr = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" });
+  const today = new Date(vnDateStr);
+
+  return await prisma.dailyActivity.upsert({
+    where: {
+      userId_date: { userId, date: today }
+    },
+    update: {
+      studyTimeSeconds: { increment: seconds }
+    },
+    create: {
+      userId,
+      date: today,
+      sessionsCount: 0,
+      wordsStudied: 0,
+      studyTimeSeconds: seconds
+    }
+  });
+};

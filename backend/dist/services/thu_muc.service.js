@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.xoaThuMuc = exports.capNhatThuMuc = exports.taoThuMuc = exports.layThuMucChiTietQuaName = exports.layThuMucChiTiet = exports.layDanhSachThuMuc = void 0;
 const thu_muc_repository_1 = require("../repositories/thu_muc.repository");
+const cloudinary_upload_1 = require("../utils/cloudinary_upload");
 const layDanhSachThuMuc = async (userId) => {
     return await (0, thu_muc_repository_1.layDanhSachThuMucRepo)(userId);
 };
@@ -46,6 +47,14 @@ const xoaThuMuc = async (id, userId) => {
     const thuMuc = await (0, thu_muc_repository_1.layThuMucChiTietRepo)(id, userId);
     if (!thuMuc) {
         throw new Error("Không tìm thấy thư mục hoặc bạn không có quyền truy cập.");
+    }
+    // Xóa toàn bộ ảnh của các từ vựng thuộc thư mục này trên Cloudinary
+    if (thuMuc.words && thuMuc.words.length > 0) {
+        for (const word of thuMuc.words) {
+            if (word.image) {
+                await (0, cloudinary_upload_1.deleteImageFromCloudinary)(word.image);
+            }
+        }
     }
     return await (0, thu_muc_repository_1.xoaThuMucRepo)(id, userId);
 };

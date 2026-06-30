@@ -38,7 +38,7 @@ export default function DashboardPage() {
       {/* Hàng 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
         <div className="flex flex-col h-full"><HeatmapCard serverData={stats?.duLieuHeatmap} /></div>
-        <div className="flex flex-col h-full"><ChartLineLinear serverData={stats?.thoiGianOnTap} /></div>
+        <div className="flex flex-col h-full"><ChartLineLinear serverData={stats?.duLieuHeatmap} /></div>
       </div>
     </div>
   )

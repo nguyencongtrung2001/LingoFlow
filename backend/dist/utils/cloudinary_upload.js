@@ -4,6 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadImageFromUrl = uploadImageFromUrl;
+exports.extractPublicIdFromUrl = extractPublicIdFromUrl;
+exports.deleteImageFromCloudinary = deleteImageFromCloudinary;
 const https_1 = __importDefault(require("https"));
 const http_1 = __importDefault(require("http"));
 const cloudinary_1 = __importDefault(require("../config/cloudinary"));
@@ -69,6 +71,56 @@ async function uploadImageFromUrl(imageUrl, folder = "lingoflow/words", publicId
     catch (error) {
         console.error("Lỗi khi tải gián tiếp ảnh lên Cloudinary:", error);
         return imageUrl; // Fallback về link gốc nếu xảy ra lỗi
+    }
+}
+/**
+ * Trích xuất publicId của ảnh từ URL Cloudinary
+ */
+function extractPublicIdFromUrl(url) {
+    if (!url || !url.includes("res.cloudinary.com"))
+        return null;
+    try {
+        const parts = url.split("/upload/");
+        if (parts.length < 2)
+            return null;
+        const pathAfterUpload = parts[1];
+        if (!pathAfterUpload)
+            return null;
+        const segments = pathAfterUpload.split("/");
+        const firstSegment = segments[0];
+        // Loại bỏ version (ví dụ: v1688133593) nếu có
+        if (firstSegment && firstSegment.startsWith("v") && !isNaN(Number(firstSegment.substring(1)))) {
+            segments.shift();
+        }
+        const fullPathWithoutVersion = segments.join("/");
+        const lastDotIndex = fullPathWithoutVersion.lastIndexOf(".");
+        if (lastDotIndex !== -1) {
+            return fullPathWithoutVersion.substring(0, lastDotIndex);
+        }
+        return fullPathWithoutVersion;
+    }
+    catch (error) {
+        console.error("Lỗi khi giải mã publicId từ URL Cloudinary:", error);
+        return null;
+    }
+}
+/**
+ * Xóa ảnh khỏi Cloudinary dựa trên URL
+ */
+async function deleteImageFromCloudinary(url) {
+    if (!url)
+        return false;
+    const publicId = extractPublicIdFromUrl(url);
+    if (!publicId)
+        return false;
+    try {
+        const result = await cloudinary_1.default.uploader.destroy(publicId);
+        console.log(`Xóa ảnh thành công trên Cloudinary! publicId: ${publicId}. Kết quả:`, result);
+        return result.result === "ok";
+    }
+    catch (error) {
+        console.error(`Lỗi khi xóa ảnh trên Cloudinary với publicId ${publicId}:`, error);
+        return false;
     }
 }
 //# sourceMappingURL=cloudinary_upload.js.map

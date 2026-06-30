@@ -55,8 +55,15 @@ const suaTuVungService = async (wordId, userId, data) => {
     }
     // Tải gián tiếp ảnh từ URL và đưa lên Cloudinary trước khi cập nhật từ
     const cloneData = { ...data };
-    if (cloneData.image !== undefined) {
-        cloneData.image = await (0, cloudinary_upload_1.uploadImageFromUrl)(cloneData.image, "lingoflow/words", `word_${userId}`);
+    if (cloneData.image !== undefined && cloneData.image !== tuVung.image) {
+        // Xóa ảnh cũ trên Cloudinary nếu có
+        if (tuVung.image) {
+            await (0, cloudinary_upload_1.deleteImageFromCloudinary)(tuVung.image);
+        }
+        // Upload ảnh mới nếu có
+        if (cloneData.image) {
+            cloneData.image = await (0, cloudinary_upload_1.uploadImageFromUrl)(cloneData.image, "lingoflow/words", `word_${userId}`);
+        }
     }
     return await (0, tu_vung_repository_1.suaTuVungRepo)(wordId, cloneData);
 };
@@ -71,6 +78,10 @@ const xoaTuVungService = async (wordId, userId) => {
     });
     if (!tuVung) {
         throw new Error("Từ vựng không tồn tại hoặc không có quyền truy cập.");
+    }
+    // Xóa ảnh liên kết trên Cloudinary nếu có trước khi xóa từ vựng khỏi Database
+    if (tuVung.image) {
+        await (0, cloudinary_upload_1.deleteImageFromCloudinary)(tuVung.image);
     }
     return await (0, tu_vung_repository_1.xoaTuVungRepo)(wordId);
 };

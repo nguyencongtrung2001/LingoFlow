@@ -25,7 +25,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartLineLinear({ serverData }: { serverData?: Array<{ startedAt: string; timeSeconds: number }> }) {
+export function ChartLineLinear({ serverData }: { serverData?: Array<{ date: string; studyTimeSeconds: number }> }) {
   const dynamicData = React.useMemo(() => {
     const today = new Date();
     const last7Days = Array.from({ length: 7 }).map((_, idx) => {
@@ -38,19 +38,28 @@ export function ChartLineLinear({ serverData }: { serverData?: Array<{ startedAt
 
     const dataMap = new Map<string, number>();
     if (serverData && serverData.length > 0) {
-      serverData.forEach(session => {
-        const dateKey = new Date(session.startedAt).toISOString().split("T")[0];
+      serverData.forEach(item => {
+        const dateKey = item.date.split("T")[0];
         const currentMin = dataMap.get(dateKey) || 0;
-        dataMap.set(dateKey, currentMin + (session.timeSeconds / 60));
+        dataMap.set(dateKey, currentMin + ((item.studyTimeSeconds || 0) / 60));
       });
     }
 
+    const formatLocalDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
     return last7Days.map(date => {
-      const dateKey = date.toISOString().split("T")[0];
+      const dateKey = formatLocalDate(date);
       const phut = dataMap.get(dateKey) || 0;
+      // Khống chế kịch trần 120 phút bảo vệ an toàn tỉ lệ trục quạt đồ thị
+      const phutHienThi = phut > 120 ? 120 : phut;
       return {
         label: days[date.getDay()],
-        phut: Math.round(phut)
+        phut: Math.round(phutHienThi)
       };
     });
   }, [serverData]);
@@ -60,18 +69,24 @@ export function ChartLineLinear({ serverData }: { serverData?: Array<{ startedAt
 
     const today = new Date();
     const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
     const sevenDaysAgo = new Date(todayMidnight);
     sevenDaysAgo.setDate(todayMidnight.getDate() - 6);
+    
+    const fourteenDaysAgo = new Date(todayMidnight);
+    fourteenDaysAgo.setDate(todayMidnight.getDate() - 13);
 
     let thisWeekSeconds = 0;
     let lastWeekSeconds = 0;
 
-    serverData.forEach(session => {
-      const sessionDate = new Date(session.startedAt);
-      if (sessionDate >= sevenDaysAgo) {
-        thisWeekSeconds += session.timeSeconds;
-      } else {
-        lastWeekSeconds += session.timeSeconds;
+    serverData.forEach(item => {
+      const activityDate = new Date(item.date);
+      const activityDateMidnight = new Date(activityDate.getFullYear(), activityDate.getMonth(), activityDate.getDate());
+      
+      if (activityDateMidnight >= sevenDaysAgo) {
+        thisWeekSeconds += item.studyTimeSeconds || 0;
+      } else if (activityDateMidnight >= fourteenDaysAgo && activityDateMidnight < sevenDaysAgo) {
+        lastWeekSeconds += item.studyTimeSeconds || 0;
       }
     });
 
@@ -87,7 +102,7 @@ export function ChartLineLinear({ serverData }: { serverData?: Array<{ startedAt
     <Card className="flex flex-col h-full justify-between">
       <CardHeader>
         <CardTitle className="text-base font-semibold">Thời gian ôn tập</CardTitle>
-        <CardDescription>Dữ liệu theo phiên học (Phút)</CardDescription>
+        <CardDescription>Thời gian tương tác học thực tế (Phút)</CardDescription>
       </CardHeader>
       <CardContent className="pb-4">
         <ChartContainer config={chartConfig} className="h-[180px] w-full">
@@ -105,8 +120,8 @@ export function ChartLineLinear({ serverData }: { serverData?: Array<{ startedAt
               className="text-xs"
             />
             <YAxis 
-              domain={[0, 180]} 
-              tickCount={7}
+              domain={[0, 120]} 
+              tickCount={5}
               tickLine={false}
               axisLine={false}
               className="text-xs"
@@ -141,7 +156,7 @@ export function ChartLineLinear({ serverData }: { serverData?: Array<{ startedAt
           </div>
         )}
         <div className="leading-none text-xs text-muted-foreground">
-          Thời gian học khống chế tối đa 180 phút/ngày
+          Thời gian học khống chế tối đa 120 phút/ngày
         </div>
       </CardFooter>
     </Card>

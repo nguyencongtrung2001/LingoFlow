@@ -154,6 +154,7 @@ model DailyActivity {
   date          DateTime @db.Date // Chỉ lưu ngày Y-m-d, giải quyết triệt để lỗi giờ giấc trùng lặp
   sessionsCount Int      @default(0) // Tính toán độ đậm nhạt (intensity) cho Heatmap Card
   wordsStudied  Int      @default(0) // Tổng số từ đã làm trong ngày phục vụ thống kê số liệu
+  studyTimeSeconds Int   @default(0) // Tổng số giây thực học trong ngày
 
   // Relations
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
