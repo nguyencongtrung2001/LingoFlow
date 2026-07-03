@@ -20,6 +20,13 @@ export function Navbar() {
     checkAuth();
   }, [checkAuth]);
 
+  // Role-based redirection
+  useEffect(() => {
+    if (user?.role === "ADMIN" && pathname === "/") {
+      router.push("/admin");
+    }
+  }, [user, pathname, router]);
+
   // Hide navbar on auth and study routes
   if (pathname?.startsWith("/auth") || pathname?.includes("/study")) {
     return null;

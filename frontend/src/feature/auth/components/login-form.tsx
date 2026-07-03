@@ -32,7 +32,12 @@ export function LoginForm() {
       const response = await loginUser(data);
       setUser(response.user);
       toast.success("Đăng nhập vào LingoFlow thành công!");
-      router.push("/");
+      
+      if (response.user.role === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
     } catch (error) {
       toast.error(
         // @ts-expect-error - Error from axios response
