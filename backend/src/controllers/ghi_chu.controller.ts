@@ -40,7 +40,7 @@ export const taoCotMoiController = async (yeuCau: Request, phanHoi: Response) =>
 export const capNhatCotController = async (yeuCau: Request, phanHoi: Response) => {
   try {
     const maNguoiDung = yeuCau.user?.id;
-    const cotId = yeuCau.params.id;
+    const cotId = yeuCau.params.id as string;
 
     if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
     if (!cotId) return phanHoi.status(400).json({ error: "ID danh mục không hợp lệ." });
@@ -56,7 +56,7 @@ export const capNhatCotController = async (yeuCau: Request, phanHoi: Response) =
 export const xoaCotController = async (yeuCau: Request, phanHoi: Response) => {
   try {
     const maNguoiDung = yeuCau.user?.id;
-    const cotId = yeuCau.params.id;
+    const cotId = yeuCau.params.id as string;
 
     if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
     if (!cotId) return phanHoi.status(400).json({ error: "ID danh mục không hợp lệ." });
@@ -86,7 +86,7 @@ export const taoGhiChuController = async (yeuCau: Request, phanHoi: Response) =>
 export const capNhatGhiChuController = async (yeuCau: Request, phanHoi: Response) => {
   try {
     const maNguoiDung = yeuCau.user?.id;
-    const ghiChuId = yeuCau.params.id;
+    const ghiChuId = yeuCau.params.id as string;
 
     if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
     if (!ghiChuId) return phanHoi.status(400).json({ error: "ID ghi chú không hợp lệ." });
@@ -102,7 +102,7 @@ export const capNhatGhiChuController = async (yeuCau: Request, phanHoi: Response
 export const xoaGhiChuController = async (yeuCau: Request, phanHoi: Response) => {
   try {
     const maNguoiDung = yeuCau.user?.id;
-    const ghiChuId = yeuCau.params.id;
+    const ghiChuId = yeuCau.params.id as string;
 
     if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
     if (!ghiChuId) return phanHoi.status(400).json({ error: "ID ghi chú không hợp lệ." });
