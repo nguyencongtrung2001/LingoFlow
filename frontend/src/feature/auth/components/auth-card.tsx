@@ -10,10 +10,6 @@ import { RegisterForm } from "./register-form";
 export function AuthCard() {
   const [mode, setMode] = useState<"login" | "register">("login");
 
-  const handleSocialAuth = (provider: "Google" | "Facebook") => {
-    toast.info(`Đang kết nối cổng OAuth với ${provider}...`);
-  };
-
   return (
     <div className="w-full max-w-[1000px] mx-auto z-10 flex flex-col md:flex-row items-center gap-10 md:gap-20">
       {/* Brand Header - Left Column */}
@@ -48,32 +44,6 @@ export function AuthCard() {
         ) : (
           <RegisterForm onSuccess={() => setMode("login")} />
         )}
-
-        {/* Divider - matching login.html .divider */}
-        <div className="flex items-center my-4">
-          <div className="flex-1 border-t border-[#E5E7EB]" />
-          <span className="px-3 text-[12px] text-[#6B7280] uppercase tracking-[0.5px]">
-            {mode === "login" ? "Hoặc tiếp tục với" : "Hoặc đăng ký với"}
-          </span>
-          <div className="flex-1 border-t border-[#E5E7EB]" />
-        </div>
-
-        {/* Social Auth Grid - matching login.html .social-grid */}
-        <div className="flex items-center justify-center">
-          <button
-            type="button"
-            onClick={() => handleSocialAuth("Google")}
-            className=" mb-3 py-5 px-10 flex items-center justify-center gap-2 h-[44px] rounded-[10px] border border-[#E5E7EB] bg-white text-[14px] font-medium text-[#1F2937] hover:bg-[#EEF2F6] hover:border-[#CCD3FF] transition-all duration-200 cursor-pointer"
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24">
-              <path fill="#EA4335" d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3A11.935 11.935 0 0 0 12 0C7.33 0 3.295 2.502 1.159 6.205l4.107 3.56z" />
-              <path fill="#4285F4" d="M23.514 12.273c0-.827-.074-1.623-.21-2.392H12v4.531h6.46A5.523 5.523 0 0 1 16.1 18.062l3.82 2.96c2.235-2.057 3.594-5.086 3.594-8.749z" />
-              <path fill="#FBBC05" d="M5.266 14.235A7.086 7.086 0 0 1 4.909 12c0-.79.13-1.55.357-2.265L1.16 6.175A11.95 11.95 0 0 0 0 12c0 2.1.543 4.07 1.491 5.807l3.775-3.572z" />
-              <path fill="#34A853" d="M12 24c3.24 0 5.957-1.075 7.942-2.915l-3.82-2.96c-1.06.713-2.418 1.134-4.122 1.134-3.177 0-5.864-2.145-6.824-5.03l-4.132 3.2C3.253 21.463 7.284 24 12 24z" />
-            </svg>
-            Google
-          </button>
-        </div>
 
         {/* Footer switch - matching login.html .auth-footer */}
         <div className="text-center text-[14px] text-[#6B7280]">

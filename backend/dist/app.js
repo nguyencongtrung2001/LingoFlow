@@ -10,6 +10,7 @@ const xac_thuc_routes_1 = __importDefault(require("./routes/xac_thuc.routes"));
 const thu_muc_routes_1 = __importDefault(require("./routes/thu_muc.routes"));
 const tu_vung_routes_1 = __importDefault(require("./routes/tu_vung.routes"));
 const thong_ke_routes_1 = __importDefault(require("./routes/thong_ke.routes"));
+const quan_tri_routes_1 = __importDefault(require("./routes/quan_tri.routes"));
 const app = (0, express_1.default)();
 // Cấu hình Middleware
 app.use(express_1.default.json());
@@ -23,6 +24,7 @@ app.use("/api/xac-thuc", xac_thuc_routes_1.default);
 app.use("/api/thu-muc", thu_muc_routes_1.default);
 app.use("/api/tu-vung", tu_vung_routes_1.default);
 app.use("/api/thong-ke", thong_ke_routes_1.default);
+app.use("/api/quan-tri", quan_tri_routes_1.default);
 // Health check
 app.get("/health", (req, res) => {
     res.status(200).json({ status: "OK", message: "Server đang chạy mượt mà!" });

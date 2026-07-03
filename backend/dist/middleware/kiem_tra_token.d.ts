@@ -9,5 +9,5 @@ declare global {
         }
     }
 }
-export declare const xacThucNguoiDung: (yeuCau: Request, phanHoi: Response, tiepTuc: NextFunction) => Response<any, Record<string, any>> | undefined;
+export declare const xacThucNguoiDung: (yeuCau: Request, phanHoi: Response, tiepTuc: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
 //# sourceMappingURL=kiem_tra_token.d.ts.map

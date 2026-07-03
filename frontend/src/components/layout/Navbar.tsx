@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Folder, Home, LogOut, Loader2, Clock } from "lucide-react";
+import { Folder, Home, LogOut, Loader2, Clock, Shield } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/feature/auth/stores/auth-store";
@@ -136,6 +136,18 @@ export function Navbar() {
               >
                 Lịch sử
               </Link>
+              {user?.role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  className={`font-medium pb-1 transition-colors duration-200 ${
+                    pathname?.startsWith("/admin")
+                      ? "text-[#4648d4] font-bold border-b-2 border-[#4648d4]"
+                      : "text-[#464554] hover:text-[#4648d4]"
+                  }`}
+                >
+                  Quản trị
+                </Link>
+              )}
             </div>
           </div>
           {isAuthenticated ? (
@@ -218,6 +230,15 @@ export function Navbar() {
           <Clock className="w-6 h-6 mb-1" />
           <span className="text-[12px] font-medium">Lịch sử</span>
         </Link>
+        {user?.role === "ADMIN" && (
+          <Link
+            href="/admin"
+            className="flex flex-col items-center justify-center text-[#464554] p-2 rounded-lg hover:text-[#4648d4]"
+          >
+            <Shield className="w-6 h-6 mb-1" />
+            <span className="text-[12px] font-medium">Quản trị</span>
+          </Link>
+        )}
       </nav>
     </>
   );

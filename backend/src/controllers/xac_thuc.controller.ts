@@ -64,6 +64,11 @@ export const xuLyDangNhap = async (yeuCau: Request, phanHoi: Response) => {
     }
 
     const nguoiDung = await kiemTraDangNhap(email, password);
+
+    if (!nguoiDung.isActive) {
+      return phanHoi.status(403).json({ error: "Tài khoản của bạn đã bị khóa bởi Quản trị viên!" });
+    }
+
     const token = taoTheXacThuc(nguoiDung.id, nguoiDung.role);
 
     // Gắn cookie

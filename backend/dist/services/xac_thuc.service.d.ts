@@ -6,11 +6,11 @@ export declare const taoTaiKhoanMoi: (thongTin: {
 }) => Promise<{
     id: string;
     email: string;
-    googleId: string | null;
     name: string;
     avatar: string | null;
     assetUrl: string | null;
     role: import("@prisma/client").$Enums.Role;
+    isActive: boolean;
     password: string | null;
     createdAt: Date;
     updatedAt: Date;
@@ -18,11 +18,11 @@ export declare const taoTaiKhoanMoi: (thongTin: {
 export declare const kiemTraDangNhap: (email: string, matKhau: string) => Promise<{
     id: string;
     email: string;
-    googleId: string | null;
     name: string;
     avatar: string | null;
     assetUrl: string | null;
     role: import("@prisma/client").$Enums.Role;
+    isActive: boolean;
     password: string | null;
     createdAt: Date;
     updatedAt: Date;

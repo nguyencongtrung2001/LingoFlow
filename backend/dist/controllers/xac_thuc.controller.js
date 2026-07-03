@@ -47,6 +47,9 @@ const xuLyDangNhap = async (yeuCau, phanHoi) => {
             return phanHoi.status(400).json({ error: "Vui lòng nhập email và mật khẩu!" });
         }
         const nguoiDung = await (0, xac_thuc_service_1.kiemTraDangNhap)(email, password);
+        if (!nguoiDung.isActive) {
+            return phanHoi.status(403).json({ error: "Tài khoản của bạn đã bị khóa bởi Quản trị viên!" });
+        }
         const token = (0, xac_thuc_service_1.taoTheXacThuc)(nguoiDung.id, nguoiDung.role);
         // Gắn cookie
         phanHoi.cookie("token_xac_thuc", token, COOKIE_OPTIONS);

@@ -41,8 +41,8 @@ model User {
   avatar        String?
   assetUrl      String?
   role          Role            @default(LEARNER)
-  googleId      String?         @unique
-  password      String?         // Nullable phục vụ đăng nhập qua Google OAuth
+  isActive      Boolean         @default(true)
+  password      String?         // Nullable phục vụ đăng nhập
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 
