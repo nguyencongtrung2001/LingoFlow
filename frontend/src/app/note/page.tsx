@@ -1,8 +1,24 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import { Loader2 } from "lucide-react";
+
+// Dynamic import với ssr: false để tránh lỗi hydration từ @hello-pangea/dnd
+const TrelloNotesBoard = dynamic(
+  () => import("@/components/trello/TrelloNotesBoard"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full min-h-[80vh] bg-slate-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
+          <p className="text-sm text-slate-400 font-medium">Đang tải bảng ghi chú...</p>
+        </div>
+      </div>
+    ),
+  }
+);
+
 export default function NotePage() {
-  return (
-    <div className="max-w-[1200px] mx-auto px-4 py-12 text-center">
-      <h1 className="text-2xl font-bold text-slate-800">Ghi chú</h1>
-      <p className="text-slate-500 mt-2">Trang ghi chú đang được phát triển.</p>
-    </div>
-  );
+  return <TrelloNotesBoard />;
 }

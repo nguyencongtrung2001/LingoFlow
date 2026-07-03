@@ -6,6 +6,7 @@ import thuMucRoutes from "./routes/thu_muc.routes";
 import tuVungRoutes from "./routes/tu_vung.routes";
 import thongKeRoutes from "./routes/thong_ke.routes";
 import quanTriRoutes from "./routes/quan_tri.routes";
+import ghiChuRoutes from "./routes/ghi_chu.routes";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/api/thu-muc", thuMucRoutes);
 app.use("/api/tu-vung", tuVungRoutes);
 app.use("/api/thong-ke", thongKeRoutes);
 app.use("/api/quan-tri", quanTriRoutes);
+app.use("/api/ghi-chu", ghiChuRoutes);
 
 // Health check
 app.get("/health", (req, res) => {
