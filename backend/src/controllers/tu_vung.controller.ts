@@ -7,6 +7,7 @@ import {
   xoaTuVungService,
   ghiNhanPhienHocService,
   layDanhSachTuCuonChieuService,
+  diChuyenTuVungService,
 } from "../services/tu_vung.service";
 
 export const xuLyLayDanhSachTu = async (yeuCau: Request, phanHoi: Response) => {
@@ -128,6 +129,26 @@ export const xuLyLayTuCuonChieu = async (yeuCau: Request, phanHoi: Response) => 
 
     const danhSachTu = await layDanhSachTuCuonChieuService(maNguoiDung, folderId, trang);
     return phanHoi.status(200).json(danhSachTu);
+  } catch (loi: any) {
+    return phanHoi.status(403).json({ error: loi.message });
+  }
+};
+
+export const xuLyDiChuyenTu = async (yeuCau: Request, phanHoi: Response) => {
+  try {
+    const maNguoiDung = yeuCau.user?.id;
+    const { wordIds, targetFolderId } = yeuCau.body;
+
+    if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+    if (!Array.isArray(wordIds) || wordIds.length === 0) {
+      return phanHoi.status(400).json({ error: "Danh sách từ vựng không hợp lệ." });
+    }
+    if (!targetFolderId || isNaN(parseInt(targetFolderId))) {
+      return phanHoi.status(400).json({ error: "Thư mục đích không hợp lệ." });
+    }
+
+    const ketQua = await diChuyenTuVungService(maNguoiDung, wordIds, parseInt(targetFolderId));
+    return phanHoi.status(200).json({ message: "Di chuyển thành công.", count: ketQua.count });
   } catch (loi: any) {
     return phanHoi.status(403).json({ error: loi.message });
   }

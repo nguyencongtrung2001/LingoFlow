@@ -11,6 +11,9 @@ export interface WordListProps {
   onEditWord: (id: number, updates: Partial<Word>) => void;
   onDeleteWord: (id: number) => void;
   onToggleLearned: (id: number) => void;
+  isSelectionMode?: boolean;
+  selectedIds?: number[];
+  onToggleSelect?: (id: number) => void;
 }
 
 export function WordList({
@@ -20,6 +23,9 @@ export function WordList({
   onEditWord,
   onDeleteWord,
   onToggleLearned,
+  isSelectionMode = false,
+  selectedIds = [],
+  onToggleSelect,
 }: WordListProps) {
   if (words.length === 0) {
     return (
@@ -49,6 +55,9 @@ export function WordList({
           onEdit={onEditWord}
           onDelete={onDeleteWord}
           onToggleLearned={onToggleLearned}
+          isSelectionMode={isSelectionMode}
+          isSelected={selectedIds.includes(w.id)}
+          onToggleSelect={onToggleSelect}
         />
       ))}
     </div>

@@ -11,6 +11,7 @@ import {
   saveStudySession,
   StudySessionInput,
   getWordsSequential,
+  moveWords,
 } from "@/api/words.api";
 
 export function useGetWords(folderId: number) {
@@ -90,5 +91,19 @@ export function useGetWordsSequential(folderId: number, page: number) {
     queryKey: ["words-sequential", folderId.toString(), page.toString()],
     queryFn: () => getWordsSequential(folderId, page),
     enabled: !!folderId,
+  });
+}
+
+export function useMoveWords(currentFolderId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ wordIds, targetFolderId }: { wordIds: number[]; targetFolderId: number }) =>
+      moveWords(wordIds, targetFolderId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["words", currentFolderId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["folders"] });
+      queryClient.invalidateQueries({ queryKey: ["words"] });
+    },
   });
 }

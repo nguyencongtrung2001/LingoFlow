@@ -84,4 +84,5 @@ export declare const layDanhSachTuCuonChieuService: (userId: string, folderId: n
     image: string | null;
     folderId: number;
 }[]>;
+export declare const diChuyenTuVungService: (userId: string, wordIds: number[], targetFolderId: number) => Promise<import("@prisma/client").Prisma.BatchPayload>;
 //# sourceMappingURL=tu_vung.service.d.ts.map

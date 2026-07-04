@@ -83,3 +83,8 @@ export const getWordsSequential = async (folderId: number, page: number): Promis
   const res = await api.get(`/tu-vung/cuon-chieu/${folderId}?page=${page}`);
   return res.data;
 };
+
+export const moveWords = async (wordIds: number[], targetFolderId: number): Promise<{ message: string; count: number }> => {
+  const res = await api.put("/tu-vung/di-chuyen", { wordIds, targetFolderId });
+  return res.data;
+};

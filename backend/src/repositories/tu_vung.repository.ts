@@ -226,3 +226,14 @@ export const layDanhSachTuCuonChieuRepo = async (folderId: number, trang: number
     take: SO_TU_MOI_LUOT,
   });
 };
+
+export const diChuyenTuVungRepo = async (wordIds: number[], targetFolderId: number) => {
+  return await prisma.word.updateMany({
+    where: {
+      id: { in: wordIds },
+    },
+    data: {
+      folderId: targetFolderId,
+    },
+  });
+};

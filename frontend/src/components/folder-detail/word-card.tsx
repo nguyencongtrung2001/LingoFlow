@@ -24,6 +24,9 @@ export interface WordCardProps {
   onEdit: (id: number, updates: Partial<Word>) => void;
   onDelete: (id: number) => void;
   onToggleLearned: (id: number) => void;
+  isSelectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelect?: (id: number) => void;
 }
 
 const posMap: Record<PartOfSpeech, { label: string; cls: string }> = {
@@ -54,6 +57,9 @@ export function WordCard({
   onEdit,
   onDelete,
   onToggleLearned,
+  isSelectionMode = false,
+  isSelected = false,
+  onToggleSelect,
 }: WordCardProps) {
   const isLoved = word.learned;
 
@@ -178,7 +184,19 @@ export function WordCard({
 
   if (viewMode === "list") {
     return (
-      <div className="group relative flex flex-row items-center p-[10px_16px] gap-3 bg-[#f8f9ff] border-b border-[#e5eeff] last:border-b-0 hover:bg-[#eff4ff] transition-colors">
+      <div 
+        className={`group relative flex flex-row items-center p-[10px_16px] gap-3 bg-[#f8f9ff] border-b border-[#e5eeff] last:border-b-0 hover:bg-[#eff4ff] transition-colors cursor-pointer ${isSelected ? "bg-[#e5eeff]" : ""}`}
+        onClick={() => {
+          if (isSelectionMode && onToggleSelect) onToggleSelect(word.id);
+        }}
+      >
+        {isSelectionMode && (
+          <div className="flex items-center justify-center mr-2 shrink-0">
+            <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${isSelected ? "bg-[#4648d4] border-[#4648d4]" : "border-[#c7c4d7] bg-white"}`}>
+              {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+            </div>
+          </div>
+        )}
         <div className="flex-1 min-w-0 flex items-center gap-4">
           <div className="flex items-center gap-2 mb-0">
             <h3 className="text-[14px] font-bold text-[#4648d4] truncate">
@@ -262,10 +280,23 @@ export function WordCard({
 
   return (
     <article
-      className={`group relative bg-[#f8f9ff] rounded-xl shadow-[0_2px_8px_-2px_rgba(70,72,212,0.04)] border-2 border-[#c7c4d7]/30 hover:border-[#c7c4d7]/60 transition-all duration-300 animate-in fade-in zoom-in-95 p-6 ${
+      className={`group relative bg-[#f8f9ff] rounded-xl shadow-[0_2px_8px_-2px_rgba(70,72,212,0.04)] border-2 transition-all duration-300 animate-in fade-in zoom-in-95 p-6 cursor-pointer ${
         viewMode === "row" ? "flex flex-row items-center gap-4 py-3 px-4" : ""
+      } ${
+        isSelected ? "border-[#4648d4] bg-[#f0f4ff]" : "border-[#c7c4d7]/30 hover:border-[#c7c4d7]/60"
       }`}
+      onClick={() => {
+        if (isSelectionMode && onToggleSelect) onToggleSelect(word.id);
+      }}
     >
+      {isSelectionMode && (
+        <div className="absolute top-3 left-3 z-10 flex items-center justify-center">
+          <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors shadow-sm ${isSelected ? "bg-[#4648d4] border-[#4648d4]" : "border-[#c7c4d7] bg-white"}`}>
+            {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+          </div>
+        </div>
+      )}
+
       {viewMode === "grid" && (
         <div className="flex justify-between items-start w-full mb-3">
           {word.image ? (

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xuLyLayTuCuonChieu = exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
+exports.xuLyDiChuyenTu = exports.xuLyLayTuCuonChieu = exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
 const tu_vung_service_1 = require("../services/tu_vung.service");
 const xuLyLayDanhSachTu = async (yeuCau, phanHoi) => {
     try {
@@ -135,4 +135,24 @@ const xuLyLayTuCuonChieu = async (yeuCau, phanHoi) => {
     }
 };
 exports.xuLyLayTuCuonChieu = xuLyLayTuCuonChieu;
+const xuLyDiChuyenTu = async (yeuCau, phanHoi) => {
+    try {
+        const maNguoiDung = yeuCau.user?.id;
+        const { wordIds, targetFolderId } = yeuCau.body;
+        if (!maNguoiDung)
+            return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+        if (!Array.isArray(wordIds) || wordIds.length === 0) {
+            return phanHoi.status(400).json({ error: "Danh sách từ vựng không hợp lệ." });
+        }
+        if (!targetFolderId || isNaN(parseInt(targetFolderId))) {
+            return phanHoi.status(400).json({ error: "Thư mục đích không hợp lệ." });
+        }
+        const ketQua = await (0, tu_vung_service_1.diChuyenTuVungService)(maNguoiDung, wordIds, parseInt(targetFolderId));
+        return phanHoi.status(200).json({ message: "Di chuyển thành công.", count: ketQua.count });
+    }
+    catch (loi) {
+        return phanHoi.status(403).json({ error: loi.message });
+    }
+};
+exports.xuLyDiChuyenTu = xuLyDiChuyenTu;
 //# sourceMappingURL=tu_vung.controller.js.map

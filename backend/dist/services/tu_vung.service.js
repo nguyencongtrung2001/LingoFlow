@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.layDanhSachTuCuonChieuService = exports.ghiNhanPhienHocService = exports.xoaTuVungService = exports.suaTuVungService = exports.taoNhieuTuVungService = exports.taoTuVungService = exports.layDanhSachTuVungService = void 0;
+exports.diChuyenTuVungService = exports.layDanhSachTuCuonChieuService = exports.ghiNhanPhienHocService = exports.xoaTuVungService = exports.suaTuVungService = exports.taoNhieuTuVungService = exports.taoTuVungService = exports.layDanhSachTuVungService = void 0;
 const prisma_1 = require("../config/prisma");
 const tu_vung_repository_1 = require("../repositories/tu_vung.repository");
 const cloudinary_upload_1 = require("../utils/cloudinary_upload");
@@ -108,4 +108,28 @@ const layDanhSachTuCuonChieuService = async (userId, folderId, trang) => {
     return await (0, tu_vung_repository_1.layDanhSachTuCuonChieuRepo)(folderId, trang);
 };
 exports.layDanhSachTuCuonChieuService = layDanhSachTuCuonChieuService;
+const diChuyenTuVungService = async (userId, wordIds, targetFolderId) => {
+    if (!wordIds || wordIds.length === 0) {
+        throw new Error("Không có từ vựng nào được chọn.");
+    }
+    // Xác thực thư mục đích có thuộc về người dùng không
+    const folder = await prisma_1.prisma.folder.findFirst({
+        where: { id: targetFolderId, userId },
+    });
+    if (!folder) {
+        throw new Error("Thư mục đích không tồn tại hoặc không có quyền truy cập.");
+    }
+    // Xác thực các từ vựng này có thuộc về thư mục của người dùng không
+    const validWordsCount = await prisma_1.prisma.word.count({
+        where: {
+            id: { in: wordIds },
+            folder: { userId },
+        },
+    });
+    if (validWordsCount !== wordIds.length) {
+        throw new Error("Một số từ vựng không tồn tại hoặc không thuộc quyền sở hữu của bạn.");
+    }
+    return await (0, tu_vung_repository_1.diChuyenTuVungRepo)(wordIds, targetFolderId);
+};
+exports.diChuyenTuVungService = diChuyenTuVungService;
 //# sourceMappingURL=tu_vung.service.js.map

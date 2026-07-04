@@ -98,4 +98,5 @@ export declare const layDanhSachTuCuonChieuRepo: (folderId: number, trang: numbe
     image: string | null;
     folderId: number;
 }[]>;
+export declare const diChuyenTuVungRepo: (wordIds: number[], targetFolderId: number) => Promise<import("@prisma/client").Prisma.BatchPayload>;
 //# sourceMappingURL=tu_vung.repository.d.ts.map

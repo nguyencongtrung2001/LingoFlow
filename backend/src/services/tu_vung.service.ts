@@ -7,6 +7,7 @@ import {
   taoNhieuTuVungRepo,
   taoPhienHocRepo,
   layDanhSachTuCuonChieuRepo,
+  diChuyenTuVungRepo,
 } from "../repositories/tu_vung.repository";
 import { uploadImageFromUrl, deleteImageFromCloudinary } from "../utils/cloudinary_upload";
 
@@ -137,4 +138,33 @@ export const layDanhSachTuCuonChieuService = async (
   }
 
   return await layDanhSachTuCuonChieuRepo(folderId, trang);
+};
+
+export const diChuyenTuVungService = async (userId: string, wordIds: number[], targetFolderId: number) => {
+  if (!wordIds || wordIds.length === 0) {
+    throw new Error("Không có từ vựng nào được chọn.");
+  }
+
+  // Xác thực thư mục đích có thuộc về người dùng không
+  const folder = await prisma.folder.findFirst({
+    where: { id: targetFolderId, userId },
+  });
+
+  if (!folder) {
+    throw new Error("Thư mục đích không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  // Xác thực các từ vựng này có thuộc về thư mục của người dùng không
+  const validWordsCount = await prisma.word.count({
+    where: {
+      id: { in: wordIds },
+      folder: { userId },
+    },
+  });
+
+  if (validWordsCount !== wordIds.length) {
+    throw new Error("Một số từ vựng không tồn tại hoặc không thuộc quyền sở hữu của bạn.");
+  }
+
+  return await diChuyenTuVungRepo(wordIds, targetFolderId);
 };

@@ -11,6 +11,7 @@ router.get("/cuon-chieu/:folderId", tu_vung_controller_1.xuLyLayTuCuonChieu);
 router.post("/", tu_vung_controller_1.xuLyThemTu);
 router.post("/batch", tu_vung_controller_1.xuLyThemNhieuTu);
 router.post("/phien-hoc", tu_vung_controller_1.xuLyLuuPhienHoc);
+router.put("/di-chuyen", tu_vung_controller_1.xuLyDiChuyenTu);
 router.put("/:id", tu_vung_controller_1.xuLyCapNhatTu);
 router.delete("/:id", tu_vung_controller_1.xuLyXoaTu);
 exports.default = router;
