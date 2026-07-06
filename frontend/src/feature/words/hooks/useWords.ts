@@ -12,6 +12,8 @@ import {
   StudySessionInput,
   getWordsSequential,
   moveWords,
+  getSmartWords,
+  getMasteredWords,
 } from "@/api/words.api";
 
 export function useGetWords(folderId: number) {
@@ -105,5 +107,21 @@ export function useMoveWords(currentFolderId: number) {
       queryClient.invalidateQueries({ queryKey: ["folders"] });
       queryClient.invalidateQueries({ queryKey: ["words"] });
     },
+  });
+}
+
+export function useGetSmartWords(folderId: number) {
+  return useQuery({
+    queryKey: ["words-smart", folderId.toString()],
+    queryFn: () => getSmartWords(folderId),
+    enabled: !!folderId,
+  });
+}
+
+export function useGetMasteredWords(folderId: number) {
+  return useQuery({
+    queryKey: ["words-mastered", folderId.toString()],
+    queryFn: () => getMasteredWords(folderId),
+    enabled: !!folderId,
   });
 }

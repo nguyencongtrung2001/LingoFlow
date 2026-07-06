@@ -7,4 +7,6 @@ export declare const xuLyXoaTu: (yeuCau: Request, phanHoi: Response) => Promise<
 export declare const xuLyLuuPhienHoc: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
 export declare const xuLyLayTuCuonChieu: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
 export declare const xuLyDiChuyenTu: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
+export declare const xuLyLayTuThongMinh: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
+export declare const xuLyLayTuDaThuoc: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
 //# sourceMappingURL=tu_vung.controller.d.ts.map

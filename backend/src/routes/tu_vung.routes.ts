@@ -7,7 +7,9 @@ import {
   xuLyXoaTu,
   xuLyLuuPhienHoc,
   xuLyLayTuCuonChieu,
-  xuLyDiChuyenTu
+  xuLyDiChuyenTu,
+  xuLyLayTuThongMinh,
+  xuLyLayTuDaThuoc
 } from "../controllers/tu_vung.controller";
 import { xacThucNguoiDung } from "../middleware/kiem_tra_token";
 
@@ -18,6 +20,8 @@ router.use(xacThucNguoiDung);
 
 router.get("/thu-muc/:folderId", xuLyLayDanhSachTu);
 router.get("/cuon-chieu/:folderId", xuLyLayTuCuonChieu);
+router.get("/thong-minh/:folderId", xuLyLayTuThongMinh);
+router.get("/da-thuoc/:folderId", xuLyLayTuDaThuoc);
 router.post("/", xuLyThemTu);
 router.post("/batch", xuLyThemNhieuTu);
 router.post("/phien-hoc", xuLyLuuPhienHoc);

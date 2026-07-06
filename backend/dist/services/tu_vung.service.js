@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.diChuyenTuVungService = exports.layDanhSachTuCuonChieuService = exports.ghiNhanPhienHocService = exports.xoaTuVungService = exports.suaTuVungService = exports.taoNhieuTuVungService = exports.taoTuVungService = exports.layDanhSachTuVungService = void 0;
+exports.layTuDaThuocService = exports.layTuThongMinhService = exports.diChuyenTuVungService = exports.layDanhSachTuCuonChieuService = exports.ghiNhanPhienHocService = exports.xoaTuVungService = exports.suaTuVungService = exports.taoNhieuTuVungService = exports.taoTuVungService = exports.layDanhSachTuVungService = void 0;
 const prisma_1 = require("../config/prisma");
 const tu_vung_repository_1 = require("../repositories/tu_vung.repository");
 const cloudinary_upload_1 = require("../utils/cloudinary_upload");
@@ -132,4 +132,32 @@ const diChuyenTuVungService = async (userId, wordIds, targetFolderId) => {
     return await (0, tu_vung_repository_1.diChuyenTuVungRepo)(wordIds, targetFolderId);
 };
 exports.diChuyenTuVungService = diChuyenTuVungService;
+/**
+ * Service: Bốc từ thông minh (Dynamic Queue)
+ * Loại bỏ từ đã thuộc khỏi hàng đợi chính, gối đầu từ mới
+ */
+const layTuThongMinhService = async (userId, folderId) => {
+    const folder = await prisma_1.prisma.folder.findFirst({
+        where: { id: folderId, userId },
+    });
+    if (!folder) {
+        throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+    }
+    return await (0, tu_vung_repository_1.layTuThongMinhRepo)(userId, folderId, 15);
+};
+exports.layTuThongMinhService = layTuThongMinhService;
+/**
+ * Service: Lấy danh sách từ đã thuộc để ôn tập lại
+ * Dùng cho chế độ "Review Mastered Words"
+ */
+const layTuDaThuocService = async (userId, folderId) => {
+    const folder = await prisma_1.prisma.folder.findFirst({
+        where: { id: folderId, userId },
+    });
+    if (!folder) {
+        throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+    }
+    return await (0, tu_vung_repository_1.layTuDaThuocRepo)(userId, folderId);
+};
+exports.layTuDaThuocService = layTuDaThuocService;
 //# sourceMappingURL=tu_vung.service.js.map

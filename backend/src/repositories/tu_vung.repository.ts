@@ -237,3 +237,94 @@ export const diChuyenTuVungRepo = async (wordIds: number[], targetFolderId: numb
     },
   });
 };
+
+/**
+ * Thuật toán Hàng đợi Động (Dynamic Queue) — Bốc từ thông minh
+ * 
+ * Quy trình:
+ * 1. Lấy các từ ĐANG ÔN (box 1-4) — ưu tiên trả về trước
+ * 2. Tính slot còn trống = limit - số từ đang ôn
+ * 3. Lấp đầy slot trống bằng từ MỚI TINH (chưa có WordProgress)
+ * 4. Nếu vẫn chưa đủ, lấy thêm từ đã thuộc (box 5) để bù
+ */
+export const layTuThongMinhRepo = async (userId: string, folderId: number, limit: number = 15) => {
+  // 1. Lấy tất cả các từ ĐANG ÔN LUYỆN (Box 1-4)
+  const tuDangOn = await prisma.wordProgress.findMany({
+    where: {
+      userId,
+      word: { folderId },
+      box: { in: [1, 2, 3, 4] },
+    },
+    include: { word: true },
+    orderBy: { box: "asc" }, // Ưu tiên box thấp (cần ôn nhiều hơn)
+    take: limit,
+  });
+
+  const soTuDangOn = tuDangOn.length;
+  const soSlotTrong = Math.max(0, limit - soTuDangOn);
+
+  let tuMoiTinh: any[] = [];
+  if (soSlotTrong > 0) {
+    // 2. Bốc các từ MỚI TINH (Chưa hề có bản ghi WordProgress cho user này)
+    tuMoiTinh = await prisma.word.findMany({
+      where: {
+        folderId,
+        progress: {
+          none: { userId },
+        },
+      },
+      orderBy: { createdAt: "asc" },
+      take: soSlotTrong,
+    });
+  }
+
+  // 3. Nếu cả đang ôn + mới tinh vẫn chưa đủ limit, lấy thêm từ đã thuộc (box 5)
+  const tongHienTai = soTuDangOn + tuMoiTinh.length;
+  let tuDaThuocBu: any[] = [];
+  if (tongHienTai < limit) {
+    const soCanBu = limit - tongHienTai;
+    const tuDaThuocProgress = await prisma.wordProgress.findMany({
+      where: {
+        userId,
+        word: { folderId },
+        box: 5,
+      },
+      include: { word: true },
+      take: soCanBu,
+    });
+    tuDaThuocBu = tuDaThuocProgress.map((p) => p.word);
+  }
+
+  // 4. Trộn dữ liệu: [từ đang ôn] + [từ mới tinh] + [từ đã thuộc bù]
+  return {
+    words: [
+      ...tuDangOn.map((p) => p.word),
+      ...tuMoiTinh,
+      ...tuDaThuocBu,
+    ],
+    meta: {
+      dangOn: soTuDangOn,
+      moiTinh: tuMoiTinh.length,
+      daThuocBu: tuDaThuocBu.length,
+    },
+  };
+};
+
+/**
+ * Lấy danh sách từ ĐÃ THUỘC (box === 5) để ôn tập lại
+ * Dùng cho chế độ "Ôn tập từ đã thuộc" (Review Mastered Words)
+ */
+export const layTuDaThuocRepo = async (userId: string, folderId: number) => {
+  const daThuoc = await prisma.wordProgress.findMany({
+    where: {
+      userId,
+      word: { folderId },
+      box: 5,
+    },
+    include: { word: true },
+    orderBy: { updatedAt: "asc" }, // Ưu tiên từ lâu chưa ôn nhất
+  });
+
+  return daThuoc.map((p) => p.word);
+};
+

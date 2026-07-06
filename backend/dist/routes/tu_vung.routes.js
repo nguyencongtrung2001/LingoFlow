@@ -8,6 +8,8 @@ const router = (0, express_1.Router)();
 router.use(kiem_tra_token_1.xacThucNguoiDung);
 router.get("/thu-muc/:folderId", tu_vung_controller_1.xuLyLayDanhSachTu);
 router.get("/cuon-chieu/:folderId", tu_vung_controller_1.xuLyLayTuCuonChieu);
+router.get("/thong-minh/:folderId", tu_vung_controller_1.xuLyLayTuThongMinh);
+router.get("/da-thuoc/:folderId", tu_vung_controller_1.xuLyLayTuDaThuoc);
 router.post("/", tu_vung_controller_1.xuLyThemTu);
 router.post("/batch", tu_vung_controller_1.xuLyThemNhieuTu);
 router.post("/phien-hoc", tu_vung_controller_1.xuLyLuuPhienHoc);

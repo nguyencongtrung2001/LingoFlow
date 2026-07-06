@@ -88,3 +88,24 @@ export const moveWords = async (wordIds: number[], targetFolderId: number): Prom
   const res = await api.put("/tu-vung/di-chuyen", { wordIds, targetFolderId });
   return res.data;
 };
+
+export interface SmartWordsResponse {
+  words: Word[];
+  meta: {
+    dangOn: number;   // Số từ đang ôn (box 1-4)
+    moiTinh: number;  // Số từ mới tinh được gối đầu
+    daThuocBu: number; // Số từ đã thuộc lấy bù (khi không đủ từ mới)
+  };
+}
+
+/** Lấy từ vựng thông minh: ưu tiên từ chưa thuộc + gối đầu từ mới */
+export const getSmartWords = async (folderId: number): Promise<SmartWordsResponse> => {
+  const res = await api.get(`/tu-vung/thong-minh/${folderId}`);
+  return res.data;
+};
+
+/** Lấy danh sách từ đã thuộc (ôn tập lại) */
+export const getMasteredWords = async (folderId: number): Promise<Word[]> => {
+  const res = await api.get(`/tu-vung/da-thuoc/${folderId}`);
+  return res.data;
+};

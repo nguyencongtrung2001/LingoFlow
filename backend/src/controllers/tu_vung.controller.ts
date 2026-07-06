@@ -8,6 +8,8 @@ import {
   ghiNhanPhienHocService,
   layDanhSachTuCuonChieuService,
   diChuyenTuVungService,
+  layTuThongMinhService,
+  layTuDaThuocService,
 } from "../services/tu_vung.service";
 
 export const xuLyLayDanhSachTu = async (yeuCau: Request, phanHoi: Response) => {
@@ -149,6 +151,36 @@ export const xuLyDiChuyenTu = async (yeuCau: Request, phanHoi: Response) => {
 
     const ketQua = await diChuyenTuVungService(maNguoiDung, wordIds, parseInt(targetFolderId));
     return phanHoi.status(200).json({ message: "Di chuyển thành công.", count: ketQua.count });
+  } catch (loi: any) {
+    return phanHoi.status(403).json({ error: loi.message });
+  }
+};
+
+export const xuLyLayTuThongMinh = async (yeuCau: Request, phanHoi: Response) => {
+  try {
+    const maNguoiDung = yeuCau.user?.id;
+    const folderId = parseInt(String(yeuCau.params.folderId || "0"), 10);
+
+    if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+    if (isNaN(folderId)) return phanHoi.status(400).json({ error: "Mã thư mục không hợp lệ." });
+
+    const ketQua = await layTuThongMinhService(maNguoiDung, folderId);
+    return phanHoi.status(200).json(ketQua);
+  } catch (loi: any) {
+    return phanHoi.status(403).json({ error: loi.message });
+  }
+};
+
+export const xuLyLayTuDaThuoc = async (yeuCau: Request, phanHoi: Response) => {
+  try {
+    const maNguoiDung = yeuCau.user?.id;
+    const folderId = parseInt(String(yeuCau.params.folderId || "0"), 10);
+
+    if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+    if (isNaN(folderId)) return phanHoi.status(400).json({ error: "Mã thư mục không hợp lệ." });
+
+    const danhSach = await layTuDaThuocService(maNguoiDung, folderId);
+    return phanHoi.status(200).json(danhSach);
   } catch (loi: any) {
     return phanHoi.status(403).json({ error: loi.message });
   }

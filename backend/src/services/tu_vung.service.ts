@@ -8,6 +8,8 @@ import {
   taoPhienHocRepo,
   layDanhSachTuCuonChieuRepo,
   diChuyenTuVungRepo,
+  layTuThongMinhRepo,
+  layTuDaThuocRepo,
 } from "../repositories/tu_vung.repository";
 import { uploadImageFromUrl, deleteImageFromCloudinary } from "../utils/cloudinary_upload";
 
@@ -167,4 +169,36 @@ export const diChuyenTuVungService = async (userId: string, wordIds: number[], t
   }
 
   return await diChuyenTuVungRepo(wordIds, targetFolderId);
+};
+
+/**
+ * Service: Bốc từ thông minh (Dynamic Queue)
+ * Loại bỏ từ đã thuộc khỏi hàng đợi chính, gối đầu từ mới
+ */
+export const layTuThongMinhService = async (userId: string, folderId: number) => {
+  const folder = await prisma.folder.findFirst({
+    where: { id: folderId, userId },
+  });
+
+  if (!folder) {
+    throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  return await layTuThongMinhRepo(userId, folderId, 15);
+};
+
+/**
+ * Service: Lấy danh sách từ đã thuộc để ôn tập lại
+ * Dùng cho chế độ "Review Mastered Words"
+ */
+export const layTuDaThuocService = async (userId: string, folderId: number) => {
+  const folder = await prisma.folder.findFirst({
+    where: { id: folderId, userId },
+  });
+
+  if (!folder) {
+    throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  return await layTuDaThuocRepo(userId, folderId);
 };

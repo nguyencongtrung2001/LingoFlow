@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xuLyDiChuyenTu = exports.xuLyLayTuCuonChieu = exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
+exports.xuLyLayTuDaThuoc = exports.xuLyLayTuThongMinh = exports.xuLyDiChuyenTu = exports.xuLyLayTuCuonChieu = exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
 const tu_vung_service_1 = require("../services/tu_vung.service");
 const xuLyLayDanhSachTu = async (yeuCau, phanHoi) => {
     try {
@@ -155,4 +155,36 @@ const xuLyDiChuyenTu = async (yeuCau, phanHoi) => {
     }
 };
 exports.xuLyDiChuyenTu = xuLyDiChuyenTu;
+const xuLyLayTuThongMinh = async (yeuCau, phanHoi) => {
+    try {
+        const maNguoiDung = yeuCau.user?.id;
+        const folderId = parseInt(String(yeuCau.params.folderId || "0"), 10);
+        if (!maNguoiDung)
+            return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+        if (isNaN(folderId))
+            return phanHoi.status(400).json({ error: "Mã thư mục không hợp lệ." });
+        const ketQua = await (0, tu_vung_service_1.layTuThongMinhService)(maNguoiDung, folderId);
+        return phanHoi.status(200).json(ketQua);
+    }
+    catch (loi) {
+        return phanHoi.status(403).json({ error: loi.message });
+    }
+};
+exports.xuLyLayTuThongMinh = xuLyLayTuThongMinh;
+const xuLyLayTuDaThuoc = async (yeuCau, phanHoi) => {
+    try {
+        const maNguoiDung = yeuCau.user?.id;
+        const folderId = parseInt(String(yeuCau.params.folderId || "0"), 10);
+        if (!maNguoiDung)
+            return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+        if (isNaN(folderId))
+            return phanHoi.status(400).json({ error: "Mã thư mục không hợp lệ." });
+        const danhSach = await (0, tu_vung_service_1.layTuDaThuocService)(maNguoiDung, folderId);
+        return phanHoi.status(200).json(danhSach);
+    }
+    catch (loi) {
+        return phanHoi.status(403).json({ error: loi.message });
+    }
+};
+exports.xuLyLayTuDaThuoc = xuLyLayTuDaThuoc;
 //# sourceMappingURL=tu_vung.controller.js.map
