@@ -102,11 +102,16 @@ export declare const diChuyenTuVungRepo: (wordIds: number[], targetFolderId: num
 /**
  * Thuật toán Hàng đợi Động (Dynamic Queue) — Bốc từ thông minh
  *
+ * Tiêu chí Corrects-based Mastery:
+ *   - corrects 0-3: Chưa thuộc (ưu tiên cao nhất)
+ *   - corrects 4-6: Đang ôn
+ *   - corrects >= 7: Đã thuộc (loại khỏi queue chính)
+ *
  * Quy trình:
- * 1. Lấy các từ ĐANG ÔN (box 1-4) — ưu tiên trả về trước
+ * 1. Lấy các từ CHƯA THUỘC + ĐANG ÔN (corrects < 7) — ưu tiên trả về trước
  * 2. Tính slot còn trống = limit - số từ đang ôn
  * 3. Lấp đầy slot trống bằng từ MỚI TINH (chưa có WordProgress)
- * 4. Nếu vẫn chưa đủ, lấy thêm từ đã thuộc (box 5) để bù
+ * 4. Nếu vẫn chưa đủ, lấy thêm từ đã thuộc (corrects >= 7) để bù
  */
 export declare const layTuThongMinhRepo: (userId: string, folderId: number, limit?: number) => Promise<{
     words: any[];
@@ -117,7 +122,7 @@ export declare const layTuThongMinhRepo: (userId: string, folderId: number, limi
     };
 }>;
 /**
- * Lấy danh sách từ ĐÃ THUỘC (box === 5) để ôn tập lại
+ * Lấy danh sách từ ĐÃ THUỘC (corrects >= 7) để ôn tập lại
  * Dùng cho chế độ "Ôn tập từ đã thuộc" (Review Mastered Words)
  */
 export declare const layTuDaThuocRepo: (userId: string, folderId: number) => Promise<{

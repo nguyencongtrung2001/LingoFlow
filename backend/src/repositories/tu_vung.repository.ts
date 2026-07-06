@@ -173,9 +173,10 @@ export const taoPhienHocRepo = async (
       if (chiTiet.isCorrect) {
         updateData.corrects = { increment: 1 };
       }
-      if (hopMoi === 5) {
-        updateData.learned = true;
-      }
+
+      // "learned" dựa trên tổng corrects tích lũy (>=7), không dựa trên box
+      const tongDungSauCapNhat = (tienDoHienTai?.corrects ?? 0) + (chiTiet.isCorrect ? 1 : 0);
+      updateData.learned = tongDungSauCapNhat >= 7;
 
       // Thực hiện cập nhật hoặc tạo mới nếu từ chưa có bản ghi tiến độ
       await tx.wordProgress.upsert({
@@ -190,7 +191,7 @@ export const taoPhienHocRepo = async (
           lastResult: chiTiet.isCorrect,
           attempts: 1,
           corrects: chiTiet.isCorrect ? 1 : 0,
-          learned: hopMoi === 5
+          learned: false // Mới tạo, corrects tối đa = 1, chưa thể >= 7
         }
       });
     }
@@ -241,22 +242,27 @@ export const diChuyenTuVungRepo = async (wordIds: number[], targetFolderId: numb
 /**
  * Thuật toán Hàng đợi Động (Dynamic Queue) — Bốc từ thông minh
  * 
+ * Tiêu chí Corrects-based Mastery:
+ *   - corrects 0-3: Chưa thuộc (ưu tiên cao nhất)
+ *   - corrects 4-6: Đang ôn
+ *   - corrects >= 7: Đã thuộc (loại khỏi queue chính)
+ * 
  * Quy trình:
- * 1. Lấy các từ ĐANG ÔN (box 1-4) — ưu tiên trả về trước
+ * 1. Lấy các từ CHƯA THUỘC + ĐANG ÔN (corrects < 7) — ưu tiên trả về trước
  * 2. Tính slot còn trống = limit - số từ đang ôn
  * 3. Lấp đầy slot trống bằng từ MỚI TINH (chưa có WordProgress)
- * 4. Nếu vẫn chưa đủ, lấy thêm từ đã thuộc (box 5) để bù
+ * 4. Nếu vẫn chưa đủ, lấy thêm từ đã thuộc (corrects >= 7) để bù
  */
 export const layTuThongMinhRepo = async (userId: string, folderId: number, limit: number = 15) => {
-  // 1. Lấy tất cả các từ ĐANG ÔN LUYỆN (Box 1-4)
+  // 1. Lấy tất cả các từ CHƯA THUỘC + ĐANG ÔN (corrects < 7)
   const tuDangOn = await prisma.wordProgress.findMany({
     where: {
       userId,
       word: { folderId },
-      box: { in: [1, 2, 3, 4] },
+      corrects: { lt: 7 },
     },
     include: { word: true },
-    orderBy: { box: "asc" }, // Ưu tiên box thấp (cần ôn nhiều hơn)
+    orderBy: { corrects: "asc" }, // Ưu tiên corrects thấp (cần ôn nhiều hơn)
     take: limit,
   });
 
@@ -278,7 +284,7 @@ export const layTuThongMinhRepo = async (userId: string, folderId: number, limit
     });
   }
 
-  // 3. Nếu cả đang ôn + mới tinh vẫn chưa đủ limit, lấy thêm từ đã thuộc (box 5)
+  // 3. Nếu cả đang ôn + mới tinh vẫn chưa đủ limit, lấy thêm từ đã thuộc (corrects >= 7)
   const tongHienTai = soTuDangOn + tuMoiTinh.length;
   let tuDaThuocBu: any[] = [];
   if (tongHienTai < limit) {
@@ -287,9 +293,10 @@ export const layTuThongMinhRepo = async (userId: string, folderId: number, limit
       where: {
         userId,
         word: { folderId },
-        box: 5,
+        corrects: { gte: 7 },
       },
       include: { word: true },
+      orderBy: { updatedAt: "asc" }, // Ưu tiên từ lâu chưa ôn nhất
       take: soCanBu,
     });
     tuDaThuocBu = tuDaThuocProgress.map((p) => p.word);
@@ -311,7 +318,7 @@ export const layTuThongMinhRepo = async (userId: string, folderId: number, limit
 };
 
 /**
- * Lấy danh sách từ ĐÃ THUỘC (box === 5) để ôn tập lại
+ * Lấy danh sách từ ĐÃ THUỘC (corrects >= 7) để ôn tập lại
  * Dùng cho chế độ "Ôn tập từ đã thuộc" (Review Mastered Words)
  */
 export const layTuDaThuocRepo = async (userId: string, folderId: number) => {
@@ -319,7 +326,7 @@ export const layTuDaThuocRepo = async (userId: string, folderId: number) => {
     where: {
       userId,
       word: { folderId },
-      box: 5,
+      corrects: { gte: 7 },
     },
     include: { word: true },
     orderBy: { updatedAt: "asc" }, // Ưu tiên từ lâu chưa ôn nhất
