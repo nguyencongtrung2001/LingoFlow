@@ -96,41 +96,26 @@ export function StudyModes() {
 
       {/* Chế độ Ôn tập từ đã thuộc */}
       {masteredCount > 0 && (
-        <div className="mt-8 p-5 md:p-6 bg-gradient-to-br from-[#fff8f0] to-[#ffecd2] rounded-2xl border border-[#ffddb8]/60 shadow-[0_4px_20px_-4px_rgba(101,62,0,0.08)]">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-lg bg-[#ffddb8] text-[#653e00] flex items-center justify-center shadow-sm">
-              <BookCheck className="w-5 h-5" />
+        <div className="mt-6 md:mt-8">
+          <button
+            onClick={() => launchReview("mixed")}
+            className="flex items-center gap-4 p-5 md:p-6 bg-gradient-to-r from-[#fff8f0] to-[#ffecd2] rounded-2xl shadow-[0_4px_20px_-4px_rgba(101,62,0,0.08)] hover:shadow-[0_8px_25px_-5px_rgba(101,62,0,0.15)] hover:-translate-y-1 transition-all duration-300 border border-[#ffddb8]/80 hover:border-[#ffddb8] group text-left w-full relative overflow-hidden"
+          >
+            <div className="w-14 h-14 rounded-xl bg-[#ffddb8] text-[#653e00] flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner z-10 shrink-0">
+              <BookCheck className="w-7 h-7" />
             </div>
-            <div>
-              <h2 className="text-[16px] font-bold text-[#653e00]">Ôn tập từ đã thuộc</h2>
-              <p className="text-[13px] font-medium text-[#8b6914]">
-                Giữ vững phong độ với {masteredCount} từ bạn đã ghi nhớ
+            <div className="flex-1 z-10">
+              <h3 className="font-bold text-[16px] text-[#653e00]">
+                Ôn tập từ đã thuộc (Thập cẩm)
+              </h3>
+              <p className="font-medium text-[13px] text-[#8b6914] mt-1">
+                Giữ vững phong độ với chế độ Trắc nghiệm & Gõ từ ngẫu nhiên
               </p>
             </div>
-          </div>
-          
-          <div className="mt-2">
-            <button
-              onClick={() => launchReview("mixed")}
-              className="flex items-center gap-4 p-5 bg-white/70 hover:bg-white rounded-xl shadow-[0_2px_8px_-2px_rgba(101,62,0,0.06)] hover:shadow-[0_8px_16px_-4px_rgba(101,62,0,0.12)] hover:-translate-y-1 transition-all duration-200 border border-[#ffddb8]/80 hover:border-[#ffddb8] group text-left w-full"
-            >
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#6cf8bb]/30 to-[#e1e0ff]/50 text-[#653e00] flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
-                <HelpCircle className="w-5 h-5 absolute -translate-x-2 -translate-y-2 text-[#00714d]" />
-                <Edit3 className="w-5 h-5 absolute translate-x-2 translate-y-2 text-[#07006c]" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-[15px] text-[#653e00]">
-                  Thập cẩm (Trắc nghiệm & Gõ từ)
-                </h3>
-                <p className="font-medium text-[13px] text-[#8b6914] mt-0.5">
-                  Hệ thống sẽ bốc ngẫu nhiên 2 chế độ này
-                </p>
-              </div>
-              <span className="flex items-center justify-center w-8 h-8 bg-[#ffddb8] text-[#653e00] rounded-full text-[14px] font-bold shrink-0">
-                {masteredCount}
-              </span>
-            </button>
-          </div>
+            <div className="flex items-center justify-center w-10 h-10 bg-white/80 text-[#653e00] rounded-full text-[15px] font-black shadow-sm shrink-0 z-10 group-hover:bg-white transition-colors">
+              {masteredCount}
+            </div>
+          </button>
         </div>
       )}
     </section>
