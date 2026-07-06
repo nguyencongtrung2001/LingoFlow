@@ -109,25 +109,26 @@ export function StudyModes() {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-3">
+          <div className="mt-2">
             <button
-              onClick={() => launchReview("quiz")}
-              className="flex flex-col items-center gap-2 p-4 bg-white/60 hover:bg-white rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 border border-[#ffddb8]/40 group"
+              onClick={() => launchReview("mixed")}
+              className="flex items-center gap-4 p-5 bg-white/70 hover:bg-white rounded-xl shadow-[0_2px_8px_-2px_rgba(101,62,0,0.06)] hover:shadow-[0_8px_16px_-4px_rgba(101,62,0,0.12)] hover:-translate-y-1 transition-all duration-200 border border-[#ffddb8]/80 hover:border-[#ffddb8] group text-left w-full"
             >
-              <div className="w-10 h-10 rounded-lg bg-[#6cf8bb]/20 text-[#00714d] flex items-center justify-center group-hover:scale-110 transition-transform">
-                <HelpCircle className="w-5 h-5" />
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#6cf8bb]/30 to-[#e1e0ff]/50 text-[#653e00] flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+                <HelpCircle className="w-5 h-5 absolute -translate-x-2 -translate-y-2 text-[#00714d]" />
+                <Edit3 className="w-5 h-5 absolute translate-x-2 translate-y-2 text-[#07006c]" />
               </div>
-              <span className="font-semibold text-[13px] text-[#653e00]">Trắc nghiệm</span>
-            </button>
-
-            <button
-              onClick={() => launchReview("type")}
-              className="flex flex-col items-center gap-2 p-4 bg-white/60 hover:bg-white rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 border border-[#ffddb8]/40 group"
-            >
-              <div className="w-10 h-10 rounded-lg bg-[#e1e0ff]/40 text-[#07006c] flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Edit3 className="w-5 h-5" />
+              <div className="flex-1">
+                <h3 className="font-bold text-[15px] text-[#653e00]">
+                  Thập cẩm (Trắc nghiệm & Gõ từ)
+                </h3>
+                <p className="font-medium text-[13px] text-[#8b6914] mt-0.5">
+                  Hệ thống sẽ bốc ngẫu nhiên 2 chế độ này
+                </p>
               </div>
-              <span className="font-semibold text-[13px] text-[#653e00]">Gõ từ</span>
+              <span className="flex items-center justify-center w-8 h-8 bg-[#ffddb8] text-[#653e00] rounded-full text-[14px] font-bold shrink-0">
+                {masteredCount}
+              </span>
             </button>
           </div>
         </div>
