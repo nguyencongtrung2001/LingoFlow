@@ -28,7 +28,12 @@ app.use("/api/thong-ke", thongKeRoutes);
 app.use("/api/quan-tri", quanTriRoutes);
 app.use("/api/ghi-chu", ghiChuRoutes);
 
-// Health check
+// Health check (Cron-Job Ping)
+app.get("/api/health-check", (req, res) => {
+  res.status(200).json({ status: "OK", timestamp: new Date() });
+});
+
+// Alias for old health check just in case
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", message: "Server đang chạy mượt mà!" });
 });
