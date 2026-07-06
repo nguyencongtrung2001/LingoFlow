@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
 import { FolderDetail, Word } from "@/types/folder";
 import { CheckCircle, ArrowRight, Flame, Volume2, X } from "lucide-react";
@@ -19,6 +19,13 @@ function shuffleArray<T>(array: T[]): T[] {
     [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
   }
   return newArr;
+}
+
+function checkMultipleAnswers(input: string, expected: string): boolean {
+  if (!input.trim() || !expected.trim()) return false;
+  const expectedList = expected.split(/[,;]/).map((s) => s.trim().toLowerCase());
+  const userVal = input.trim().toLowerCase();
+  return expectedList.includes(userVal);
 }
 
 export function MixedGame({ folder, onBack }: MixedGameProps) {
@@ -86,7 +93,7 @@ export function MixedGame({ folder, onBack }: MixedGameProps) {
   const handleCheckWrite = () => {
     if (!inputValue.trim() || !currentWord) return;
 
-    const isCorrect = inputValue.trim().toLowerCase() === expectedAnswer.trim().toLowerCase();
+    const isCorrect = checkMultipleAnswers(inputValue, expectedAnswer);
     setIsWriteCorrect(isCorrect);
     setShowWriteFeedback(true);
     handleAnswerResult(isCorrect, inputValue.trim());
@@ -148,6 +155,25 @@ export function MixedGame({ folder, onBack }: MixedGameProps) {
       resetCurrentState();
     }
   };
+
+  const isAnswered = questionType === "QUIZ" ? selectedAnswer !== null : showWriteFeedback;
+  const isCurrentlyCorrect = questionType === "QUIZ" 
+    ? selectedAnswer === expectedAnswer 
+    : isWriteCorrect;
+
+  const handleNextRef = useRef(handleNext);
+  useEffect(() => {
+    handleNextRef.current = handleNext;
+  });
+
+  useEffect(() => {
+    if (isAnswered && isCurrentlyCorrect) {
+      const timer = setTimeout(() => {
+        handleNextRef.current();
+      }, 700);
+      return () => clearTimeout(timer);
+    }
+  }, [isAnswered, isCurrentlyCorrect]);
 
   const resetCurrentState = () => {
     setSelectedAnswer(null);
@@ -223,8 +249,6 @@ export function MixedGame({ folder, onBack }: MixedGameProps) {
       />
     );
   }
-
-  const isAnswered = questionType === "QUIZ" ? selectedAnswer !== null : showWriteFeedback;
 
   return (
     <div className="bg-[#eff4ff] text-[#0b1c30] flex flex-col overflow-hidden relative w-full rounded-3xl border border-[#e5eeff]/50 shadow-md">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { FolderDetail, Word } from "@/types/folder";
 import { X, Flame, Volume2, ArrowRight } from "lucide-react";
@@ -14,6 +14,13 @@ function shuffleArray<T>(array: T[]): T[] {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
+}
+
+function checkMultipleAnswers(input: string, expected: string): boolean {
+  if (!input.trim() || !expected.trim()) return false;
+  const expectedList = expected.split(/[,;]/).map((s) => s.trim().toLowerCase());
+  const userVal = input.trim().toLowerCase();
+  return expectedList.includes(userVal);
 }
 
 export interface WriteGameProps {
@@ -49,7 +56,7 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
   const handleCheck = () => {
     if (!inputValue.trim() || !currentWord) return;
 
-    const isCorrect = inputValue.trim().toLowerCase() === expectedAnswer.trim().toLowerCase();
+    const isCorrect = checkMultipleAnswers(inputValue, expectedAnswer);
     setIsAnswerCorrect(isCorrect);
     setShowFeedback(true);
 
@@ -124,6 +131,20 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
       setDirection(Math.random() > 0.5 ? "EN_TO_VI" : "VI_TO_EN");
     }
   };
+
+  const handleNextRef = useRef(handleNext);
+  useEffect(() => {
+    handleNextRef.current = handleNext;
+  });
+
+  useEffect(() => {
+    if (showFeedback && isAnswerCorrect) {
+      const timer = setTimeout(() => {
+        handleNextRef.current();
+      }, 700);
+      return () => clearTimeout(timer);
+    }
+  }, [showFeedback, isAnswerCorrect]);
 
   const handleRestart = () => {
     setQueue(shuffleArray(folder.words));
