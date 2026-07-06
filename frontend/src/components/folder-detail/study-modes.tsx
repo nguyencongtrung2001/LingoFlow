@@ -96,26 +96,40 @@ export function StudyModes() {
 
       {/* Chế độ Ôn tập từ đã thuộc */}
       {masteredCount > 0 && (
-        <div className="mt-4">
-          <button
-            onClick={() => launchReview("flashcard")}
-            className="flex items-center gap-4 p-5 bg-gradient-to-r from-[#fff8f0] to-[#ffecd2] rounded-xl shadow-[0_2px_8px_-2px_rgba(101,62,0,0.06)] hover:shadow-[0_8px_16px_-4px_rgba(101,62,0,0.12)] hover:-translate-y-1 transition-all duration-200 border border-[#ffddb8]/50 hover:border-[#ffddb8] group text-left w-full"
-          >
-            <div className="w-12 h-12 rounded-lg bg-[#ffddb8] text-[#653e00] flex items-center justify-center group-hover:scale-110 transition-transform">
-              <BookCheck className="w-6 h-6" />
+        <div className="mt-8 p-5 md:p-6 bg-gradient-to-br from-[#fff8f0] to-[#ffecd2] rounded-2xl border border-[#ffddb8]/60 shadow-[0_4px_20px_-4px_rgba(101,62,0,0.08)]">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 rounded-lg bg-[#ffddb8] text-[#653e00] flex items-center justify-center shadow-sm">
+              <BookCheck className="w-5 h-5" />
             </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-[14px] text-[#653e00]">
-                Ôn tập từ đã thuộc
-              </h3>
-              <p className="font-medium text-[12px] text-[#8b6914]">
-                Kiểm tra lại {masteredCount} từ bạn đã nắm vững
+            <div>
+              <h2 className="text-[16px] font-bold text-[#653e00]">Ôn tập từ đã thuộc</h2>
+              <p className="text-[13px] font-medium text-[#8b6914]">
+                Giữ vững phong độ với {masteredCount} từ bạn đã ghi nhớ
               </p>
             </div>
-            <span className="flex items-center justify-center w-8 h-8 bg-[#ffddb8] text-[#653e00] rounded-full text-[14px] font-bold shrink-0">
-              {masteredCount}
-            </span>
-          </button>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => launchReview("quiz")}
+              className="flex flex-col items-center gap-2 p-4 bg-white/60 hover:bg-white rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 border border-[#ffddb8]/40 group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-[#6cf8bb]/20 text-[#00714d] flex items-center justify-center group-hover:scale-110 transition-transform">
+                <HelpCircle className="w-5 h-5" />
+              </div>
+              <span className="font-semibold text-[13px] text-[#653e00]">Trắc nghiệm</span>
+            </button>
+
+            <button
+              onClick={() => launchReview("type")}
+              className="flex flex-col items-center gap-2 p-4 bg-white/60 hover:bg-white rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 border border-[#ffddb8]/40 group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-[#e1e0ff]/40 text-[#07006c] flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Edit3 className="w-5 h-5" />
+              </div>
+              <span className="font-semibold text-[13px] text-[#653e00]">Gõ từ</span>
+            </button>
+          </div>
         </div>
       )}
     </section>
