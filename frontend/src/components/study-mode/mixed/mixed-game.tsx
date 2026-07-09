@@ -28,6 +28,12 @@ function checkMultipleAnswers(input: string, expected: string): boolean {
   return expectedList.includes(userVal);
 }
 
+function generateHint(text: string): string {
+  return text.replace(/\b([a-zA-Z])([a-zA-Z]*)\b/g, (match, firstLetter, rest) => {
+    return firstLetter + '_'.repeat(rest.length);
+  });
+}
+
 export function MixedGame({ folder, onBack }: MixedGameProps) {
   const folderId = parseInt(folder.id);
   const saveSessionMutation = useSaveStudySession(folderId);
@@ -53,6 +59,7 @@ export function MixedGame({ folder, onBack }: MixedGameProps) {
   const [inputValue, setInputValue] = useState("");
   const [showWriteFeedback, setShowWriteFeedback] = useState(false);
   const [isWriteCorrect, setIsWriteCorrect] = useState(false);
+  const [showHint, setShowHint] = useState(false);
 
   const currentWord = queue[0];
   const progressPercent = totalCount > 0 ? ((totalCount - queue.length) / totalCount) * 100 : 0;
@@ -179,6 +186,7 @@ export function MixedGame({ folder, onBack }: MixedGameProps) {
     setSelectedAnswer(null);
     setInputValue("");
     setShowWriteFeedback(false);
+    setShowHint(false);
     setQuestionType(Math.random() > 0.5 ? "QUIZ" : "WRITE");
     setDirection(Math.random() > 0.5 ? "EN_TO_VI" : "VI_TO_EN");
   };
@@ -362,23 +370,38 @@ export function MixedGame({ folder, onBack }: MixedGameProps) {
           {questionType === "WRITE" && (
             <div className="w-full">
               {!showWriteFeedback ? (
-                <div className="w-full flex gap-3">
-                  <input
-                    type="text"
-                    placeholder={direction === "EN_TO_VI" ? "Nhập nghĩa tiếng Việt..." : "Type the English word..."}
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    autoFocus
-                    className="w-full text-center py-4 px-4 text-[18px] font-semibold border border-[#e2e8f0] rounded-2xl bg-white focus:border-[#4648d4] focus:ring-0 transition-all outline-none text-[#0f172a] shadow-sm"
-                  />
-                  <button
-                    onClick={handleCheckWrite}
-                    disabled={!inputValue.trim()}
-                    className="px-6 py-4 rounded-2xl bg-[#4648d4] text-white font-bold text-[16px] shadow-sm hover:bg-[#6063ee] active:scale-95 disabled:opacity-50"
-                  >
-                    Kiểm tra
-                  </button>
+                <div className="w-full flex flex-col gap-3">
+                  <div className="w-full flex gap-3">
+                    <input
+                      type="text"
+                      placeholder={direction === "EN_TO_VI" ? "Nhập nghĩa tiếng Việt..." : "Type the English word..."}
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      autoFocus
+                      className="w-full text-center py-4 px-4 text-[18px] font-semibold border border-[#e2e8f0] rounded-2xl bg-white focus:border-[#4648d4] focus:ring-0 transition-all outline-none text-[#0f172a] shadow-sm"
+                    />
+                    <button
+                      onClick={handleCheckWrite}
+                      disabled={!inputValue.trim()}
+                      className="px-6 py-4 rounded-2xl bg-[#4648d4] text-white font-bold text-[16px] shadow-sm hover:bg-[#6063ee] active:scale-95 disabled:opacity-50 shrink-0"
+                    >
+                      Kiểm tra
+                    </button>
+                  </div>
+                  {direction === "VI_TO_EN" && !showHint && (
+                    <button
+                      onClick={() => setShowHint(true)}
+                      className="text-[13px] text-[#4648d4] font-medium hover:underline self-start px-3 py-1.5 bg-[#eff4ff] rounded-lg transition-colors hover:bg-[#e0e7ff]"
+                    >
+                      Quên từ? Xem gợi ý
+                    </button>
+                  )}
+                  {direction === "VI_TO_EN" && showHint && (
+                    <div className="text-[16px] font-mono font-bold text-[#b45309] bg-[#fffbeb] px-4 py-2.5 rounded-xl self-start border border-[#fde68a] tracking-widest shadow-sm">
+                      Gợi ý: {generateHint(expectedAnswer)}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="w-full animate-in fade-in zoom-in-95 duration-200">

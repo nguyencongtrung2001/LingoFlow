@@ -23,6 +23,12 @@ function checkMultipleAnswers(input: string, expected: string): boolean {
   return expectedList.includes(userVal);
 }
 
+function generateHint(text: string): string {
+  return text.replace(/\b([a-zA-Z])([a-zA-Z]*)\b/g, (match, firstLetter, rest) => {
+    return firstLetter + '_'.repeat(rest.length);
+  });
+}
+
 export interface WriteGameProps {
   folder: FolderDetail;
   onBack: () => void;
@@ -42,6 +48,7 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
   const [inputValue, setInputValue] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [startTime] = useState<number>(() => Date.now());
   const [direction, setDirection] = useState<"EN_TO_VI" | "VI_TO_EN">(() => Math.random() > 0.5 ? "EN_TO_VI" : "VI_TO_EN");
@@ -121,6 +128,7 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
         setQueue(remaining);
         setInputValue("");
         setShowFeedback(false);
+        setShowHint(false);
         setDirection(Math.random() > 0.5 ? "EN_TO_VI" : "VI_TO_EN");
       }
     } else {
@@ -128,6 +136,7 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
       setQueue([...remaining, currentWord]);
       setInputValue("");
       setShowFeedback(false);
+      setShowHint(false);
       setDirection(Math.random() > 0.5 ? "EN_TO_VI" : "VI_TO_EN");
     }
   };
@@ -154,6 +163,7 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
     setMaxStreak(0);
     setInputValue("");
     setShowFeedback(false);
+    setShowHint(false);
     setIsCompleted(false);
     setDirection(Math.random() > 0.5 ? "EN_TO_VI" : "VI_TO_EN");
   };
@@ -274,7 +284,7 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
           </div>
 
           {!showFeedback ? (
-            <div className="w-full">
+            <div className="w-full flex flex-col gap-3">
               <input
                 id="vocab-input"
                 type="text"
@@ -285,6 +295,19 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
                 autoFocus
                 className="w-full text-center py-3.5 px-4 text-[18px] font-semibold border border-gray-300 rounded-2xl bg-[#f8fafc] focus:border-[#4648d4] focus:ring-0 transition-all outline-none text-[#0f172a]"
               />
+              {direction === "VI_TO_EN" && !showHint && (
+                <button
+                  onClick={() => setShowHint(true)}
+                  className="text-[13px] text-[#4648d4] font-medium hover:underline self-start px-3 py-1.5 bg-[#eff4ff] rounded-lg transition-colors hover:bg-[#e0e7ff]"
+                >
+                  Quên từ? Xem gợi ý
+                </button>
+              )}
+              {direction === "VI_TO_EN" && showHint && (
+                <div className="text-[16px] font-mono font-bold text-[#b45309] bg-[#fffbeb] px-4 py-2.5 rounded-xl self-start border border-[#fde68a] tracking-widest shadow-sm">
+                  Gợi ý: {generateHint(expectedAnswer)}
+                </div>
+              )}
             </div>
           ) : (
             <div className="w-full animate-in fade-in zoom-in-95 duration-200">
