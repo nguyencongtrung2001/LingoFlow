@@ -14,6 +14,7 @@ export interface Word {
   phonetic?: string | null;
   pos: PartOfSpeech;
   example?: string | null;
+  useWord?: string | null;
   image?: string | null;
   folderId: number;
   createdAt: string;
@@ -30,6 +31,14 @@ export interface ExcelWordInput {
   Pos?: string;
   Phonetic?: string;
   Example?: string;
+  UseWord?: string;
+}
+
+export interface FolderProgress {
+  tongSoTu: number;
+  daThuoc: number;
+  dangOn: number;
+  chuaHoc: number;
 }
 
 export const getWordsByFolder = async (folderId: number): Promise<Word[]> => {
@@ -108,5 +117,11 @@ export const getSmartWords = async (folderId: number): Promise<SmartWordsRespons
 /** Lấy danh sách từ đã thuộc (ôn tập lại) */
 export const getMasteredWords = async (folderId: number): Promise<Word[]> => {
   const res = await api.get(`/tu-vung/da-thuoc/${folderId}`);
+  return res.data;
+};
+
+/** Lấy thống kê tiến độ thư mục (từ đã thuộc, đang ôn, chưa học) */
+export const getFolderProgress = async (folderId: number): Promise<FolderProgress> => {
+  const res = await api.get(`/tu-vung/tien-do/${folderId}`);
   return res.data;
 };

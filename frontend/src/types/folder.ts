@@ -7,6 +7,7 @@ export interface Word {
   phonetic?: string | null;
   pos: PartOfSpeech;
   example?: string | null;
+  useWord?: string | null;
   image?: string | null;
   learned: boolean;
 }

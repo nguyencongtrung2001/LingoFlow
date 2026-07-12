@@ -7,6 +7,7 @@ const router = (0, express_1.Router)();
 // Áp dụng lớp bảo vệ token cho tất cả các API nghiệp vụ từ vựng
 router.use(kiem_tra_token_1.xacThucNguoiDung);
 router.get("/thu-muc/:folderId", tu_vung_controller_1.xuLyLayDanhSachTu);
+router.get("/tien-do/:folderId", tu_vung_controller_1.xuLyLayTienDoThuMuc);
 router.get("/cuon-chieu/:folderId", tu_vung_controller_1.xuLyLayTuCuonChieu);
 router.get("/thong-minh/:folderId", tu_vung_controller_1.xuLyLayTuThongMinh);
 router.get("/da-thuoc/:folderId", tu_vung_controller_1.xuLyLayTuDaThuoc);

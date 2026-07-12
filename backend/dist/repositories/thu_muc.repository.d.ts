@@ -20,6 +20,7 @@ export declare const layThuMucChiTietRepo: (id: number, userId: string) => Promi
         phonetic: string | null;
         pos: import("@prisma/client").$Enums.PartOfSpeech;
         example: string | null;
+        useWord: string | null;
         image: string | null;
         folderId: number;
     }[];
@@ -41,6 +42,7 @@ export declare const layThuMucChiTietQuaNameRepo: (name: string, userId: string)
         phonetic: string | null;
         pos: import("@prisma/client").$Enums.PartOfSpeech;
         example: string | null;
+        useWord: string | null;
         image: string | null;
         folderId: number;
     }[];

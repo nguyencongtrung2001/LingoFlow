@@ -18,6 +18,7 @@ export const taoTuVungRepo = async (userId: string, folderId: number, data: any)
         phonetic: data.phonetic || null,
         pos: data.pos || PartOfSpeech.NOUN,
         example: data.example || null,
+        useWord: data.useWord || null,
         image: data.image || null,
         folderId,
       },
@@ -57,6 +58,7 @@ export const taoNhieuTuVungRepo = async (userId: string, folderId: number, danhS
             phonetic: tu.Phonetic ? tu.Phonetic.toString().trim() : null,
             pos: tu.Pos ? tu.Pos.toString().trim() : "NOUN",
             example: tu.Example ? tu.Example.toString().trim() : null,
+            useWord: tu.UseWord ? tu.UseWord.toString().trim() : null,
             folderId: folderId
           }
         });
@@ -90,6 +92,7 @@ export const suaTuVungRepo = async (wordId: number, data: any) => {
       phonetic: data.phonetic || null,
       pos: data.pos,
       example: data.example || null,
+      useWord: data.useWord !== undefined ? (data.useWord || null) : undefined,
       image: data.image || null,
     },
   });
@@ -353,5 +356,40 @@ export const layTuDaThuocRepo = async (userId: string, folderId: number) => {
   });
 
   return daThuoc.map((p) => p.word);
+};
+
+/**
+ * Lấy thống kê tiến độ cho một thư mục:
+ *   - daThuoc: corrects >= 7
+ *   - dangOn: attempts > 0 AND corrects < 7
+ *   - chuaHoc: attempts = 0 (hoặc chưa có WordProgress)
+ */
+export const layTienDoThuMucRepo = async (userId: string, folderId: number) => {
+  // Đếm tổng số từ trong thư mục
+  const tongSoTu = await prisma.word.count({ where: { folderId } });
+
+  // Đếm từ ĐÃ THUỘC (corrects >= 7)
+  const daThuoc = await prisma.wordProgress.count({
+    where: {
+      userId,
+      word: { folderId },
+      corrects: { gte: 7 },
+    },
+  });
+
+  // Đếm từ ĐANG ÔN (attempts > 0, corrects < 7)
+  const dangOn = await prisma.wordProgress.count({
+    where: {
+      userId,
+      word: { folderId },
+      attempts: { gt: 0 },
+      corrects: { lt: 7 },
+    },
+  });
+
+  // Chưa học = tổng - đã thuộc - đang ôn
+  const chuaHoc = Math.max(0, tongSoTu - daThuoc - dangOn);
+
+  return { tongSoTu, daThuoc, dangOn, chuaHoc };
 };
 

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xuLyLayTuDaThuoc = exports.xuLyLayTuThongMinh = exports.xuLyDiChuyenTu = exports.xuLyLayTuCuonChieu = exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
+exports.xuLyLayTienDoThuMuc = exports.xuLyLayTuDaThuoc = exports.xuLyLayTuThongMinh = exports.xuLyDiChuyenTu = exports.xuLyLayTuCuonChieu = exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
 const tu_vung_service_1 = require("../services/tu_vung.service");
 const xuLyLayDanhSachTu = async (yeuCau, phanHoi) => {
     try {
@@ -187,4 +187,20 @@ const xuLyLayTuDaThuoc = async (yeuCau, phanHoi) => {
     }
 };
 exports.xuLyLayTuDaThuoc = xuLyLayTuDaThuoc;
+const xuLyLayTienDoThuMuc = async (yeuCau, phanHoi) => {
+    try {
+        const maNguoiDung = yeuCau.user?.id;
+        const folderId = parseInt(String(yeuCau.params.folderId || "0"), 10);
+        if (!maNguoiDung)
+            return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+        if (isNaN(folderId))
+            return phanHoi.status(400).json({ error: "Mã thư mục không hợp lệ." });
+        const tienDo = await (0, tu_vung_service_1.layTienDoThuMucService)(maNguoiDung, folderId);
+        return phanHoi.status(200).json(tienDo);
+    }
+    catch (loi) {
+        return phanHoi.status(403).json({ error: loi.message });
+    }
+};
+exports.xuLyLayTienDoThuMuc = xuLyLayTienDoThuMuc;
 //# sourceMappingURL=tu_vung.controller.js.map

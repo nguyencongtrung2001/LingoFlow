@@ -10,6 +10,7 @@ import {
   diChuyenTuVungRepo,
   layTuThongMinhRepo,
   layTuDaThuocRepo,
+  layTienDoThuMucRepo,
 } from "../repositories/tu_vung.repository";
 import { uploadImageFromUrl, deleteImageFromCloudinary } from "../utils/cloudinary_upload";
 
@@ -201,4 +202,20 @@ export const layTuDaThuocService = async (userId: string, folderId: number) => {
   }
 
   return await layTuDaThuocRepo(userId, folderId);
+};
+
+/**
+ * Service: Lấy thống kê tiến độ học thư mục
+ * Trả về số lượng từ: đã thuộc, đang ôn, chưa học
+ */
+export const layTienDoThuMucService = async (userId: string, folderId: number) => {
+  const folder = await prisma.folder.findFirst({
+    where: { id: folderId, userId },
+  });
+
+  if (!folder) {
+    throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  return await layTienDoThuMucRepo(userId, folderId);
 };

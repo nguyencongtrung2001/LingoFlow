@@ -79,6 +79,7 @@ model Word {
   phonetic      String?
   pos           PartOfSpeech    @default(NOUN)
   example       String?
+  useWord       String?         // Cách sử dụng từ (ví dụ ngữ cảnh, ghi chú)
   image         String?
   folderId      Int
   createdAt     DateTime        @default(now())

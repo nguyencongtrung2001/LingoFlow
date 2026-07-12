@@ -69,6 +69,7 @@ export function WordCard({
   const [editPos, setEditPos] = useState<PartOfSpeech>(word.pos);
   const [editPhonetic, setEditPhonetic] = useState(word.phonetic || "");
   const [editExample, setEditExample] = useState(word.example || "");
+  const [editUseWord, setEditUseWord] = useState(word.useWord || "");
   const [editImage, setEditImage] = useState(word.image || "");
 
   const handleSave = (e: React.MouseEvent) => {
@@ -80,6 +81,7 @@ export function WordCard({
         pos: editPos,
         phonetic: editPhonetic.trim(),
         example: editExample.trim(),
+        useWord: editUseWord.trim(),
         image: editImage.trim(),
       });
       setIsEditing(false);
@@ -93,6 +95,7 @@ export function WordCard({
     setEditPos(word.pos);
     setEditPhonetic(word.phonetic || "");
     setEditExample(word.example || "");
+    setEditUseWord(word.useWord || "");
     setEditImage(word.image || "");
     setIsEditing(false);
   };
@@ -177,6 +180,12 @@ export function WordCard({
           placeholder="Ví dụ"
           value={editExample}
           onChange={(e) => setEditExample(e.target.value)}
+        />
+        <textarea
+          className="px-3 py-2 border border-[#c7c4d7] rounded-lg text-[14px] outline-none focus:border-[#4648d4] bg-white resize-none h-16"
+          placeholder="Cách dùng từ (Ngữ cảnh / Ghi chú)"
+          value={editUseWord}
+          onChange={(e) => setEditUseWord(e.target.value)}
         />
       </article>
     );
@@ -358,6 +367,13 @@ export function WordCard({
           <blockquote className="mt-2 border-l-4 border-[#4648d4] pl-3 py-1 text-[14px] text-[#464554] bg-[#eff4ff] rounded-r">
             {word.example}
           </blockquote>
+        )}
+
+        {word.useWord && viewMode === "grid" && (
+          <div className="mt-2 text-[13px] text-[#464554] bg-[#fff8e6] border border-[#ffe082] px-3 py-1.5 rounded-lg flex gap-2 items-start">
+            <span className="font-bold text-[#f57f17] shrink-0 mt-0.5">Cách dùng:</span>
+            <span>{word.useWord}</span>
+          </div>
         )}
       </div>
 

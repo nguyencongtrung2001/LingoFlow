@@ -9,7 +9,8 @@ import {
   xuLyLayTuCuonChieu,
   xuLyDiChuyenTu,
   xuLyLayTuThongMinh,
-  xuLyLayTuDaThuoc
+  xuLyLayTuDaThuoc,
+  xuLyLayTienDoThuMuc
 } from "../controllers/tu_vung.controller";
 import { xacThucNguoiDung } from "../middleware/kiem_tra_token";
 
@@ -19,6 +20,7 @@ const router = Router();
 router.use(xacThucNguoiDung);
 
 router.get("/thu-muc/:folderId", xuLyLayDanhSachTu);
+router.get("/tien-do/:folderId", xuLyLayTienDoThuMuc);
 router.get("/cuon-chieu/:folderId", xuLyLayTuCuonChieu);
 router.get("/thong-minh/:folderId", xuLyLayTuThongMinh);
 router.get("/da-thuoc/:folderId", xuLyLayTuDaThuoc);

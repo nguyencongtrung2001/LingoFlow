@@ -14,6 +14,7 @@ import {
   moveWords,
   getSmartWords,
   getMasteredWords,
+  getFolderProgress,
 } from "@/api/words.api";
 
 export function useGetWords(folderId: number) {
@@ -35,6 +36,7 @@ export function useCreateWord(folderId: number) {
       // Làm mới cache Smart Queue + Mastered (dùng cho các chế độ chơi)
       queryClient.invalidateQueries({ queryKey: ["words-smart", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-mastered", folderId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["words-progress", folderId.toString()] });
       // Làm mới cả folder grid (để update word count)
       queryClient.invalidateQueries({ queryKey: ["folders"] });
     },
@@ -52,6 +54,7 @@ export function useCreateMultipleWords(folderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-smart", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-mastered", folderId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["words-progress", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });
     },
   });
@@ -66,6 +69,7 @@ export function useUpdateWord(folderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-smart", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-mastered", folderId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["words-progress", folderId.toString()] });
     },
   });
 }
@@ -79,6 +83,7 @@ export function useDeleteWord(folderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-smart", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-mastered", folderId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["words-progress", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });
     },
   });
@@ -93,6 +98,7 @@ export function useSaveStudySession(folderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-smart", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-mastered", folderId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["words-progress", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });
       queryClient.invalidateQueries({ queryKey: ["words-sequential", folderId.toString()] });
     },
@@ -117,6 +123,7 @@ export function useMoveWords(currentFolderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words", currentFolderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-smart", currentFolderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-mastered", currentFolderId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["words-progress", currentFolderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });
       queryClient.invalidateQueries({ queryKey: ["words"] });
     },
@@ -135,6 +142,14 @@ export function useGetMasteredWords(folderId: number) {
   return useQuery({
     queryKey: ["words-mastered", folderId.toString()],
     queryFn: () => getMasteredWords(folderId),
+    enabled: !!folderId,
+  });
+}
+
+export function useGetFolderProgress(folderId: number) {
+  return useQuery({
+    queryKey: ["words-progress", folderId.toString()],
+    queryFn: () => getFolderProgress(folderId),
     enabled: !!folderId,
   });
 }

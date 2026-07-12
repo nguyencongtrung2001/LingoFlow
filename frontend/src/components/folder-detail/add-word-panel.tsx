@@ -24,6 +24,7 @@ export interface AddWordPanelProps {
     phonetic: string;
     pos: PartOfSpeech;
     example: string;
+    useWord: string;
     image: string;
   }) => void;
 }
@@ -38,6 +39,7 @@ export function AddWordPanel({
   const [phonetic, setPhonetic] = useState("");
   const [pos, setPos] = useState<PartOfSpeech>("NOUN");
   const [example, setExample] = useState("");
+  const [useWord, setUseWord] = useState("");
   const [image, setImage] = useState("");
 
   if (!isVisible) return null;
@@ -55,6 +57,7 @@ export function AddWordPanel({
       phonetic: phonetic.trim(),
       pos,
       example: example.trim(),
+      useWord: useWord.trim(),
       image: image.trim(),
     });
 
@@ -64,6 +67,7 @@ export function AddWordPanel({
     setPhonetic("");
     setPos("NOUN");
     setExample("");
+    setUseWord("");
     setImage("");
     onClose();
   };
@@ -157,6 +161,18 @@ export function AddWordPanel({
                 className="w-full px-4 py-2 bg-[#ffffff] border border-[#c7c4d7] rounded-lg text-[16px] text-[#0b1c30] focus-visible:ring-[#4648d4]/20 focus-visible:border-[#4648d4] resize-none"
                 placeholder="Machine learning relies on complex algorithms."
                 rows={3}
+              />
+            </div>
+            <div>
+              <label className="block text-[12px] font-medium text-[#464554] mb-1">
+                Cách dùng từ (Ngữ cảnh / Ghi chú)
+              </label>
+              <Textarea
+                value={useWord}
+                onChange={(e) => setUseWord(e.target.value)}
+                className="w-full px-4 py-2 bg-[#ffffff] border border-[#c7c4d7] rounded-lg text-[16px] text-[#0b1c30] focus-visible:ring-[#4648d4]/20 focus-visible:border-[#4648d4] resize-none"
+                placeholder="Dùng khi nói về..."
+                rows={2}
               />
             </div>
             <div>

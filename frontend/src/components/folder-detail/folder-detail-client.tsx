@@ -61,6 +61,7 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
     phonetic: string;
     pos: PartOfSpeech;
     example: string;
+    useWord: string;
     image: string;
   }) => {
     createMutation.mutate(wordData, {
@@ -124,7 +125,7 @@ export default function FolderDetailClient({ slug }: FolderDetailClientProps) {
 
   return (
     <>
-      <FolderHeader name={folder.name} desc={folder.description || "Không có mô tả"} />
+      <FolderHeader folderId={folderId} name={folder.name} desc={folder.description || "Không có mô tả"} />
 
       <StudyModes />
 

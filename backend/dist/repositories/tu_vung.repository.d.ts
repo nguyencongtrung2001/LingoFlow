@@ -8,6 +8,7 @@ export declare const layDanhSachTuVungRepo: (folderId: number) => Promise<{
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }[]>;
@@ -20,6 +21,7 @@ export declare const taoTuVungRepo: (userId: string, folderId: number, data: any
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }>;
@@ -32,6 +34,7 @@ export declare const taoNhieuTuVungRepo: (userId: string, folderId: number, danh
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }[]>;
@@ -44,6 +47,7 @@ export declare const suaTuVungRepo: (wordId: number, data: any) => Promise<{
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }>;
@@ -56,6 +60,7 @@ export declare const xoaTuVungRepo: (wordId: number) => Promise<{
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }>;
@@ -95,6 +100,7 @@ export declare const layDanhSachTuCuonChieuRepo: (folderId: number, trang: numbe
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }[]>;
@@ -135,7 +141,20 @@ export declare const layTuDaThuocRepo: (userId: string, folderId: number) => Pro
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }[]>;
+/**
+ * Lấy thống kê tiến độ cho một thư mục:
+ *   - daThuoc: corrects >= 7
+ *   - dangOn: attempts > 0 AND corrects < 7
+ *   - chuaHoc: attempts = 0 (hoặc chưa có WordProgress)
+ */
+export declare const layTienDoThuMucRepo: (userId: string, folderId: number) => Promise<{
+    tongSoTu: number;
+    daThuoc: number;
+    dangOn: number;
+    chuaHoc: number;
+}>;
 //# sourceMappingURL=tu_vung.repository.d.ts.map

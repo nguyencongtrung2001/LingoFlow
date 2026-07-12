@@ -7,6 +7,7 @@ export declare const layDanhSachTuVungService: (folderId: number, userId: string
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }[]>;
@@ -19,6 +20,7 @@ export declare const taoTuVungService: (userId: string, folderId: number, data: 
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }>;
@@ -31,6 +33,7 @@ export declare const taoNhieuTuVungService: (userId: string, folderId: number, d
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }[]>;
@@ -43,6 +46,7 @@ export declare const suaTuVungService: (wordId: number, userId: string, data: an
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }>;
@@ -55,6 +59,7 @@ export declare const xoaTuVungService: (wordId: number, userId: string) => Promi
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }>;
@@ -81,6 +86,7 @@ export declare const layDanhSachTuCuonChieuService: (userId: string, folderId: n
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }[]>;
@@ -111,7 +117,18 @@ export declare const layTuDaThuocService: (userId: string, folderId: number) => 
     phonetic: string | null;
     pos: import("@prisma/client").$Enums.PartOfSpeech;
     example: string | null;
+    useWord: string | null;
     image: string | null;
     folderId: number;
 }[]>;
+/**
+ * Service: Lấy thống kê tiến độ học thư mục
+ * Trả về số lượng từ: đã thuộc, đang ôn, chưa học
+ */
+export declare const layTienDoThuMucService: (userId: string, folderId: number) => Promise<{
+    tongSoTu: number;
+    daThuoc: number;
+    dangOn: number;
+    chuaHoc: number;
+}>;
 //# sourceMappingURL=tu_vung.service.d.ts.map

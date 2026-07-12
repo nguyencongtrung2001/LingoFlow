@@ -9,4 +9,5 @@ export declare const xuLyLayTuCuonChieu: (yeuCau: Request, phanHoi: Response) =>
 export declare const xuLyDiChuyenTu: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
 export declare const xuLyLayTuThongMinh: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
 export declare const xuLyLayTuDaThuoc: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
+export declare const xuLyLayTienDoThuMuc: (yeuCau: Request, phanHoi: Response) => Promise<Response<any, Record<string, any>>>;
 //# sourceMappingURL=tu_vung.controller.d.ts.map

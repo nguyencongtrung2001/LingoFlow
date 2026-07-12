@@ -10,6 +10,7 @@ import {
   diChuyenTuVungService,
   layTuThongMinhService,
   layTuDaThuocService,
+  layTienDoThuMucService,
 } from "../services/tu_vung.service";
 
 export const xuLyLayDanhSachTu = async (yeuCau: Request, phanHoi: Response) => {
@@ -185,3 +186,19 @@ export const xuLyLayTuDaThuoc = async (yeuCau: Request, phanHoi: Response) => {
     return phanHoi.status(403).json({ error: loi.message });
   }
 };
+
+export const xuLyLayTienDoThuMuc = async (yeuCau: Request, phanHoi: Response) => {
+  try {
+    const maNguoiDung = yeuCau.user?.id;
+    const folderId = parseInt(String(yeuCau.params.folderId || "0"), 10);
+
+    if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+    if (isNaN(folderId)) return phanHoi.status(400).json({ error: "Mã thư mục không hợp lệ." });
+
+    const tienDo = await layTienDoThuMucService(maNguoiDung, folderId);
+    return phanHoi.status(200).json(tienDo);
+  } catch (loi: any) {
+    return phanHoi.status(403).json({ error: loi.message });
+  }
+};
+

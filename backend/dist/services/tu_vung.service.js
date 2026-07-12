@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.layTuDaThuocService = exports.layTuThongMinhService = exports.diChuyenTuVungService = exports.layDanhSachTuCuonChieuService = exports.ghiNhanPhienHocService = exports.xoaTuVungService = exports.suaTuVungService = exports.taoNhieuTuVungService = exports.taoTuVungService = exports.layDanhSachTuVungService = void 0;
+exports.layTienDoThuMucService = exports.layTuDaThuocService = exports.layTuThongMinhService = exports.diChuyenTuVungService = exports.layDanhSachTuCuonChieuService = exports.ghiNhanPhienHocService = exports.xoaTuVungService = exports.suaTuVungService = exports.taoNhieuTuVungService = exports.taoTuVungService = exports.layDanhSachTuVungService = void 0;
 const prisma_1 = require("../config/prisma");
 const tu_vung_repository_1 = require("../repositories/tu_vung.repository");
 const cloudinary_upload_1 = require("../utils/cloudinary_upload");
@@ -160,4 +160,18 @@ const layTuDaThuocService = async (userId, folderId) => {
     return await (0, tu_vung_repository_1.layTuDaThuocRepo)(userId, folderId);
 };
 exports.layTuDaThuocService = layTuDaThuocService;
+/**
+ * Service: Lấy thống kê tiến độ học thư mục
+ * Trả về số lượng từ: đã thuộc, đang ôn, chưa học
+ */
+const layTienDoThuMucService = async (userId, folderId) => {
+    const folder = await prisma_1.prisma.folder.findFirst({
+        where: { id: folderId, userId },
+    });
+    if (!folder) {
+        throw new Error("Thư mục không tồn tại hoặc không có quyền truy cập.");
+    }
+    return await (0, tu_vung_repository_1.layTienDoThuMucRepo)(userId, folderId);
+};
+exports.layTienDoThuMucService = layTienDoThuMucService;
 //# sourceMappingURL=tu_vung.service.js.map

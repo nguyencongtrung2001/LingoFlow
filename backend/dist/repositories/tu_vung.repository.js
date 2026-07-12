@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.layTuDaThuocRepo = exports.layTuThongMinhRepo = exports.diChuyenTuVungRepo = exports.layDanhSachTuCuonChieuRepo = exports.taoPhienHocRepo = exports.xoaTuVungRepo = exports.suaTuVungRepo = exports.taoNhieuTuVungRepo = exports.taoTuVungRepo = exports.layDanhSachTuVungRepo = void 0;
+exports.layTienDoThuMucRepo = exports.layTuDaThuocRepo = exports.layTuThongMinhRepo = exports.diChuyenTuVungRepo = exports.layDanhSachTuCuonChieuRepo = exports.taoPhienHocRepo = exports.xoaTuVungRepo = exports.suaTuVungRepo = exports.taoNhieuTuVungRepo = exports.taoTuVungRepo = exports.layDanhSachTuVungRepo = void 0;
 const prisma_1 = require("../config/prisma");
 const client_1 = require("@prisma/client");
 const layDanhSachTuVungRepo = async (folderId) => {
@@ -20,6 +20,7 @@ const taoTuVungRepo = async (userId, folderId, data) => {
                 phonetic: data.phonetic || null,
                 pos: data.pos || client_1.PartOfSpeech.NOUN,
                 example: data.example || null,
+                useWord: data.useWord || null,
                 image: data.image || null,
                 folderId,
             },
@@ -54,6 +55,7 @@ const taoNhieuTuVungRepo = async (userId, folderId, danhSachTu) => {
                         phonetic: tu.Phonetic ? tu.Phonetic.toString().trim() : null,
                         pos: tu.Pos ? tu.Pos.toString().trim() : "NOUN",
                         example: tu.Example ? tu.Example.toString().trim() : null,
+                        useWord: tu.UseWord ? tu.UseWord.toString().trim() : null,
                         folderId: folderId
                     }
                 });
@@ -83,6 +85,7 @@ const suaTuVungRepo = async (wordId, data) => {
             phonetic: data.phonetic || null,
             pos: data.pos,
             example: data.example || null,
+            useWord: data.useWord !== undefined ? (data.useWord || null) : undefined,
             image: data.image || null,
         },
     });
@@ -319,4 +322,35 @@ const layTuDaThuocRepo = async (userId, folderId) => {
     return daThuoc.map((p) => p.word);
 };
 exports.layTuDaThuocRepo = layTuDaThuocRepo;
+/**
+ * Lấy thống kê tiến độ cho một thư mục:
+ *   - daThuoc: corrects >= 7
+ *   - dangOn: attempts > 0 AND corrects < 7
+ *   - chuaHoc: attempts = 0 (hoặc chưa có WordProgress)
+ */
+const layTienDoThuMucRepo = async (userId, folderId) => {
+    // Đếm tổng số từ trong thư mục
+    const tongSoTu = await prisma_1.prisma.word.count({ where: { folderId } });
+    // Đếm từ ĐÃ THUỘC (corrects >= 7)
+    const daThuoc = await prisma_1.prisma.wordProgress.count({
+        where: {
+            userId,
+            word: { folderId },
+            corrects: { gte: 7 },
+        },
+    });
+    // Đếm từ ĐANG ÔN (attempts > 0, corrects < 7)
+    const dangOn = await prisma_1.prisma.wordProgress.count({
+        where: {
+            userId,
+            word: { folderId },
+            attempts: { gt: 0 },
+            corrects: { lt: 7 },
+        },
+    });
+    // Chưa học = tổng - đã thuộc - đang ôn
+    const chuaHoc = Math.max(0, tongSoTu - daThuoc - dangOn);
+    return { tongSoTu, daThuoc, dangOn, chuaHoc };
+};
+exports.layTienDoThuMucRepo = layTienDoThuMucRepo;
 //# sourceMappingURL=tu_vung.repository.js.map
