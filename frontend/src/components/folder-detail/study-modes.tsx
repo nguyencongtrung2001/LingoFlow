@@ -106,7 +106,7 @@ export function StudyModes() {
             </div>
             <div className="flex-1 z-10">
               <h3 className="font-bold text-[16px] text-[#653e00]">
-                Ôn tập từ đã thuộc (Thập cẩm)
+                Ôn tập từ đã thuộc
               </h3>
               <p className="font-medium text-[13px] text-[#8b6914] mt-1">
                 Giữ vững phong độ với chế độ Trắc nghiệm & Gõ từ ngẫu nhiên
