@@ -39,6 +39,8 @@ export function useCreateWord(folderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words-progress", folderId.toString()] });
       // Làm mới cả folder grid (để update word count)
       queryClient.invalidateQueries({ queryKey: ["folders"] });
+      // Làm mới dashboard stats
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
   });
 }
@@ -56,6 +58,7 @@ export function useCreateMultipleWords(folderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words-mastered", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-progress", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
   });
 }
@@ -70,6 +73,7 @@ export function useUpdateWord(folderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words-smart", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-mastered", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-progress", folderId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
   });
 }
@@ -85,6 +89,7 @@ export function useDeleteWord(folderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words-mastered", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["words-progress", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
   });
 }
@@ -101,6 +106,7 @@ export function useSaveStudySession(folderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words-progress", folderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });
       queryClient.invalidateQueries({ queryKey: ["words-sequential", folderId.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
   });
 }
@@ -126,6 +132,7 @@ export function useMoveWords(currentFolderId: number) {
       queryClient.invalidateQueries({ queryKey: ["words-progress", currentFolderId.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders"] });
       queryClient.invalidateQueries({ queryKey: ["words"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
   });
 }

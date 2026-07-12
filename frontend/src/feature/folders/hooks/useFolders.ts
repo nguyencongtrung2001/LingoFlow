@@ -34,6 +34,7 @@ export function useCreateFolder() {
     onSuccess: () => {
       toast.success("Tạo thư mục thành công!");
       queryClient.invalidateQueries({ queryKey: ["folders"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
     onError: (error: unknown) => {
       if (axios.isAxiosError(error)) {
@@ -54,6 +55,7 @@ export function useUpdateFolder() {
     onSuccess: (_, variables) => {
       toast.success("Cập nhật thư mục thành công!");
       queryClient.invalidateQueries({ queryKey: ["folders"] });
+      queryClient.invalidateQueries({ queryKey: ["folders", variables.id.toString()] });
       queryClient.invalidateQueries({ queryKey: ["folders", variables.id] });
     },
     onError: (error: unknown) => {
@@ -71,9 +73,12 @@ export function useDeleteFolder() {
 
   return useMutation({
     mutationFn: (id: number) => deleteFolder(id),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast.success("Xóa thư mục thành công!");
       queryClient.invalidateQueries({ queryKey: ["folders"] });
+      queryClient.invalidateQueries({ queryKey: ["folders", variables.toString()] });
+      queryClient.invalidateQueries({ queryKey: ["folders", variables] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
     onError: (error: unknown) => {
       if (axios.isAxiosError(error)) {

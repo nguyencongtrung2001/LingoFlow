@@ -134,6 +134,9 @@ export function useReorderNotes() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (updates: ReorderItem[]) => reorderNotes(updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: BOARD_KEY });
+    },
     onError: (error: unknown) => {
       // Rollback sẽ được xử lý ở component level
       if (axios.isAxiosError(error)) {
