@@ -173,8 +173,8 @@ export default function StudyContent({ slug }: StudyContentProps) {
           <Sparkles className="w-4 h-4 text-[#4648d4]" />
           <p className="text-[13px] font-medium text-[#464554]">
             <span className="text-[#4648d4] font-bold">{meta.dangOn}</span> từ đang ôn
-            {meta.moiTinh > 0 && (
-              <> · <span className="text-[#00714d] font-bold">{meta.moiTinh}</span> từ mới gối đầu</>
+            {(meta.chuaHoc > 0 || meta.moiTinh > 0) && (
+              <> · <span className="text-[#00714d] font-bold">{(meta.chuaHoc || 0) + (meta.moiTinh || 0)}</span> từ mới gối đầu</>
             )}
             {meta.daThuocBu > 0 && (
               <> · <span className="text-[#653e00] font-bold">{meta.daThuocBu}</span> từ đã thuộc bù</>

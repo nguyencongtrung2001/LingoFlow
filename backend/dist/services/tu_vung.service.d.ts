@@ -93,6 +93,7 @@ export declare const layTuThongMinhService: (userId: string, folderId: number) =
     words: any[];
     meta: {
         dangOn: number;
+        chuaHoc: number;
         moiTinh: number;
         daThuocBu: number;
     };

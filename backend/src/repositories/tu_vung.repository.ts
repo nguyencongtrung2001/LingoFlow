@@ -242,53 +242,71 @@ export const diChuyenTuVungRepo = async (wordIds: number[], targetFolderId: numb
 /**
  * Thuật toán Hàng đợi Động (Dynamic Queue) — Bốc từ thông minh
  * 
- * Tiêu chí Corrects-based Mastery:
- *   - corrects 0-3: Chưa thuộc (ưu tiên cao nhất)
- *   - corrects 4-6: Đang ôn
+ * Corrects-based Mastery:
+ *   - corrects 0, attempts 0: Chưa học (chưa từng ôn)
+ *   - corrects 1-6 (attempts > 0): Đang ôn (đã bắt đầu học, chưa thuộc)
  *   - corrects >= 7: Đã thuộc (loại khỏi queue chính)
  * 
- * Quy trình:
- * 1. Lấy các từ CHƯA THUỘC + ĐANG ÔN (corrects < 7) — ưu tiên trả về trước
- * 2. Tính slot còn trống = limit - số từ đang ôn
- * 3. Lấp đầy slot trống bằng từ MỚI TINH (chưa có WordProgress)
- * 4. Nếu vẫn chưa đủ, lấy thêm từ đã thuộc (corrects >= 7) để bù
+ * Quy trình (FIX: Ưu tiên tuyệt đối từ đang ôn):
+ * 1. Lấy từ ĐANG ÔN (attempts > 0, corrects < 7) — ĐÂY LÀ ƯU TIÊN SỐ 1
+ * 2. Nếu chưa đủ 15, lấp bằng từ CHƯA HỌC (attempts = 0, corrects = 0)
+ * 3. Nếu chưa đủ, lấy từ MỚI TINH (chưa có WordProgress)
+ * 4. Nếu vẫn chưa đủ, lấy từ ĐÃ THUỘC (corrects >= 7) để bù
  */
 export const layTuThongMinhRepo = async (userId: string, folderId: number, limit: number = 15) => {
-  // 1. Lấy tất cả các từ CHƯA THUỘC + ĐANG ÔN (corrects < 7)
+  // 1. Ưu tiên SỐ 1: Từ ĐANG ÔN (đã bắt đầu học, chưa thuộc)
   const tuDangOn = await prisma.wordProgress.findMany({
     where: {
       userId,
       word: { folderId },
       corrects: { lt: 7 },
+      attempts: { gt: 0 },  // ← KEY FIX: chỉ lấy từ ĐÃ BẮT ĐẦU ÔN
     },
     include: { word: true },
-    orderBy: { corrects: "asc" }, // Ưu tiên corrects thấp (cần ôn nhiều hơn)
+    orderBy: [
+      { corrects: "asc" },   // Ưu tiên từ yếu nhất
+      { wordId: "asc" },     // Deterministic: đảm bảo cùng query = cùng kết quả
+    ],
     take: limit,
   });
 
   const soTuDangOn = tuDangOn.length;
-  const soSlotTrong = Math.max(0, limit - soTuDangOn);
+  let soSlotTrong = Math.max(0, limit - soTuDangOn);
 
+  // 2. Lấp slot trống bằng từ CHƯA HỌC (có WordProgress nhưng chưa từng ôn)
+  let tuChuaHoc: any[] = [];
+  if (soSlotTrong > 0) {
+    tuChuaHoc = await prisma.wordProgress.findMany({
+      where: {
+        userId,
+        word: { folderId },
+        attempts: 0,        // Chưa từng ôn lần nào
+        corrects: 0,
+      },
+      include: { word: true },
+      orderBy: { wordId: "asc" },  // Deterministic: luôn lấy cùng batch
+      take: soSlotTrong,
+    });
+    soSlotTrong = Math.max(0, soSlotTrong - tuChuaHoc.length);
+  }
+
+  // 3. Nếu vẫn thiếu, lấy từ MỚI TINH (chưa có bản ghi WordProgress)
   let tuMoiTinh: any[] = [];
   if (soSlotTrong > 0) {
-    // 2. Bốc các từ MỚI TINH (Chưa hề có bản ghi WordProgress cho user này)
     tuMoiTinh = await prisma.word.findMany({
       where: {
         folderId,
-        progress: {
-          none: { userId },
-        },
+        progress: { none: { userId } },
       },
       orderBy: { createdAt: "asc" },
       take: soSlotTrong,
     });
+    soSlotTrong = Math.max(0, soSlotTrong - tuMoiTinh.length);
   }
 
-  // 3. Nếu cả đang ôn + mới tinh vẫn chưa đủ limit, lấy thêm từ đã thuộc (corrects >= 7)
-  const tongHienTai = soTuDangOn + tuMoiTinh.length;
+  // 4. Backup cuối: lấy từ ĐÃ THUỘC (corrects >= 7) nếu vẫn chưa đủ
   let tuDaThuocBu: any[] = [];
-  if (tongHienTai < limit) {
-    const soCanBu = limit - tongHienTai;
+  if (soSlotTrong > 0) {
     const tuDaThuocProgress = await prisma.wordProgress.findMany({
       where: {
         userId,
@@ -296,21 +314,23 @@ export const layTuThongMinhRepo = async (userId: string, folderId: number, limit
         corrects: { gte: 7 },
       },
       include: { word: true },
-      orderBy: { updatedAt: "asc" }, // Ưu tiên từ lâu chưa ôn nhất
-      take: soCanBu,
+      orderBy: { updatedAt: "asc" },
+      take: soSlotTrong,
     });
     tuDaThuocBu = tuDaThuocProgress.map((p) => p.word);
   }
 
-  // 4. Trộn dữ liệu: [từ đang ôn] + [từ mới tinh] + [từ đã thuộc bù]
+  // 5. Trộn dữ liệu: [đang ôn] + [chưa học] + [mới tinh] + [đã thuộc bù]
   return {
     words: [
       ...tuDangOn.map((p) => p.word),
+      ...tuChuaHoc.map((p) => p.word),
       ...tuMoiTinh,
       ...tuDaThuocBu,
     ],
     meta: {
       dangOn: soTuDangOn,
+      chuaHoc: tuChuaHoc.length,
       moiTinh: tuMoiTinh.length,
       daThuocBu: tuDaThuocBu.length,
     },

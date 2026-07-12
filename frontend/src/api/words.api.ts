@@ -92,8 +92,9 @@ export const moveWords = async (wordIds: number[], targetFolderId: number): Prom
 export interface SmartWordsResponse {
   words: Word[];
   meta: {
-    dangOn: number;   // Số từ đang ôn (box 1-4)
-    moiTinh: number;  // Số từ mới tinh được gối đầu
+    dangOn: number;    // Số từ đang ôn (attempts > 0, corrects < 7)
+    chuaHoc: number;   // Số từ chưa học (attempts = 0)
+    moiTinh: number;   // Số từ mới tinh (chưa có WordProgress)
     daThuocBu: number; // Số từ đã thuộc lấy bù (khi không đủ từ mới)
   };
 }
