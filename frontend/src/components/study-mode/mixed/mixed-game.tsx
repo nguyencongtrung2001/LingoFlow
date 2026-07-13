@@ -10,6 +10,7 @@ import { useSaveStudySession } from "@/feature/words/hooks/useWords";
 export interface MixedGameProps {
   folder: FolderDetail;
   onBack: () => void;
+  onRestart?: () => void;
 }
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -34,7 +35,7 @@ function generateHint(text: string): string {
   });
 }
 
-export function MixedGame({ folder, onBack }: MixedGameProps) {
+export function MixedGame({ folder, onBack, onRestart }: MixedGameProps) {
   const folderId = parseInt(folder.id);
   const saveSessionMutation = useSaveStudySession(folderId);
 
@@ -215,6 +216,10 @@ export function MixedGame({ folder, onBack }: MixedGameProps) {
   };
 
   const handleRestart = () => {
+    if (onRestart) {
+      onRestart();
+      return;
+    }
     setQueue(shuffleArray(folder.words));
     setDbPayload([]);
     setHistory([]);

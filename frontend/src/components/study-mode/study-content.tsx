@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { FolderDetail } from "@/types/folder";
 import { useGetFolderById } from "@/feature/folders/hooks/useFolders";
@@ -93,6 +94,19 @@ export default function StudyContent({ slug }: StudyContentProps) {
   const activeWords = reviewMode ? masteredWords : (smartData?.words || []);
   const meta = smartData?.meta;
 
+  const [frozenWords, setFrozenWords] = useState<any[] | null>(null);
+  const [sessionKey, setSessionKey] = useState(0);
+
+  // Khóa (freeze) danh sách từ vựng khi phiên chơi bắt đầu.
+  // Chỉ thay đổi danh sách từ khi phiên chơi mới được bắt đầu (qua handleRestart hoặc khi vào lại trang).
+  useEffect(() => {
+    if (activeWords.length > 0 && !frozenWords) {
+      setFrozenWords(activeWords);
+    }
+  }, [activeWords, frozenWords]);
+
+  const displayWords = frozenWords || activeWords;
+
   // Guard: Nếu chế độ review nhưng không có từ đã thuộc
   if (reviewMode && masteredWords.length === 0) {
     return (
@@ -119,7 +133,7 @@ export default function StudyContent({ slug }: StudyContentProps) {
   }
 
   // Guard: Nếu không đủ 4 từ active
-  if (activeWords.length < 4) {
+  if (displayWords.length < 4) {
     return (
       <main className="grow flex flex-col items-center justify-center w-full p-6 min-h-[70vh]">
         <div className="text-center p-8 bg-[#ffffff] rounded-3xl border border-dashed border-[#ff4d6d] max-w-md w-full shadow-lg">
@@ -148,7 +162,7 @@ export default function StudyContent({ slug }: StudyContentProps) {
     id: folder.id.toString(),
     name: folder.name,
     desc: folder.description || "",
-    words: activeWords.map((w) => ({
+    words: displayWords.map((w) => ({
       id: w.id,
       word: w.word,
       meaning: w.meaning,
@@ -162,6 +176,11 @@ export default function StudyContent({ slug }: StudyContentProps) {
 
   const handleBack = () => {
     router.push(`/folders/${slug}`);
+  };
+
+  const handleRestart = () => {
+    setFrozenWords(null);
+    setSessionKey((prev) => prev + 1);
   };
 
   return (
@@ -199,16 +218,16 @@ export default function StudyContent({ slug }: StudyContentProps) {
           {(() => {
             switch (type) {
               case "flashcard":
-                return <FlashcardGame folder={folderDetail} onBack={handleBack} />;
+                return <FlashcardGame key={sessionKey} folder={folderDetail} onBack={handleBack} onRestart={handleRestart} />;
               case "quiz":
-                return <QuizGame folder={folderDetail} onBack={handleBack} />;
+                return <QuizGame key={sessionKey} folder={folderDetail} onBack={handleBack} onRestart={handleRestart} />;
               case "match":
-                return <MatchGame folder={folderDetail} onBack={handleBack} />;
+                return <MatchGame key={sessionKey} folder={folderDetail} onBack={handleBack} onRestart={handleRestart} />;
               case "type":
               case "write":
-                return <WriteGame folder={folderDetail} onBack={handleBack} />;
+                return <WriteGame key={sessionKey} folder={folderDetail} onBack={handleBack} onRestart={handleRestart} />;
               case "mixed":
-                return <MixedGame folder={folderDetail} onBack={handleBack} />;
+                return <MixedGame key={sessionKey} folder={folderDetail} onBack={handleBack} onRestart={handleRestart} />;
               default:
                 return (
                   <div className="p-8 text-center text-[#ba1a1a]">

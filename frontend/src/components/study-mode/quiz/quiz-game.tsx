@@ -10,6 +10,7 @@ import { useSaveStudySession } from "@/feature/words/hooks/useWords";
 export interface QuizGameProps {
   folder: FolderDetail;
   onBack: () => void;
+  onRestart?: () => void;
 }
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -21,7 +22,7 @@ function shuffleArray<T>(array: T[]): T[] {
   return newArr;
 }
 
-export function QuizGame({ folder, onBack }: QuizGameProps) {
+export function QuizGame({ folder, onBack, onRestart }: QuizGameProps) {
   const folderId = parseInt(folder.id);
   const saveSessionMutation = useSaveStudySession(folderId);
 
@@ -142,6 +143,10 @@ export function QuizGame({ folder, onBack }: QuizGameProps) {
   };
 
   const handleRestart = () => {
+    if (onRestart) {
+      onRestart();
+      return;
+    }
     setQueue(shuffleArray(folder.words));
     setDbPayload([]);
     setHistory([]);

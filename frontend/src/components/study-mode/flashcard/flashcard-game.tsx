@@ -10,9 +10,10 @@ import { useSaveStudySession } from "@/feature/words/hooks/useWords";
 export interface FlashcardGameProps {
   folder: FolderDetail;
   onBack: () => void;
+  onRestart?: () => void;
 }
 
-export function FlashcardGame({ folder, onBack }: FlashcardGameProps) {
+export function FlashcardGame({ folder, onBack, onRestart }: FlashcardGameProps) {
   const folderId = parseInt(folder.id);
   const saveSessionMutation = useSaveStudySession(folderId);
 
@@ -73,6 +74,10 @@ export function FlashcardGame({ folder, onBack }: FlashcardGameProps) {
   };
 
   const handleRestart = () => {
+    if (onRestart) {
+      onRestart();
+      return;
+    }
     setCurrentIndex(0);
     setIsFlipped(false);
     setIsCompleted(false);

@@ -9,6 +9,7 @@ import { useSaveStudySession } from "@/feature/words/hooks/useWords";
 export interface MatchGameProps {
   folder: FolderDetail;
   onBack: () => void;
+  onRestart?: () => void;
 }
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -29,7 +30,7 @@ interface MatchCard {
   content: string;
 }
 
-export function MatchGame({ folder, onBack }: MatchGameProps) {
+export function MatchGame({ folder, onBack, onRestart }: MatchGameProps) {
   const folderId = parseInt(folder.id);
   const saveSessionMutation = useSaveStudySession(folderId);
 
@@ -170,6 +171,10 @@ export function MatchGame({ folder, onBack }: MatchGameProps) {
   };
 
   const handleRestart = () => {
+    if (onRestart) {
+      onRestart();
+      return;
+    }
     setCurrentRound(1);
     setDbPayload([]);
     setMatchedIds([]);

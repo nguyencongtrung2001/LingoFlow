@@ -32,9 +32,10 @@ function generateHint(text: string): string {
 export interface WriteGameProps {
   folder: FolderDetail;
   onBack: () => void;
+  onRestart?: () => void;
 }
 
-export function WriteGame({ folder, onBack }: WriteGameProps) {
+export function WriteGame({ folder, onBack, onRestart }: WriteGameProps) {
   const folderId = parseInt(folder.id);
   const saveSessionMutation = useSaveStudySession(folderId);
 
@@ -156,6 +157,10 @@ export function WriteGame({ folder, onBack }: WriteGameProps) {
   }, [showFeedback, isAnswerCorrect]);
 
   const handleRestart = () => {
+    if (onRestart) {
+      onRestart();
+      return;
+    }
     setQueue(shuffleArray(folder.words));
     setDbPayload([]);
     setHistory([]);
