@@ -54,6 +54,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https://images.unsplash.com https://*.googleusercontent.com https://res.cloudinary.com",
               "font-src 'self' data: https://fonts.gstatic.com",
+              "media-src 'self' data:",
               "connect-src 'self' http://localhost:* https://*.onrender.com https://vercel.live wss://vercel.live",
               "frame-src 'self' https://accounts.google.com https://vercel.live",
               "object-src 'none'",
