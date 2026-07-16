@@ -12,6 +12,7 @@ import { FlashcardGame } from "@/components/study-mode/flashcard/flashcard-game"
 import { MatchGame } from "@/components/study-mode/match/match-game";
 import { WriteGame } from "@/components/study-mode/write/write-game";
 import { MixedGame } from "@/components/study-mode/mixed/mixed-game";
+import { SentencesGame } from "@/components/study-mode/sentences/sentences-game";
 
 interface StudyContentProps {
   slug: string;
@@ -228,6 +229,8 @@ export default function StudyContent({ slug }: StudyContentProps) {
                 return <WriteGame key={sessionKey} folder={folderDetail} onBack={handleBack} onRestart={handleRestart} />;
               case "mixed":
                 return <MixedGame key={sessionKey} folder={folderDetail} onBack={handleBack} onRestart={handleRestart} />;
+              case "sentences":
+                return <SentencesGame key={sessionKey} folder={folderDetail} onBack={handleBack} onRestart={handleRestart} />;
               default:
                 return (
                   <div className="p-8 text-center text-[#ba1a1a]">

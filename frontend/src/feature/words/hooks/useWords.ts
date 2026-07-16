@@ -15,6 +15,7 @@ import {
   getSmartWords,
   getMasteredWords,
   getFolderProgress,
+  gradeSentence,
 } from "@/api/words.api";
 
 export function useGetWords(folderId: number) {
@@ -158,5 +159,12 @@ export function useGetFolderProgress(folderId: number) {
     queryKey: ["words-progress", folderId.toString()],
     queryFn: () => getFolderProgress(folderId),
     enabled: !!folderId,
+  });
+}
+
+export function useGradeSentence() {
+  return useMutation({
+    mutationFn: ({ wordId, sentence }: { wordId: number; sentence: string }) =>
+      gradeSentence(wordId, sentence),
   });
 }

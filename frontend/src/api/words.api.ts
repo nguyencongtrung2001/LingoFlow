@@ -125,3 +125,25 @@ export const getFolderProgress = async (folderId: number): Promise<FolderProgres
   const res = await api.get(`/tu-vung/tien-do/${folderId}`);
   return res.data;
 };
+
+// === Sentences AI Grading ===
+
+export interface SentenceError {
+  position: string;   // vị trí/loại lỗi (ví dụ: "động từ", "mạo từ")
+  error: string;      // mô tả lỗi
+  suggestion: string; // cách sửa
+}
+
+export interface GradeResult {
+  score: number;          // 0-100
+  isCorrect: boolean;     // score > 60
+  errors: SentenceError[];
+  feedback: string;       // nhận xét bằng tiếng Việt
+  alternatives: string[]; // 2 câu mẫu hoàn hảo
+}
+
+/** Chấm điểm câu tiếng Anh bằng AI */
+export const gradeSentence = async (wordId: number, sentence: string): Promise<GradeResult> => {
+  const res = await api.post("/tu-vung/cham-diem-cau", { wordId, sentence });
+  return res.data;
+};

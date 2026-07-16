@@ -11,6 +11,7 @@ import {
   layTuThongMinhService,
   layTuDaThuocService,
   layTienDoThuMucService,
+  chamDiemCauService,
 } from "../services/tu_vung.service";
 
 export const xuLyLayDanhSachTu = async (yeuCau: Request, phanHoi: Response) => {
@@ -202,3 +203,20 @@ export const xuLyLayTienDoThuMuc = async (yeuCau: Request, phanHoi: Response) =>
   }
 };
 
+export const xuLyChamDiemCau = async (yeuCau: Request, phanHoi: Response) => {
+  try {
+    const maNguoiDung = yeuCau.user?.id;
+    const { wordId, sentence } = yeuCau.body;
+
+    if (!maNguoiDung) return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+    if (!wordId || isNaN(parseInt(wordId))) return phanHoi.status(400).json({ error: "Mã từ vựng không hợp lệ." });
+    if (!sentence || typeof sentence !== "string" || sentence.trim().length === 0) {
+      return phanHoi.status(400).json({ error: "Vui lòng nhập câu tiếng Anh." });
+    }
+
+    const ketQua = await chamDiemCauService(maNguoiDung, parseInt(wordId), sentence.trim());
+    return phanHoi.status(200).json(ketQua);
+  } catch (loi: any) {
+    return phanHoi.status(403).json({ error: loi.message });
+  }
+};

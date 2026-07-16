@@ -1,6 +1,6 @@
 "use client";
 
-import { Subtitles, HelpCircle, Puzzle, Edit3, BookCheck } from "lucide-react";
+import { Subtitles, HelpCircle, Puzzle, Edit3, BookCheck, Sparkles } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useGetMasteredWords } from "@/feature/words/hooks/useWords";
 import { useGetFolderById } from "@/feature/folders/hooks/useFolders";
@@ -26,7 +26,7 @@ export function StudyModes() {
 
   return (
     <section>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <button
           onClick={() => launchGame("flashcard")}
           className="flex items-center gap-4 p-6 bg-[#f8f9ff] rounded-xl shadow-[0_2px_8px_-2px_rgba(70,72,212,0.04)] hover:shadow-[0_8px_16px_-4px_rgba(70,72,212,0.08)] hover:-translate-y-1 transition-all duration-200 border border-transparent hover:border-[#4648d4]/20 group text-left w-full"
@@ -89,6 +89,21 @@ export function StudyModes() {
             <h3 className="font-semibold text-[14px] text-[#0b1c30]">Gõ từ</h3>
             <p className="font-medium text-[12px] text-[#464554]">
               Gõ nhanh từ vựng
+            </p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => launchGame("sentences")}
+          className="flex items-center gap-4 p-6 bg-[#f8f9ff] rounded-xl shadow-[0_2px_8px_-2px_rgba(70,72,212,0.04)] hover:shadow-[0_8px_16px_-4px_rgba(70,72,212,0.08)] hover:-translate-y-1 transition-all duration-200 border border-transparent hover:border-[#c084fc]/50 group text-left w-full"
+        >
+          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#c084fc] to-[#818cf8] text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Sparkles className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-[14px] text-[#0b1c30]">Viết câu</h3>
+            <p className="font-medium text-[12px] text-[#464554]">
+              AI chấm điểm câu
             </p>
           </div>
         </button>

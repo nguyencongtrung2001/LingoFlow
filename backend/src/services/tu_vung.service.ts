@@ -13,6 +13,7 @@ import {
   layTienDoThuMucRepo,
 } from "../repositories/tu_vung.repository";
 import { uploadImageFromUrl, deleteImageFromCloudinary } from "../utils/cloudinary_upload";
+import { chamDiemCau } from "../utils/gemini";
 
 export const layDanhSachTuVungService = async (folderId: number, userId: string) => {
   // Xác thực thư mục có thuộc về người dùng không
@@ -218,4 +219,24 @@ export const layTienDoThuMucService = async (userId: string, folderId: number) =
   }
 
   return await layTienDoThuMucRepo(userId, folderId);
+};
+
+/**
+ * Service: Chấm điểm câu tiếng Anh do học viên viết
+ * Sử dụng Google Gemini AI để phân tích ngữ pháp, ngữ nghĩa
+ */
+export const chamDiemCauService = async (userId: string, wordId: number, sentence: string) => {
+  // Xác thực từ vựng có thuộc về người dùng không
+  const tuVung = await prisma.word.findFirst({
+    where: {
+      id: wordId,
+      folder: { userId },
+    },
+  });
+
+  if (!tuVung) {
+    throw new Error("Từ vựng không tồn tại hoặc không có quyền truy cập.");
+  }
+
+  return await chamDiemCau(tuVung.word, tuVung.meaning, tuVung.pos, sentence);
 };
