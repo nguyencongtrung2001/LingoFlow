@@ -217,6 +217,10 @@ export const xuLyChamDiemCau = async (yeuCau: Request, phanHoi: Response) => {
     const ketQua = await chamDiemCauService(maNguoiDung, parseInt(wordId), sentence.trim());
     return phanHoi.status(200).json(ketQua);
   } catch (loi: any) {
-    return phanHoi.status(403).json({ error: loi.message });
+    console.error("Lỗi chamDiemCau:", loi);
+    if (loi.message === "Từ vựng không tồn tại hoặc không có quyền truy cập.") {
+      return phanHoi.status(403).json({ error: loi.message });
+    }
+    return phanHoi.status(500).json({ error: "Lỗi hệ thống khi chấm điểm câu. Vui lòng thử lại sau." });
   }
 };

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xuLyLayTienDoThuMuc = exports.xuLyLayTuDaThuoc = exports.xuLyLayTuThongMinh = exports.xuLyDiChuyenTu = exports.xuLyLayTuCuonChieu = exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
+exports.xuLyChamDiemCau = exports.xuLyLayTienDoThuMuc = exports.xuLyLayTuDaThuoc = exports.xuLyLayTuThongMinh = exports.xuLyDiChuyenTu = exports.xuLyLayTuCuonChieu = exports.xuLyLuuPhienHoc = exports.xuLyXoaTu = exports.xuLyCapNhatTu = exports.xuLyThemNhieuTu = exports.xuLyThemTu = exports.xuLyLayDanhSachTu = void 0;
 const tu_vung_service_1 = require("../services/tu_vung.service");
 const xuLyLayDanhSachTu = async (yeuCau, phanHoi) => {
     try {
@@ -203,4 +203,27 @@ const xuLyLayTienDoThuMuc = async (yeuCau, phanHoi) => {
     }
 };
 exports.xuLyLayTienDoThuMuc = xuLyLayTienDoThuMuc;
+const xuLyChamDiemCau = async (yeuCau, phanHoi) => {
+    try {
+        const maNguoiDung = yeuCau.user?.id;
+        const { wordId, sentence } = yeuCau.body;
+        if (!maNguoiDung)
+            return phanHoi.status(401).json({ error: "Chưa được xác thực!" });
+        if (!wordId || isNaN(parseInt(wordId)))
+            return phanHoi.status(400).json({ error: "Mã từ vựng không hợp lệ." });
+        if (!sentence || typeof sentence !== "string" || sentence.trim().length === 0) {
+            return phanHoi.status(400).json({ error: "Vui lòng nhập câu tiếng Anh." });
+        }
+        const ketQua = await (0, tu_vung_service_1.chamDiemCauService)(maNguoiDung, parseInt(wordId), sentence.trim());
+        return phanHoi.status(200).json(ketQua);
+    }
+    catch (loi) {
+        console.error("Lỗi chamDiemCau:", loi);
+        if (loi.message === "Từ vựng không tồn tại hoặc không có quyền truy cập.") {
+            return phanHoi.status(403).json({ error: loi.message });
+        }
+        return phanHoi.status(500).json({ error: "Lỗi hệ thống khi chấm điểm câu. Vui lòng thử lại sau." });
+    }
+};
+exports.xuLyChamDiemCau = xuLyChamDiemCau;
 //# sourceMappingURL=tu_vung.controller.js.map

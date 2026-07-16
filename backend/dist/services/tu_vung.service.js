@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.layTienDoThuMucService = exports.layTuDaThuocService = exports.layTuThongMinhService = exports.diChuyenTuVungService = exports.layDanhSachTuCuonChieuService = exports.ghiNhanPhienHocService = exports.xoaTuVungService = exports.suaTuVungService = exports.taoNhieuTuVungService = exports.taoTuVungService = exports.layDanhSachTuVungService = void 0;
+exports.chamDiemCauService = exports.layTienDoThuMucService = exports.layTuDaThuocService = exports.layTuThongMinhService = exports.diChuyenTuVungService = exports.layDanhSachTuCuonChieuService = exports.ghiNhanPhienHocService = exports.xoaTuVungService = exports.suaTuVungService = exports.taoNhieuTuVungService = exports.taoTuVungService = exports.layDanhSachTuVungService = void 0;
 const prisma_1 = require("../config/prisma");
 const tu_vung_repository_1 = require("../repositories/tu_vung.repository");
 const cloudinary_upload_1 = require("../utils/cloudinary_upload");
+const gemini_1 = require("../utils/gemini");
 const layDanhSachTuVungService = async (folderId, userId) => {
     // Xác thực thư mục có thuộc về người dùng không
     const folder = await prisma_1.prisma.folder.findFirst({
@@ -174,4 +175,22 @@ const layTienDoThuMucService = async (userId, folderId) => {
     return await (0, tu_vung_repository_1.layTienDoThuMucRepo)(userId, folderId);
 };
 exports.layTienDoThuMucService = layTienDoThuMucService;
+/**
+ * Service: Chấm điểm câu tiếng Anh do học viên viết
+ * Sử dụng Google Gemini AI để phân tích ngữ pháp, ngữ nghĩa
+ */
+const chamDiemCauService = async (userId, wordId, sentence) => {
+    // Xác thực từ vựng có thuộc về người dùng không
+    const tuVung = await prisma_1.prisma.word.findFirst({
+        where: {
+            id: wordId,
+            folder: { userId },
+        },
+    });
+    if (!tuVung) {
+        throw new Error("Từ vựng không tồn tại hoặc không có quyền truy cập.");
+    }
+    return await (0, gemini_1.chamDiemCau)(tuVung.word, tuVung.meaning, tuVung.pos, sentence);
+};
+exports.chamDiemCauService = chamDiemCauService;
 //# sourceMappingURL=tu_vung.service.js.map

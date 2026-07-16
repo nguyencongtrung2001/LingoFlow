@@ -35,6 +35,23 @@ export default function StudyContent({ slug }: StudyContentProps) {
   // Lấy từ đã thuộc cho chế độ Review
   const { data: masteredWords = [], isLoading: isLoadingMastered } = useGetMasteredWords(folder?.id || 0);
 
+  const [frozenWords, setFrozenWords] = useState<any[] | null>(null);
+  const [sessionKey, setSessionKey] = useState(0);
+
+  // Quyết định nguồn dữ liệu: Review Mastered hoặc Smart Queue
+  const activeWords = reviewMode ? masteredWords : (smartData?.words || []);
+  const meta = smartData?.meta;
+
+  // Khóa (freeze) danh sách từ vựng khi phiên chơi bắt đầu.
+  // Chỉ thay đổi danh sách từ khi phiên chơi mới được bắt đầu (qua handleRestart hoặc khi vào lại trang).
+  useEffect(() => {
+    if (activeWords.length > 0 && !frozenWords) {
+      setFrozenWords(activeWords);
+    }
+  }, [activeWords, frozenWords]);
+
+  const displayWords = frozenWords || activeWords;
+
   if (isLoadingFolder || isLoadingAllWords || isLoadingSmart || isLoadingMastered) {
     return (
       <main className="grow flex flex-col items-center justify-center w-full p-6 min-h-[60vh]">
@@ -91,22 +108,6 @@ export default function StudyContent({ slug }: StudyContentProps) {
     );
   }
 
-  // Quyết định nguồn dữ liệu: Review Mastered hoặc Smart Queue
-  const activeWords = reviewMode ? masteredWords : (smartData?.words || []);
-  const meta = smartData?.meta;
-
-  const [frozenWords, setFrozenWords] = useState<any[] | null>(null);
-  const [sessionKey, setSessionKey] = useState(0);
-
-  // Khóa (freeze) danh sách từ vựng khi phiên chơi bắt đầu.
-  // Chỉ thay đổi danh sách từ khi phiên chơi mới được bắt đầu (qua handleRestart hoặc khi vào lại trang).
-  useEffect(() => {
-    if (activeWords.length > 0 && !frozenWords) {
-      setFrozenWords(activeWords);
-    }
-  }, [activeWords, frozenWords]);
-
-  const displayWords = frozenWords || activeWords;
 
   // Guard: Nếu chế độ review nhưng không có từ đã thuộc
   if (reviewMode && masteredWords.length === 0) {

@@ -55,21 +55,24 @@ Trả về ĐÚNG JSON hợp lệ (không thêm bất kỳ text nào ngoài JSON
   ]
 }`;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-  });
-
-  const rawText = response.text?.trim() || "";
-
-  // Loại bỏ markdown code block nếu AI trả về dạng ```json ... ```
-  const cleanedText = rawText
-    .replace(/^```json\s*/i, "")
-    .replace(/^```\s*/i, "")
-    .replace(/\s*```$/i, "")
-    .trim();
-
   try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      },
+    });
+
+    const rawText = response.text?.trim() || "";
+
+    // Loại bỏ markdown code block nếu AI trả về dạng ```json ... ```
+    const cleanedText = rawText
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/\s*```$/i, "")
+      .trim();
+
     const result: GradeResult = JSON.parse(cleanedText);
 
     // Đảm bảo isCorrect đồng bộ với score
@@ -82,14 +85,14 @@ Trả về ĐÚNG JSON hợp lệ (không thêm bất kỳ text nào ngoài JSON
     if (!Array.isArray(result.alternatives)) result.alternatives = [];
 
     return result;
-  } catch {
-    // Fallback nếu AI trả về JSON không hợp lệ
-    console.error("❌ Gemini trả về JSON không hợp lệ:", cleanedText);
+  } catch (error: any) {
+    // Fallback nếu gọi AI lỗi hoặc JSON không hợp lệ
+    console.error("❌ Lỗi gọi Gemini AI hoặc parse JSON:", error?.message);
     return {
       score: 0,
       isCorrect: false,
       errors: [],
-      feedback: "Hệ thống AI tạm thời không thể chấm điểm. Vui lòng thử lại.",
+      feedback: "Hệ thống AI tạm thời không thể chấm điểm. Vui lòng thử lại sau.",
       alternatives: [],
     };
   }

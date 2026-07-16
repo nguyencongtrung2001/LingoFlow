@@ -131,4 +131,9 @@ export declare const layTienDoThuMucService: (userId: string, folderId: number) 
     dangOn: number;
     chuaHoc: number;
 }>;
+/**
+ * Service: Chấm điểm câu tiếng Anh do học viên viết
+ * Sử dụng Google Gemini AI để phân tích ngữ pháp, ngữ nghĩa
+ */
+export declare const chamDiemCauService: (userId: string, wordId: number, sentence: string) => Promise<import("../utils/gemini").GradeResult>;
 //# sourceMappingURL=tu_vung.service.d.ts.map
