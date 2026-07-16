@@ -38,7 +38,7 @@ Trả về ĐÚNG JSON hợp lệ (không thêm bất kỳ text nào ngoài JSON
 }`;
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.0-flash-lite",
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
