@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { FolderDetail, Word } from "@/types/folder";
 import { GradeResult } from "@/api/words.api";
-import { useGradeSentence } from "@/feature/words/hooks/useWords";
+import { useGradeSentence, useSaveStudySession } from "@/feature/words/hooks/useWords";
 import {
   ArrowLeft,
   ArrowRight,
@@ -25,6 +25,7 @@ export interface SentencesGameProps {
 
 export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps) {
   const gradeMutation = useGradeSentence();
+  const saveSession = useSaveStudySession(parseInt(folder.id));
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [inputValue, setInputValue] = useState("");
@@ -48,6 +49,7 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
           setHistory((prev) => [
             ...prev,
             {
+              wordId: currentWord.id,
               word: currentWord.word,
               meaning: currentWord.meaning,
               sentence: inputValue.trim(),
@@ -68,6 +70,22 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
       setGradeResult(null);
     } else {
       setIsCompleted(true);
+
+      // Giải pháp 2: Chỉ ghi nhận đúng (tiến độ lên hộp) nếu score >= 80
+      const correctCount = history.filter((h) => h.score >= 80).length;
+      saveSession.mutate({
+        folderId: parseInt(folder.id),
+        mode: "WRITE", // Dùng tạm mode WRITE vì schema chưa có SENTENCES
+        totalWords: totalCount,
+        correctCount: correctCount,
+        accuracy: totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0,
+        timeSeconds: Math.floor((Date.now() - startTime) / 1000),
+        details: history.map((h) => ({
+          wordId: h.wordId,
+          isCorrect: h.score >= 80,
+          userAnswer: h.sentence,
+        })),
+      });
     }
   };
 

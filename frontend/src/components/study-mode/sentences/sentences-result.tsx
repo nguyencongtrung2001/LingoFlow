@@ -3,6 +3,7 @@
 import { Trophy, Clock, Target, ArrowLeft, RotateCcw, CheckCircle, XCircle } from "lucide-react";
 
 export interface SentenceHistoryItem {
+  wordId: number;
   word: string;
   meaning: string;
   sentence: string;
