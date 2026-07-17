@@ -154,10 +154,10 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
               />
             </div>
           </div>
-          <div className="bg-gradient-to-r from-[#f0e6ff] to-[#e1e0ff] text-[#4648d4] font-bold text-[13px] px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm border border-[#d0c8ff] shrink-0">
+          {/* <div className="bg-gradient-to-r from-[#f0e6ff] to-[#e1e0ff] text-[#4648d4] font-bold text-[13px] px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm border border-[#d0c8ff] shrink-0">
             <Sparkles className="w-4 h-4" />
             <span>AI Chấm</span>
-          </div>
+          </div> */}
         </header>
 
         {/* Word Display Card */}
@@ -185,9 +185,9 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
 
         {/* Input Area */}
         <div className="mb-5">
-          <label className="text-[13px] font-bold text-[#464554] mb-2 block">
+          {/* <label className="text-[13px] font-bold text-[#464554] mb-2 block">
             ✍️ Viết một câu sử dụng từ <span className="text-[#4648d4]">&quot;{currentWord.word}&quot;</span>
-          </label>
+          </label> */}
           <textarea
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
@@ -213,7 +213,7 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
               </>
             ) : (
               <>
-                <Sparkles className="w-5 h-5" />
+                {/* <Sparkles className="w-5 h-5" /> */}
                 Chấm điểm bằng AI
               </>
             )}
@@ -224,11 +224,10 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
         {gradeResult && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 space-y-4">
             {/* Score Badge */}
-            <div className={`flex items-center justify-between p-4 rounded-2xl border ${
-              gradeResult.isCorrect
+            <div className={`flex items-center justify-between p-4 rounded-2xl border ${gradeResult.isCorrect
                 ? "bg-[#f0fff4] border-[#1d9e75]/30"
                 : "bg-[#fff5f5] border-[#e53e3e]/30"
-            }`}>
+              }`}>
               <div className="flex items-center gap-3">
                 {gradeResult.isCorrect ? (
                   <CheckCircle className="w-8 h-8 text-[#1d9e75]" />

@@ -105,7 +105,7 @@ export function ChartLineLinear({ serverData }: { serverData?: Array<{ date: str
         <CardDescription>Thời gian tương tác học thực tế (Phút)</CardDescription>
       </CardHeader>
       <CardContent className="pb-4">
-        <ChartContainer config={chartConfig} className="h-[180px] w-full">
+        <ChartContainer config={chartConfig} className="h-[180px] min-h-[180px] w-full">
           <LineChart
             accessibilityLayer
             data={dynamicData}

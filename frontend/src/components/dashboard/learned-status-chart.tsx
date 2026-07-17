@@ -89,7 +89,7 @@ export function LearnedStatusChart({ serverData }: { serverData?: Array<{ box: n
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[200px] w-full"
+            className="mx-auto aspect-square h-[200px] min-h-[200px] w-full"
           >
             <PieChart>
               <ChartTooltip
