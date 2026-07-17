@@ -53,8 +53,23 @@ export function MatchGame({ folder, onBack, onRestart }: MatchGameProps) {
     return null;
   });
 
+  const [pairsPerRound, setPairsPerRound] = useState(5);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setPairsPerRound(10);
+      } else {
+        setPairsPerRound(5);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const totalWords = folder.words;
-  const maxRounds = Math.max(1, Math.ceil(totalWords.length / 5));
+  const maxRounds = Math.max(1, Math.ceil(totalWords.length / pairsPerRound));
 
   // Timer
   useEffect(() => {
@@ -63,10 +78,10 @@ export function MatchGame({ folder, onBack, onRestart }: MatchGameProps) {
     return () => clearInterval(timer);
   }, [isCompleted]);
 
-  // Khởi tạo cụm 5 từ cho đợt hiện tại bằng useMemo
+  // Khởi tạo cụm từ cho đợt hiện tại bằng useMemo
   const cards = useMemo(() => {
-    const startIdx = (currentRound - 1) * 5;
-    const roundWords = totalWords.slice(startIdx, startIdx + 5);
+    const startIdx = (currentRound - 1) * pairsPerRound;
+    const roundWords = totalWords.slice(startIdx, startIdx + pairsPerRound);
     
     if (roundWords.length === 0) return [];
 
@@ -77,7 +92,7 @@ export function MatchGame({ folder, onBack, onRestart }: MatchGameProps) {
     });
 
     return shuffleArray(generatedCards);
-  }, [currentRound, totalWords]);
+  }, [currentRound, totalWords, pairsPerRound]);
 
   const handleSelectCard = (card: MatchCard) => {
     if (matchedIds.includes(card.wordId)) return;
@@ -102,8 +117,8 @@ export function MatchGame({ folder, onBack, onRestart }: MatchGameProps) {
         }
 
         // Kiểm tra xem đã dọn sạch đợt học hiện tại chưa
-        const roundStartIdx = (currentRound - 1) * 5;
-        const roundWordIds = totalWords.slice(roundStartIdx, roundStartIdx + 5).map(w => w.id);
+        const roundStartIdx = (currentRound - 1) * pairsPerRound;
+        const roundWordIds = totalWords.slice(roundStartIdx, roundStartIdx + pairsPerRound).map(w => w.id);
         const isRoundCleared = roundWordIds.every(id => newMatched.includes(id));
 
         if (isRoundCleared) {

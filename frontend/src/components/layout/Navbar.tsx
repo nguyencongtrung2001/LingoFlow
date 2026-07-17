@@ -170,7 +170,7 @@ export function Navbar() {
           {isAuthenticated ? (
             <div className="flex items-center gap-[12px] sm:gap-[16px]">
               {/* Tên người dùng */}
-              <span className="text-[14px] font-semibold text-[#5f5e6e] select-none max-w-[100px] sm:max-w-[150px] truncate" title={user?.name}>
+              <span className="hidden sm:block text-[14px] font-semibold text-[#5f5e6e] select-none max-w-[100px] sm:max-w-[150px] truncate" title={user?.name}>
                 {user?.name}
               </span>
 
