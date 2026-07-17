@@ -131,7 +131,7 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
 
   return (
     <div className="bg-[#eff4ff] text-[#0b1c30] flex flex-col overflow-hidden relative w-full rounded-3xl border border-[#e5eeff]/50 shadow-md">
-      <main className="grow flex flex-col w-full max-w-3xl mx-auto px-4 md:px-6 py-6">
+      <main className={`grow flex flex-col w-full mx-auto px-4 md:px-6 py-6 transition-all duration-300 ${gradeResult ? 'max-w-5xl' : 'max-w-3xl'}`}>
         {/* Header */}
         <header className="flex items-center justify-between w-full shrink-0 mb-6">
           <div className="grow mr-6 flex flex-col">
@@ -160,8 +160,10 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
           </div> */}
         </header>
 
-        {/* Word Display Card */}
-        <div className="bg-white rounded-[24px] p-5 md:p-6 shadow-sm border border-[#c7c4d7]/20 mb-5 animate-in fade-in slide-in-from-bottom-4">
+        <div className={`grid grid-cols-1 ${gradeResult ? 'lg:grid-cols-2 lg:gap-8' : 'gap-6'}`}>
+          <div className="flex flex-col">
+            {/* Word Display Card */}
+            <div className="bg-white rounded-[24px] p-5 md:p-6 shadow-sm border border-[#c7c4d7]/20 mb-5 animate-in fade-in slide-in-from-bottom-4">
           <div className="flex items-center justify-between mb-3">
             <span className="px-3 py-1 bg-[#dce9ff] text-[#4648d4] text-[11px] rounded-full font-bold uppercase">
               {currentWord.pos || "Word"}
@@ -219,10 +221,11 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
             )}
           </button>
         )}
+          </div>
 
         {/* Grade Result Display */}
         {gradeResult && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 space-y-4">
+          <div className="flex flex-col animate-in fade-in lg:slide-in-from-right-4 slide-in-from-bottom-4 duration-300 space-y-4">
             {/* Score Badge */}
             <div className={`flex items-center justify-between p-4 rounded-2xl border ${gradeResult.isCorrect
                 ? "bg-[#f0fff4] border-[#1d9e75]/30"
@@ -299,6 +302,7 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
             </button>
           </div>
         )}
+        </div>
 
         {/* Error state from mutation */}
         {gradeMutation.isError && !gradeResult && (
