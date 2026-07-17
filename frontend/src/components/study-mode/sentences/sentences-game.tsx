@@ -160,7 +160,7 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
           </div> */}
         </header>
 
-        <div className={`grid grid-cols-1 ${gradeResult ? 'lg:grid-cols-2 lg:gap-8' : 'gap-6'}`}>
+        <div className={`grid grid-cols-1 ${gradeResult ? 'lg:grid-cols-3 lg:gap-6' : 'gap-6'}`}>
           <div className="flex flex-col">
             {/* Word Display Card */}
             <div className="bg-white rounded-[24px] p-5 md:p-6 shadow-sm border border-[#c7c4d7]/20 mb-5 animate-in fade-in slide-in-from-bottom-4">
@@ -202,7 +202,7 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
         </div>
 
         {/* Action Button */}
-        {!gradeResult && (
+        {!gradeResult ? (
           <button
             onClick={handleGrade}
             disabled={!inputValue.trim() || gradeMutation.isPending}
@@ -215,92 +215,96 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
               </>
             ) : (
               <>
-                {/* <Sparkles className="w-5 h-5" /> */}
                 Chấm điểm bằng AI
               </>
             )}
+          </button>
+        ) : (
+          <button
+            onClick={handleNext}
+            className="w-full py-3.5 bg-gradient-to-r from-[#1d9e75] to-[#12835d] text-white rounded-2xl font-bold text-[15px] hover:shadow-lg hover:shadow-[#1d9e75]/25 transition-all duration-200 flex items-center justify-center gap-2"
+          >
+            {currentIndex === totalCount - 1 ? "Xem kết quả" : "Từ tiếp theo"}
+            <ArrowRight className="w-5 h-5" />
           </button>
         )}
           </div>
 
         {/* Grade Result Display */}
         {gradeResult && (
-          <div className="flex flex-col animate-in fade-in lg:slide-in-from-right-4 slide-in-from-bottom-4 duration-300 space-y-4">
-            {/* Score Badge */}
-            <div className={`flex items-center justify-between p-4 rounded-2xl border ${gradeResult.isCorrect
-                ? "bg-[#f0fff4] border-[#1d9e75]/30"
-                : "bg-[#fff5f5] border-[#e53e3e]/30"
-              }`}>
-              <div className="flex items-center gap-3">
-                {gradeResult.isCorrect ? (
-                  <CheckCircle className="w-8 h-8 text-[#1d9e75]" />
-                ) : (
-                  <XCircle className="w-8 h-8 text-[#e53e3e]" />
-                )}
-                <div>
-                  <p className={`text-[16px] font-bold ${gradeResult.isCorrect ? "text-[#1d9e75]" : "text-[#e53e3e]"}`}>
-                    {gradeResult.isCorrect ? "Đạt! Tuyệt vời 🎉" : "Chưa đạt — Cố gắng hơn nhé!"}
-                  </p>
-                  <p className="text-[13px] text-[#464554] mt-0.5">{gradeResult.feedback}</p>
+          <>
+            {/* Cột 2: Score Badge & Alternatives */}
+            <div className="flex flex-col animate-in fade-in lg:slide-in-from-right-4 slide-in-from-bottom-4 duration-300 space-y-4">
+              {/* Score Badge */}
+              <div className={`flex items-center justify-between p-4 rounded-2xl border ${gradeResult.isCorrect
+                  ? "bg-[#f0fff4] border-[#1d9e75]/30"
+                  : "bg-[#fff5f5] border-[#e53e3e]/30"
+                }`}>
+                <div className="flex items-center gap-3">
+                  {gradeResult.isCorrect ? (
+                    <CheckCircle className="w-8 h-8 text-[#1d9e75]" />
+                  ) : (
+                    <XCircle className="w-8 h-8 text-[#e53e3e]" />
+                  )}
+                  <div>
+                    <p className={`text-[16px] font-bold ${gradeResult.isCorrect ? "text-[#1d9e75]" : "text-[#e53e3e]"}`}>
+                      {gradeResult.isCorrect ? "Đạt! Tuyệt vời 🎉" : "Chưa đạt — Cố gắng hơn nhé!"}
+                    </p>
+                    <p className="text-[13px] text-[#464554] mt-0.5">{gradeResult.feedback}</p>
+                  </div>
+                </div>
+                <div className={`text-[28px] font-black font-mono ${gradeResult.isCorrect ? "text-[#1d9e75]" : "text-[#e53e3e]"}`}>
+                  {gradeResult.score}
                 </div>
               </div>
-              <div className={`text-[28px] font-black font-mono ${gradeResult.isCorrect ? "text-[#1d9e75]" : "text-[#e53e3e]"}`}>
-                {gradeResult.score}
-              </div>
+
+              {/* Alternatives */}
+              {gradeResult.alternatives.length > 0 && (
+                <div className="bg-white rounded-2xl p-4 border border-[#d0f4e7]/50 shadow-sm">
+                  <h4 className="text-[13px] font-bold text-[#00714d] mb-3 flex items-center gap-1.5">
+                    <Lightbulb className="w-4 h-4" />
+                    Câu mẫu tham khảo
+                  </h4>
+                  <div className="space-y-2">
+                    {gradeResult.alternatives.map((alt, i) => (
+                      <div key={i} className="flex items-start gap-2.5 text-[14px] bg-[#f0fff4] rounded-xl p-3 border border-[#d0f4e7]/50">
+                        <span className="shrink-0 w-5 h-5 rounded-full bg-[#6cf8bb] text-[#00714d] flex items-center justify-center font-bold text-[10px] mt-0.5">
+                          {i + 1}
+                        </span>
+                        <p className="text-[#0b1c30] font-medium italic">&quot;{alt}&quot;</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Errors List */}
-            {gradeResult.errors.length > 0 && (
-              <div className="bg-white rounded-2xl p-4 border border-[#fde68a]/50 shadow-sm">
-                <h4 className="text-[13px] font-bold text-[#b45309] mb-3 flex items-center gap-1.5">
-                  <AlertTriangle className="w-4 h-4" />
-                  Danh sách lỗi ({gradeResult.errors.length})
-                </h4>
-                <div className="space-y-2.5">
-                  {gradeResult.errors.map((err, i) => (
-                    <div key={i} className="flex gap-3 text-[13px] bg-[#fffbeb] rounded-xl p-3 border border-[#fde68a]/30">
-                      <span className="shrink-0 w-6 h-6 rounded-full bg-[#fde68a] text-[#92400e] flex items-center justify-center font-bold text-[11px]">
-                        {i + 1}
-                      </span>
-                      <div>
-                        <p className="text-[#92400e] font-semibold">{err.position}: {err.error}</p>
-                        <p className="text-[#b45309] mt-0.5">💡 {err.suggestion}</p>
+            {/* Cột 3: Errors List */}
+            <div className="flex flex-col animate-in fade-in lg:slide-in-from-right-8 slide-in-from-bottom-4 duration-300 delay-75 space-y-4">
+              {/* Errors List */}
+              {gradeResult.errors.length > 0 && (
+                <div className="bg-white rounded-2xl p-4 border border-[#fde68a]/50 shadow-sm">
+                  <h4 className="text-[13px] font-bold text-[#b45309] mb-3 flex items-center gap-1.5">
+                    <AlertTriangle className="w-4 h-4" />
+                    Danh sách lỗi ({gradeResult.errors.length})
+                  </h4>
+                  <div className="space-y-2.5">
+                    {gradeResult.errors.map((err, i) => (
+                      <div key={i} className="flex gap-3 text-[13px] bg-[#fffbeb] rounded-xl p-3 border border-[#fde68a]/30">
+                        <span className="shrink-0 w-6 h-6 rounded-full bg-[#fde68a] text-[#92400e] flex items-center justify-center font-bold text-[11px]">
+                          {i + 1}
+                        </span>
+                        <div>
+                          <p className="text-[#92400e] font-semibold">{err.position}: {err.error}</p>
+                          <p className="text-[#b45309] mt-0.5">💡 {err.suggestion}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-
-            {/* Alternatives */}
-            {gradeResult.alternatives.length > 0 && (
-              <div className="bg-white rounded-2xl p-4 border border-[#d0f4e7]/50 shadow-sm">
-                <h4 className="text-[13px] font-bold text-[#00714d] mb-3 flex items-center gap-1.5">
-                  <Lightbulb className="w-4 h-4" />
-                  Câu mẫu tham khảo
-                </h4>
-                <div className="space-y-2">
-                  {gradeResult.alternatives.map((alt, i) => (
-                    <div key={i} className="flex items-start gap-2.5 text-[14px] bg-[#f0fff4] rounded-xl p-3 border border-[#d0f4e7]/50">
-                      <span className="shrink-0 w-5 h-5 rounded-full bg-[#6cf8bb] text-[#00714d] flex items-center justify-center font-bold text-[10px] mt-0.5">
-                        {i + 1}
-                      </span>
-                      <p className="text-[#0b1c30] font-medium italic">&quot;{alt}&quot;</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Next Button */}
-            <button
-              onClick={handleNext}
-              className="w-full py-3.5 bg-gradient-to-r from-[#4648d4] to-[#6063ee] text-white rounded-2xl font-bold text-[15px] hover:shadow-lg hover:shadow-[#4648d4]/25 transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              {currentIndex === totalCount - 1 ? "Xem kết quả" : "Từ tiếp theo"}
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </div>
+              )}
+            </div>
+          </>
         )}
         </div>
 
