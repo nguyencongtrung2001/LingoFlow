@@ -131,7 +131,7 @@ export function SentencesGame({ folder, onBack, onRestart }: SentencesGameProps)
 
   return (
     <div className="bg-[#eff4ff] text-[#0b1c30] flex flex-col overflow-hidden relative w-full rounded-3xl border border-[#e5eeff]/50 shadow-md">
-      <main className={`grow flex flex-col w-full mx-auto px-4 md:px-6 py-6 transition-all duration-300 ${gradeResult ? 'max-w-5xl' : 'max-w-3xl'}`}>
+      <main className={`grow flex flex-col w-full mx-auto px-4 md:px-6 py-6 transition-all duration-300 ${gradeResult ? 'max-w-[1600px] 2xl:max-w-full' : 'max-w-3xl'}`}>
         {/* Header */}
         <header className="flex items-center justify-between w-full shrink-0 mb-6">
           <div className="grow mr-6 flex flex-col">
